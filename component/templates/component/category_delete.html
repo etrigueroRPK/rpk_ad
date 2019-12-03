@@ -1,0 +1,37 @@
+<div class="modal-dialog ">
+    <div class="modal-content">
+
+        <form method="POST" class="form-group">
+            {% csrf_token %}
+
+            <div class="col-xl-12 col-md-12 mb-12">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    <div class="alert">
+
+                                        Eliminar: {{ obj.name}} ?
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+
+                                    <button type="button" class="btn btn-danger"><span
+                                            class="far fa-cuestion-circle"></span>
+                                        Si, Eliminar</button>
+                                    <button type="button" class="btn btn-success"
+                                        onclick="return cerrar_modal()">Cancelar</button>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
