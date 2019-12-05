@@ -50,7 +50,12 @@
                         <td>{{ item.id }}</td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.description }}</td>
-                        <td>{{ item.img }}</td>
+                        <td class="text-center" >
+                            {% if item.img %}
+                            <img src="{{ item.img.url }}"  class="img-thumbnail" alt="IMG" width="60" height="60" >    
+                            
+                            {% endif %}
+                        </td>
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
                         <td>{{ item.created_at}}</td>
                         <td>{{ item.updated_at}}</td>

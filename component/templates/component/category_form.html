@@ -2,7 +2,7 @@
 
 {% block page_content %}
 
-<form method="POST" class="form-group">
+<form method="POST" class="form-group" enctype="multipart/form-data">
     {% csrf_token %}
 
     <div class="col-xl-8 col-md-8 mb-8">
@@ -57,8 +57,8 @@
                             <div class="form-group row">
                                 <label for="id_img" class="col-sm-2 col-form-label">Imagen</label>
                                 <div class="col-sm-10">
-                                    <input type="file" name="img" maxlength="300" class="form-control-file"
-                                        id="id_img" value="{% if obj %} {{obj.img}} {% endif %}">
+                                    <input type="file" name="img" maxlength="300" class="form-control-file" accept="image/*"
+                                        required id="id_img" value="{% if obj %} {{obj.img}} {% endif %}">
                                 </div>
                             </div>
                             <div class="form-group row">
