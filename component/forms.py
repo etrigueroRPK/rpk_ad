@@ -21,7 +21,7 @@ class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ['name', 'state','img','start_date', 'end_date', 'address']
-        labels = {'name':'Nombre de la categoria','state':'Estado'}
+        
         widget = {'name': forms.TextInput}
 
     def __init__(self, *args, **kwargs):

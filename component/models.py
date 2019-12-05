@@ -15,9 +15,9 @@ class Category(ClassModel):
 class Location(ClassModel):
     name = models.CharField(max_length=50, help_text='Name location', unique=True)
     address = models.CharField(max_length=100)
-    img = models.CharField(max_length=300, default='default.jpg')
-    start_date = models.DateField(auto_now=False)
-    end_date = models.DateField(auto_now=False)
+    img = models.ImageField(upload_to='categories', null=True, blank=True)
+    start_date = models.DateField(auto_now=False, null=True, blank=True)
+    end_date = models.DateField(auto_now=False, null=True, blank=True)
 
 
     def __str__(self):
