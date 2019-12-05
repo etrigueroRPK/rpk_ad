@@ -15,7 +15,7 @@
             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                 <div class="dropdown-header">Acciones:</div>
                 
-                <a class="dropdown-item" onclick="return abrir_modal('{% url 'component:locations_new' %}')" href="#"><i class="far fa-calendar-plus"></i> Nuevo</a>
+                <a class="dropdown-item" href="{% url 'component:locations_new' %}"><i class="far fa-calendar-plus"></i> Nuevo</a>
                
             </div>
         </div>
@@ -49,7 +49,12 @@
                         <td>{{ item.id }}</td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.address }}</td>
-                        <td>{{ item.img }}</td>
+                        <td class="text-center" >
+                                {% if item.img %}
+                                <img src="{{ item.img.url }}"  class="img-thumbnail" alt="IMG" width="60" height="60" >    
+                                
+                                {% endif %}
+                            </td>
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
                         <td>{{ item.created_at}}</td>
                         <td>{{ item.updated_at}}</td>
