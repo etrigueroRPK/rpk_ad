@@ -12,7 +12,9 @@
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     <div class="alert">
 
-                                        Eliminar: {{ obj.name}} ?
+                                        Eliminar: {{ obj.name}} ? <br>
+                                        Esta accion en realidad no elimina el producto solo desactiva... <br>
+                                        Si en realidad lo quiere eliminar. Contacte con el Administrador del sistema.
                                     </div>
                                 </div>
 
@@ -20,7 +22,7 @@
 
                                     <button type="button" id="btn_delete" class="btn btn-danger"><span
                                             class="far fa-cuestion-circle"></span>
-                                        Si, Eliminar</button>
+                                        Si, Des-activar</button>
                                     <button type="button" class="btn btn-success"
                                         onclick="return cerrar_modal()">Cancelar</button>
 
@@ -49,7 +51,7 @@ $(document).ready(function(){
     });
     $('#btn_delete').click(function(e){
         e.preventDefault();
-        alert("provando");
+        // alert("provando");
 
         var id = {{ obj.id }};
         var template = "{% url 'component:categories_delete' obj.id %}";
@@ -66,7 +68,7 @@ $(document).ready(function(){
             success: function(response){
                 console.log(response);
                 cerrar_modal();
-                alert(response);
+                // alert(response);
 
             },
             error: function(jqXHR, textStatus, errorThrow){
