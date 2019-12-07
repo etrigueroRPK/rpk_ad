@@ -7,7 +7,12 @@ from django.urls import path, include
 urlpatterns = [
 
     path('',include(('bases.urls','bases'), namespace='bases')),
+    # rutas de modulo componentes
     path('component/',include(('component.urls','component'), namespace='component')),
+
+    # rutas del modulo ventas
+    path('sales/',include(('sales.urls','sales'), namespace='sales')),
+
 
     path('admin/', admin.site.urls),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CategoryView, CategoryNew, CategoryEdit, LocationView, LocationNew, category_delete
+from .views import CategoryView, CategoryNew, CategoryEdit, category_delete, LocationView, LocationNew, LocationEdit, location_delete 
 
 urlpatterns = [
     # vistas para categorias
@@ -11,5 +11,7 @@ urlpatterns = [
     # vistas para locaciones
     path('locations/',LocationView.as_view(), name='locations_list'),
     path('locations/new',LocationNew.as_view(), name='locations_new'),
+    path('locations/edit/<int:pk>',LocationEdit.as_view(), name='locations_edit'),
+    path('locations/delete/<int:id>',location_delete, name='locations_delete'),
 
 ]

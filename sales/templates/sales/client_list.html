@@ -6,7 +6,7 @@
 <div class="card shadow mb-4">
     <!-- Card Header - Dropdown -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Listado de locaciones</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Listado de clientes</h6>
         <div class="dropdown no-arrow">
             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -14,8 +14,8 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                 <div class="dropdown-header">Acciones:</div>
-                
-                <a class="dropdown-item" href="{% url 'component:locations_new' %}"><i class="far fa-calendar-plus"></i> Nuevo</a>
+                <a class="dropdown-item" href="{% url 'sales:client_new' %}">Nuevo</a>
+                <div class="dropdown-divider"></div>
                
             </div>
         </div>
@@ -23,7 +23,7 @@
     <!-- Card Body -->
     <div class="card-body">
         {% if not obj %}
-        <div class="alert alert-info">No hay locaciones</div>
+        <div class="alert alert-info">No hay clientes</div>
 
         {% else %}
         <div class="table-responsive">
@@ -33,7 +33,7 @@
                     <tr>
                         <th>Id</th>
                         <th>Nombre</th>
-                        <th>Direccion</th>
+                        <th>Descripcion</th>
                         <th>Imagen</th>
                         <th>Estado</th>
                         <th>F. Creacion</th>
@@ -48,13 +48,13 @@
                     <tr>
                         <td>{{ item.id }}</td>
                         <td>{{ item.name }}</td>
-                        <td>{{ item.address }}</td>
+                        <td>{{ item.description }}</td>
                         <td class="text-center" >
-                                {% if item.img %}
-                                <img src="{{ item.img.url }}"  class="img-thumbnail" alt="IMG" width="60" height="60" >    
-                                
-                                {% endif %}
-                            </td>
+                            {% if item.img %}
+                            <img src="{{ item.img.url }}"  class="img-thumbnail" alt="IMG" width="60" height="60" >    
+                            
+                            {% endif %}
+                        </td>
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
                         <td>{{ item.created_at}}</td>
                         <td>{{ item.updated_at}}</td>
@@ -63,11 +63,10 @@
                         <!-- para fecha formateada |date: "d/m/Y H:i:s" -->
 
                         <td>
-                            <a href="{% url 'component:locations_edit' item.id %}"
+                            <a href="{% url 'sales:client_edit' item.id %}"
                                 class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
                                     class="far fa-edit"></i></a>
-                            <a href="#" class="btn btn-sm btn-outline-danger btn-circle" role="button"><i
-                                    class="far fa-trash-alt"></i></a>
+                            <button class="btn btn-sm btn-outline-danger btn-circle" onclick="return abrir_modal('{% url 'sales:client_delete' item.id %}')"><i class="far fa-trash-alt"></i></button>
 
                         </td>
                     </tr>
