@@ -49,10 +49,10 @@
                         <td>{{ item.id }}</td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.description }}</td>
-                        <td class="text-center" >
+                        <td class="text-center">
                             {% if item.img %}
-                            <img src="{{ item.img.url }}"  class="img-thumbnail" alt="IMG" width="60" height="60" >    
-                            
+                            <img src="{{ item.img.url }}" class="img-thumbnail" alt="IMG" width="60" height="60">
+
                             {% endif %}
                         </td>
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
@@ -66,7 +66,9 @@
                             <a href="{% url 'component:categories_edit' item.id %}"
                                 class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
                                     class="far fa-edit"></i></a>
-                            <button class="btn btn-sm btn-outline-danger btn-circle" onclick="return abrir_modal('{% url 'component:categories_delete' item.id %}')"><i class="far fa-trash-alt"></i></button>
+                            <button class="btn btn-sm btn-outline-danger btn-circle"
+                                onclick="return abrir_modal('{% url 'component:categories_delete' item.id %}')"><i
+                                    class="far fa-trash-alt"></i></button>
 
                         </td>
                     </tr>

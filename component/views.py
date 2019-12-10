@@ -12,7 +12,8 @@ from .forms import CategoryForm, LocationForm
 
 # Create your views here.
 
-# vistas para Categorias 
+# vistas para Categorias
+
 
 class CategoryView(LoginRequiredMixin, generic.ListView):
     model = Category
@@ -31,8 +32,9 @@ class CategoryNew(LoginRequiredMixin, generic.CreateView):
 
     def form_valid(self, form):
         form.instance.user_created = self.request.user
-        
+
         return super().form_valid(form)
+
 
 class CategoryEdit(LoginRequiredMixin, generic.UpdateView):
     model = Category
@@ -44,33 +46,34 @@ class CategoryEdit(LoginRequiredMixin, generic.UpdateView):
 
     def form_valid(self, form):
         form.instance.user_updated = self.request.user.id
-        
+
         return super().form_valid(form)
 
 
-def category_delete(request,id):
-    template_name='component/category_delete.html'
-    contexto={}
+def category_delete(request, id):
+    template_name = 'component/category_delete.html'
+    contexto = {}
     cat = Category.objects.filter(pk=id).first()
 
     if not cat:
         return HttpResponse('Categoria no existe' + str(id))
-    
-    if request.method=='GET':
-        contexto={'obj':cat}
 
-    if request.method=='POST':
-        cat.state=False
+    if request.method == 'GET':
+        contexto = {'obj': cat}
+
+    if request.method == 'POST':
+        cat.state = False
         cat.save()
-        contexto={'obj':'OK'}
+        contexto = {'obj': 'OK'}
         return HttpResponse('Proveedor Inactivo')
 
-    return render(request,template_name,contexto)
+    return render(request, template_name, contexto)
 
 # =======================================
 # Visatas para Locaciones
 
 # vista para listar las locaiones
+
 
 class LocationView(LoginRequiredMixin, generic.ListView):
     model = Location
@@ -79,6 +82,8 @@ class LocationView(LoginRequiredMixin, generic.ListView):
     login_url = 'bases:login'
 
 # vista par acrear nuevas locaiones
+
+
 class LocationNew(LoginRequiredMixin, generic.CreateView):
     model = Location
     template_name = 'component/location_form.html'
@@ -89,10 +94,12 @@ class LocationNew(LoginRequiredMixin, generic.CreateView):
 
     def form_valid(self, form):
         form.instance.user_created = self.request.user
-        
+
         return super().form_valid(form)
 
 # vista para editar locaiones
+
+
 class LocationEdit(LoginRequiredMixin, generic.UpdateView):
     model = Location
     template_name = 'component/location_form.html'
@@ -103,25 +110,29 @@ class LocationEdit(LoginRequiredMixin, generic.UpdateView):
 
     def form_valid(self, form):
         form.instance.user_updated = self.request.user.id
-        
+
         return super().form_valid(form)
 
 
-def location_delete(request,id):
-    template_name='component/location_delete.html'
-    contexto={}
-    cat = Location.objects.filter(pk=id).first()
+def location_delete(request, id):
+    template_name = 'component/location_delete.html'
+    contexto = {}
+    loc = Location.objects.filter(pk=id).first()
 
-    if not cat:
+    if not loc:
         return HttpResponse('Locacion no existe' + str(id))
-    
-    if request.method=='GET':
-        contexto={'obj':cat}
 
-    if request.method=='POST':
-        cat.state=False
-        cat.save()
-        contexto={'obj':'OK'}
-        return HttpResponse('Proveedor Inactivo')
+    if request.method == 'GET':
+        contexto = {'obj': loc}
+       
 
-    return render(request,template_name,contexto)
+    if request.method == 'POST':
+        loc.state = False
+        loc.save()
+        contexto = {'obj': 'OK'}
+        return HttpResponse('Location Inactivo')
+    print("_______________________@@@@@@@@@$$$$$$$")
+    print(template_name)
+    print("_______________________@@@@@@@@@$$$$$$$")
+    return render(request, template_name, contexto)
+
