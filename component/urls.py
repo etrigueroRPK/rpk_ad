@@ -15,4 +15,6 @@ urlpatterns = [
     path('locations/edit/<int:pk>', LocationEdit.as_view(), name='locations_edit'),
     path('locations/delete/<int:id>', location_delete, name='locations_delete')
 
+
+
 ]
