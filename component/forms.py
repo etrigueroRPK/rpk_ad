@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Category, Location
+from .models import Category, Location, Product
 
 # formulario para categorias
 class CategoryForm(forms.ModelForm):
@@ -28,4 +28,21 @@ class LocationForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({'class':'form-control'})
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'place','img','start_date', 'end_date', 'start_time', 'end_time', 'category', 'location', 'state']
+        
+        widget = {'name': forms.TextInput}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({'class':'form-control'})
+        self.fields['category'].empty_label = 'Seleccione Categoria'
+        self.fields['location'].empty_label = 'Seleccione Locacion'
+
+    
+
     

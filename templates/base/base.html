@@ -22,6 +22,7 @@
   <link href="{% static 'base/css/sb-admin-2.css' %}" rel="stylesheet">
   <link href="{% static 'base/css/rpk.css' %}" rel="stylesheet">
   <link href="{% static 'base/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+  <link href="{% static 'base/vendor/jquery-confirm/jquery-confirm.min.css' %}" rel="stylesheet">
 
 </head>
 
@@ -74,7 +75,7 @@
             <h6 class="collapse-header">Ad de Componentes:</h6>
             <a class="collapse-item" href="{% url 'component:categories_list' %}">Categorias</a>
             <a class="collapse-item" href="{% url 'component:locations_list' %}">Locaciones</a>
-            <a class="collapse-item" href="#">Productos</a>
+            <a class="collapse-item" href="{% url 'component:product_list' %}">Productos</a>
           </div>
         </div>
       </li>
@@ -267,35 +268,35 @@
     <!-- End of Content Wrapper -->
 
     {% block login %}
-
+  
     {% endblock login %}
-
+    
   </div>
   <!-- End of Page Wrapper -->
-
+  
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
-
+  
   <!-- Logout Modal-->
   <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="{% url 'bases:logout' %}">Logout</a>
-        </div>
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <a class="btn btn-primary" href="{% url 'bases:logout' %}">Logout</a>
       </div>
     </div>
+  </div>
   </div>
 
   <!-- modal personalizado -->
@@ -317,16 +318,18 @@
   <!-- Custom scripts for all pages-->
   <script src="{% static 'base/js/sb-admin-2.js' %}"></script>
 
+  <!-- jquery confirm -->
+
+  <script src="{% static 'base/vendor/jquery-confirm/jquery-confirm.min.js' %}"></script>
 
 
-  {% block js_page %}
 
-  {% endblock %}
 
+  
   {% block control_modal %}
   <script>
     function abrir_modal(url) {
-
+      
       $("#popup").load(url, function () {
         $(this).modal({
           backdrop: 'static',
@@ -336,14 +339,26 @@
       });
       return false;
     }
-
+    
     function cerrar_modal() {
       $('#popup').modal('hide');
       return false;
     }
-  </script>
-  {% endblock control_modal %}
 
+    function mensaje(msg,color='green'){
+      $.alert({
+        title:'',
+        theme:'material',
+        type:color,
+        content:msg
+      });
+    }
+
+    </script>
+  {% endblock control_modal %}
+  {% block js_page %}
+  
+  {% endblock %}
 </body>
 
 </html>

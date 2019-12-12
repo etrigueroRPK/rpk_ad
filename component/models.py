@@ -35,4 +35,4 @@ class Product(ClassModel):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '{}:{}'.format(self.name)
+        return '{}:{}'.format(self.category.name, self.name)

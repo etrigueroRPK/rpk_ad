@@ -7,8 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 import json
 
-from .models import Category, Location
-from .forms import CategoryForm, LocationForm
+from .models import Category, Location, Product
+from .forms import CategoryForm, LocationForm, ProductForm
 
 # Create your views here.
 
@@ -134,5 +134,68 @@ def location_delete(request, id):
     print("_______________________@@@@@@@@@$$$$$$$")
     print(template_name)
     print("_______________________@@@@@@@@@$$$$$$$")
+    return render(request, template_name, contexto)
+
+# ==================================
+# vistas para productos
+# ==================================
+
+class ProductView(LoginRequiredMixin, generic.ListView):
+    model = Product
+    template_name = 'component/product_view.html'
+    context_object_name = 'obj'
+    login_url = 'bases:login'
+
+# vista par acrear nuevas productos
+
+
+class ProductNew(LoginRequiredMixin, generic.CreateView):
+    model = Product
+    template_name = 'component/product_form.html'
+    context_object_name = 'obj'
+    form_class = ProductForm
+    success_url = reverse_lazy('component:product_list')
+    login_url = 'bases:login'
+
+    def form_valid(self, form):
+        form.instance.user_created = self.request.user
+
+        return super().form_valid(form)
+
+# vista para editar productos
+
+
+class ProductEdit(LoginRequiredMixin, generic.UpdateView):
+    model = Product
+    template_name = 'component/product_form.html'
+    context_object_name = 'obj'
+    form_class = ProductForm
+    success_url = reverse_lazy('component:product_list')
+    login_url = 'bases:login'
+
+    def form_valid(self, form):
+        form.instance.user_updated = self.request.user.id
+
+        return super().form_valid(form)
+
+
+def product_delete(request, id):
+    template_name = 'component/product_delete.html'
+    contexto = {}
+    loc = Product.objects.filter(pk=id).first()
+
+    if not loc:
+        return HttpResponse('Product no existe' + str(id))
+
+    if request.method == 'GET':
+        contexto = {'obj': loc}
+       
+
+    if request.method == 'POST':
+        loc.state = False
+        loc.save()
+        contexto = {'obj': 'OK'}
+        return HttpResponse('Location Inactivo')
+    
     return render(request, template_name, contexto)
 
