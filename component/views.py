@@ -3,7 +3,11 @@ from django.shortcuts import render
 from django.views import generic
 from django.urls import reverse_lazy
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
+
+from django.contrib.auth.mixins import LoginRequiredMixin, \
+    PermissionRequiredMixin
 from django.http import HttpResponse
 import json
 
@@ -15,20 +19,23 @@ from .forms import CategoryForm, LocationForm, ProductForm
 # vistas para Categorias
 
 
-class CategoryView(LoginRequiredMixin, generic.ListView):
+class CategoryView(LoginRequiredMixin, PermissionRequiredMixin,\
+    generic.ListView):
+    permission_required = 'component.view_category'
     model = Category
     template_name = 'component/category_view.html'
     context_object_name = 'obj'
     login_url = 'bases:login'
 
 
-class CategoryNew(LoginRequiredMixin, generic.CreateView):
+class CategoryNew(SuccessMessageMixin, LoginRequiredMixin, generic.CreateView):
     model = Category
     template_name = 'component/category_form.html'
     context_object_name = 'obj'
     form_class = CategoryForm
     success_url = reverse_lazy('component:categories_list')
     login_url = 'bases:login'
+    success_message = "Creado satisfactoriamente"
 
     def form_valid(self, form):
         form.instance.user_created = self.request.user
@@ -36,13 +43,15 @@ class CategoryNew(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-class CategoryEdit(LoginRequiredMixin, generic.UpdateView):
+class CategoryEdit(SuccessMessageMixin, LoginRequiredMixin, generic.UpdateView):
     model = Category
     template_name = 'component/category_form.html'
     context_object_name = 'obj'
     form_class = CategoryForm
     success_url = reverse_lazy('component:categories_list')
     login_url = 'bases:login'
+    success_message = "Actializado satisfactoriamente"
+
 
     def form_valid(self, form):
         form.instance.user_updated = self.request.user.id
@@ -64,8 +73,11 @@ def category_delete(request, id):
     if request.method == 'POST':
         cat.state = False
         cat.save()
+        # mensaje par que la vista lo muestre sin coloca en comentarios pues al momento de los esta haciendo con ajax
+        # messages.success(request, 'Se inactivo correctamente')
+
         contexto = {'obj': 'OK'}
-        return HttpResponse('Proveedor Inactivo')
+        return HttpResponse('Categoria  Inactivada')
 
     return render(request, template_name, contexto)
 
@@ -131,9 +143,7 @@ def location_delete(request, id):
         loc.save()
         contexto = {'obj': 'OK'}
         return HttpResponse('Location Inactivo')
-    print("_______________________@@@@@@@@@$$$$$$$")
-    print(template_name)
-    print("_______________________@@@@@@@@@$$$$$$$")
+    
     return render(request, template_name, contexto)
 
 # ==================================

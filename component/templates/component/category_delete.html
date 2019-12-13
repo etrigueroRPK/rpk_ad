@@ -54,7 +54,9 @@ $(document).ready(function(){
         // alert("provando");
 
         var id = {{ obj.id }};
+        
         var template = "{% url 'component:categories_delete' obj.id %}";
+        // template += id;
         var data = {"id":id};
         data = JSON.stringify(data);
 
@@ -69,11 +71,15 @@ $(document).ready(function(){
                 console.log(response);
                 cerrar_modal();
                 // alert(response);
+                var tipo=(response.startsWith('Categoria no existe') ? 'red':'green');
+                mensaje(response,tipo);
 
             },
             error: function(jqXHR, textStatus, errorThrow){
                 console.log(textStatus, errorThrow)
                 cerrar_modal();
+                mensaje(errorThrow, 'red' );
+
             }
         })
     })

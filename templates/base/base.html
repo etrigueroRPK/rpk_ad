@@ -73,7 +73,11 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Ad de Componentes:</h6>
+            <!-- tag par apermisos -->
+            {% if perms.component.view_category %} 
+              
             <a class="collapse-item" href="{% url 'component:categories_list' %}">Categorias</a>
+            {% endif %}
             <a class="collapse-item" href="{% url 'component:locations_list' %}">Locaciones</a>
             <a class="collapse-item" href="{% url 'component:product_list' %}">Productos</a>
           </div>
@@ -205,7 +209,7 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Edmundo Triguero</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{user.username}}</span>
                 <img class="img-profile rounded-circle" src="{% static 'base/img/profile/User.svg' %}">
               </a>
               <!-- Dropdown - User Information -->
@@ -346,6 +350,13 @@
     }
 
     function mensaje(msg,color='green'){
+      if (color=="success") {
+        color="green";
+      }
+      if (color=="error") {
+        color="red";
+      }
+
       $.alert({
         title:'',
         theme:'material',
@@ -353,6 +364,13 @@
         content:msg
       });
     }
+
+    {% if messages %}
+      {% for message in messages %}
+        mensaje("{{message}}","{{message.tags}}");
+      {% endfor %}
+
+    {% endif %}
 
     </script>
   {% endblock control_modal %}

@@ -26,7 +26,7 @@ class Location(ClassModel):
 class Product(ClassModel):
     name = models.CharField(max_length=50, help_text='Name location', unique=True)
     place = models.CharField(max_length=100)
-    img = models.ImageField(upload_to='categories', null=True, blank=True)
+    img = models.ImageField(upload_to='product', null=True, blank=True)
     start_date = models.DateField(auto_now=False, null=True, blank=True)
     end_date = models.DateField(auto_now=False, null=True, blank=True)
     start_time = models.TimeField()
