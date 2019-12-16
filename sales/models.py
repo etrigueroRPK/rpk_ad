@@ -25,6 +25,8 @@ class Contract(ClassModel):
 class Order(ClassModel):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    pass_contract = models.IntegerField(default=0)
+    porcentage_contract = models.FloatField(default=0)
     description = models.CharField(max_length=150, null=True, blank=True)
     
 

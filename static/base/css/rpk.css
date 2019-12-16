@@ -10,7 +10,12 @@
     width: 100%;
     height: auto;
     margin: 5px;
-    
-    
-    
+ 
 }
+
+.v-center {
+    min-height:200px;
+    display: flex;
+    justify-content:center;
+    flex-flow: column wrap;
+  }

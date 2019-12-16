@@ -31,6 +31,7 @@ class Product(ClassModel):
     end_date = models.DateField(auto_now=False, null=True, blank=True)
     start_time = models.TimeField()
     end_time = models.TimeField()
+    time_operating = models.TimeField(default='00:00') 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 

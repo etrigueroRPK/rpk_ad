@@ -70,15 +70,21 @@
                             </div>
                             <div class="form-group row">
                                 <label for="id_start_time" class="col-sm-2 col-form-label">Hora Inicio</label>
-                                <div class="col-sm-4 ">
+                                <div class="col-sm-2 ">
                                     <input type="time" name="start_time" class="form-control" id="id_start_time"
                                         value="{% if obj %}{{obj.start_time}}{% endif %}">
                                 </div>
 
                                 <label for="id_end_time" class="col-sm-2 col-form-label">Hora Final</label>
-                                <div class="col-sm-4 ">
+                                <div class="col-sm-2 ">
                                     <input type="time" name="end_time" class="form-control" id="id_end_time"
                                         value="{% if obj %}{{obj.end_time}}{% endif %}">
+                                        
+                                </div>
+                                <label for="id_time_operating" class="col-sm-2 col-form-label">Tiempo de func</label>
+                                <div class="col-sm-2 ">
+                                    <input type="time" name="time_operating" class="form-control" id="id_time_operating"
+                                        value="{% if obj %}{{obj.time_operating}}{% endif %}">
                                         
                                 </div>
 

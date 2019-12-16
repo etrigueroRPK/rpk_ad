@@ -32,7 +32,7 @@ class LocationForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'place','img','start_date', 'end_date', 'start_time', 'end_time', 'category', 'location', 'state']
+        fields = ['name', 'place','img','start_date', 'end_date', 'start_time', 'end_time','time_operating' ,'category', 'location', 'state']
         
         widget = {'name': forms.TextInput}
 

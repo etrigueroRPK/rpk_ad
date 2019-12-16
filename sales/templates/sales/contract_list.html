@@ -1,0 +1,90 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<!-- Dropdown Card Example -->
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Listado ordenes de trabajo</h6>
+        <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Acciones:</div>
+                <a class="dropdown-item" href="{% url 'sales:contract_new' %}">Nuevo</a>
+                <a class="dropdown-item" href="#">Reporte Mensual</a>
+
+                <div class="dropdown-divider"></div>
+               
+            </div>
+        </div>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+        {% if not obj %}
+        <div class="alert alert-info">No hay ordenes de trabajo</div>
+
+        {% else %}
+        <div class="table-responsive">
+
+            <table class="table table-striped table-hover table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Descripcion</th>
+                        <th>Imagen</th>
+                        <th>Estado</th>
+                        <th>F. Creacion</th>
+                        <th>F. Modificacion</th>
+                        <th>UC</th>
+                        <th>UM</th>
+                        <th class="all">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in obj %}
+                    <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.start_date }}</td>
+                        <td>{{ item.end_date }}</td>
+                      
+                        <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
+                        <td>{{ item.created_at}}</td>
+                        <td>{{ item.updated_at}}</td>
+                        <td>{{ item.user_created}}</td>
+                        <td>{{ item.user_updated}}</td>
+                        <!-- para fecha formateada |date: "d/m/Y H:i:s" -->
+
+                        <td>
+                            <a href="{% url 'sales:client_edit' item.id %}"
+                                class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
+                                    class="far fa-edit"></i></a>
+                            <button class="btn btn-sm btn-outline-danger btn-circle" onclick="return abrir_modal('{% url 'sales:client_delete' item.id %}')"><i class="far fa-trash-alt"></i></button>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block js_page %}
+<script>
+    $(document).ready(function () {
+        $('.table').DataTable();
+    })
+</script>
+
+
+{% endblock %}

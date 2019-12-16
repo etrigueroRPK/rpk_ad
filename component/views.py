@@ -6,6 +6,10 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
+
+# importacion pra la vista basada en funciones 
+from django.contrib.auth.decorators import login_required, permission_required
+
 from django.contrib.auth.mixins import LoginRequiredMixin, \
     PermissionRequiredMixin
 from django.http import HttpResponse
@@ -14,18 +18,20 @@ import json
 from .models import Category, Location, Product
 from .forms import CategoryForm, LocationForm, ProductForm
 
-# Create your views here.
+from bases.views import SinPrivilegios
 
 # vistas para Categorias
+# TODO: completar los privilegios de los usuarios para cada vista
 
 
-class CategoryView(LoginRequiredMixin, PermissionRequiredMixin,\
+class CategoryView(SinPrivilegios,\
     generic.ListView):
+    # este permision_required es nesesario para ver el tema de permisos a nivel de vista
     permission_required = 'component.view_category'
     model = Category
     template_name = 'component/category_view.html'
     context_object_name = 'obj'
-    login_url = 'bases:login'
+    
 
 
 class CategoryNew(SuccessMessageMixin, LoginRequiredMixin, generic.CreateView):
@@ -58,7 +64,8 @@ class CategoryEdit(SuccessMessageMixin, LoginRequiredMixin, generic.UpdateView):
 
         return super().form_valid(form)
 
-
+@login_required(login_url='/login/')
+@permission_required('component.delete_category', login_url='bases:sin_privilegios')
 def category_delete(request, id):
     template_name = 'component/category_delete.html'
     contexto = {}

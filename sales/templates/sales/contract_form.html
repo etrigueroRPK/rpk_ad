@@ -1,0 +1,325 @@
+{% extends 'base/base.html' %} {% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12">
+
+        {% if obj %}
+        <div class="card border-left-warning shadow h-100 py-2">
+            {% else %}
+
+            <div class="card border-left-primary shadow h-100 py-2">
+                {% endif %}
+
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                {% if obj %} Editar {% else %} Nueva {% endif %} cliente
+                            </div>
+                            <small class="text-danger">
+                                {% if form.errors %}
+                                {% for field in form %}
+                                {% if field.errors %}
+                                {% for error in field.errors %}
+                                {{ error|escape }}
+                                {% endfor %}
+                                {% endif %}
+                                {% endfor %}
+
+                                {% if form.non_field_errors%}
+                                {% for error in form.non_field_errors %}
+                                {{ error|escape }}
+                                {% endfor %}
+                                {% endif %}
+                                {% endif %}
+                            </small>
+                            <div class="dropdown-divider"></div>
+
+                            <div class="form-group row">
+                                <label for="id_client" class="col-sm-2 col-form-label">Cliente</label>
+                                <div class="col-sm-10">
+                                    <select name="client" id="id_client" required class="form-control">
+                                        <option value=""> Selecciona cliente</option>
+                                        {% for item in obj %}
+                                        <option value="{{item.id}}"> {{item.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="id_start_date" class="col-sm-2 col-form-label">Fecha Inicio</label>
+                                <div class="col-sm-4 ">
+                                    <input type="date" name="start_date" class="form-control" id="id_start_date"
+                                        value="{% if obj %}{{obj.start_date|date:'Y-m-d'}}{% endif %}">
+                                </div>
+
+                                <label for="id_end_date" class="col-sm-2 col-form-label">Fecha Final</label>
+                                <div class="col-sm-4 ">
+                                    <input type="date" name="end_date" class="form-control" id="id_end_date"
+                                        value="{% if obj %}{{obj.end_date|date:'Y-m-d'}}{% endif %}">
+                                </div>
+
+                            </div>
+                            <div class="dropdown-divider"></div>
+
+
+
+                            <div class="form-group row">
+                                <label for="id_pass_contract" class="col-sm-2 col-form-label">Pases contratados</label>
+                                <div class="col-sm-3 ">
+                                    <input type="number" name="pass_contract" class="form-control" id="id_pass_contract"
+                                        value="{% if obj %}{{obj.start_date|date:'Y-m-d'}}{% endif %}">
+
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="state" class="form-check-input" {% if obj.state %}
+                                            checked {% endif %} id="check_pass">
+                                        <label class="form-check-label" for="id_state">
+
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                                <label for="id_porcentage_contract" class="col-sm-2 col-form-label">Poscentaje
+                                    Contratado</label>
+                                <div class="col-sm-3 ">
+                                    <input type="number" name="porcentage_contract" class="form-control"
+                                        id="id_porcentage_contract"
+                                        value="{% if obj %}{{obj.end_date|date:'Y-m-d'}}{% endif %}">
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="state" class="form-check-input" {% if obj.state %}
+                                            checked {% endif %} id="check_porc">
+                                        <label class="form-check-label" for="id_state">
+
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="dropdown-divider"></div>
+
+
+                            <div class="form-row">
+                                <div class="form-group col-md-10">
+                                    <label for="product_id">Products</label>
+                                    <select id="product_id" name="product_id" class="form-control form-control-sm">
+                                        <option selected value="">Choose...</option>
+
+                                        {% for item in product %}
+                                        <option value="{{item.id}}"> {{item.name}} - {{item.time_operating}}</option>
+                                        {% endfor %}
+
+
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <table class="table table-sm" id="detalles">
+                                        <thead>
+                                            <tr>
+                                                <td></td>
+                                                <td><label for="product_id">Producto</label></td>
+                                                <td>Pases</td>
+                                                <td>Porcentaje</td>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-row">
+                                <!-- {{form.as_p}} -->
+                                <div class="form-group row">
+                                    <div class="col-sm-10">
+                                        <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>
+                                            Guardar</button>
+                                        <a href="{% url 'sales:client_list' %}" class="btn btn-success"><span
+                                                class="fa fa-undo"> Cancelar</span></a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</form>
+
+{% endblock %}
+{% block js_page %}
+<script>
+
+    window.onload = function () {
+
+        producto_name = $("#product_id option:selected").text();
+        if (producto_name == 'Chosse...') {
+            producto_name = '';
+        }
+        console.log(producto_name);
+        document.getElementById("id_porcentage_contract").disabled = true;
+        document.getElementById("check_pass").checked = true;
+
+    }
+    // varibles glbales
+    var cont = 0;
+    var tiempo_default_spot = 30;
+
+
+
+
+    // envia a la elemento de la lista a la tabla 
+    $("#product_id").change(function () {
+        producto_id = $("#product_id").val();
+        producto_name = $("#product_id option:selected").text();
+
+        horas_defunc = producto_name.split("-")[1];
+        pases = 0;
+        porcentaje = 0.0;
+        console.log(horas_defunc);
+        if (producto_name == 'Choose...') {
+            producto_name = '';
+            alert("escoger un producto con valor");
+            return;
+        }
+        if ($("#check_pass").is(":checked")) {
+            if ($("#id_pass_contract").val() == "") {
+               alert("debe ingresar un valor"); 
+               return;
+            }
+            pases = $("#id_pass_contract").val();
+            porcentaje = calculo_tiempo(horas_defunc,pases,null);
+            
+            console.log(horas_defunc + " | " + pases +" => "+porcentaje)
+        }
+        if ($("#check_porc").is(":checked")) {
+            if ($("#id_porcentage_contract").val() == "") {
+               alert("debe ingresar un valor"); 
+               return;
+            }
+            porcentaje = $("#id_porcentage_contract").val();
+            console.log("-------------"+porcentaje);
+            pases = calculo_tiempo(horas_defunc,null,porcentaje);
+            
+            console.log(horas_defunc + " | " + pases +" => "+Math.round( porcentaje, -1))
+        }
+        Intl.NumberFormat()
+        
+        console.log(producto_id + ' - ' + producto_name);
+
+
+        var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
+            '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar(' + cont + ');" >X</button></td>' +
+            '<td> <input name="products[]" type="hidden" value="' + producto_id + '"> <input  type="text" class="form-control form-control-sm" disabled value="' + producto_name + ' "></td>' +
+            '<td><input name="pass[]" type="number" class="pases_number form-control form-control-sm" value="'+ pases +'"></td>' +
+            '<td><input name="porcentage[]" type="number" class="form-control form-control-sm" value="'+porcentaje +'"></td>' +
+            '<td><button type="button" class="btn btn-outline-warning"><i class="fas fa-calculator"></i></button></td>' +
+            '</tr>';
+
+        cont++;
+        pases = 0;
+        porcentaje = 0.0;
+
+        $('#detalles').append(fila);
+    });
+    // para validar que se encuentre pases o porcentaje colocado
+    $("#check_pass").change(function () {
+
+        // console.log($("#check_pass").is(":checked"));
+        if ($("#check_pass").is(":checked")) {
+            document.getElementById("id_pass_contract").disabled = false;
+            document.getElementById("id_porcentage_contract").disabled = true;
+            document.getElementById("check_porc").checked = false;
+        }
+
+    });
+    $("#check_porc").change(function () {
+
+        // console.log($("#check_porc").is(":checked"));
+        // TODO: vaciar las cajas de los checkboxs
+
+        if ($("#check_porc").is(":checked")) {
+            document.getElementById("id_pass_contract").disabled = true;
+            document.getElementById("id_porcentage_contract").disabled = false;
+            document.getElementById("check_pass").checked = false;
+
+        }
+
+    });
+
+
+    // $("#btnInactivar").click(function (e) {
+    //     e.preventDefault();
+    //     var ids = [];
+    //     $("table tbody").find('input[name="record"]').each(function () {
+    //         if ($(this).is(":checked")) {
+    //             var id = $(this).parents("tr").find("td").eq(0).html();
+    //             ids.push(id);
+    //         }
+    //     });
+    // });
+
+    // funciones
+    function eliminar(index) {
+        $("#fila" + index).remove();
+    }
+
+    function validar_pases() {
+        if ($("#check_pass").val() == '') {
+            console.log('capturando pases')
+        }
+
+    }
+
+    $(".pases_number").change(function () {
+        console.log($(".pases_number").val())
+    });
+
+    function calculo_tiempo(horas, pass = null, porc = null) {
+
+        console.log(horas, pass, porc);
+        horas_fun = horas.split(":")[0];
+        minutos_fun = horas.split(":")[1];
+
+        total_segundos = (horas_fun * 60 * 60) + (minutos_fun * 60);
+        // console.log(total_segundos);
+        if (pass) {
+            seg_contract = tiempo_default_spot * pass;
+            porcentaje = (seg_contract * 100) / total_segundos;
+            return porcentaje;
+            // console.log(porcentaje);
+
+        }
+        if (porc) {
+            seg_contract = (porc * total_segundos) / 100;
+            pass = seg_contract / tiempo_default_spot;
+            return pass;
+            // console.log(pass);
+
+        }
+
+    }
+
+
+
+
+
+
+</script>
+
+{% endblock %}
