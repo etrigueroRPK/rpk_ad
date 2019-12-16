@@ -1,0 +1,116 @@
+{% extends 'base/base.html' %} {% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12">
+
+
+
+        <div class="card border-left-success shadow h-100 py-2">
+
+
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Detalle de Orden de pauta
+                        </div>
+                        <small class="text-danger">
+                            {% if form.errors %}
+                            {% for field in form %}
+                            {% if field.errors %}
+                            {% for error in field.errors %}
+                            {{ error|escape }}
+                            {% endfor %}
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if form.non_field_errors%}
+                            {% for error in form.non_field_errors %}
+                            {{ error|escape }}
+                            {% endfor %}
+                            {% endif %}
+                            {% endif %}
+                        </small>
+                        <div class="dropdown-divider"></div>
+
+
+                        <div class="form-group row">
+                            <label for="id_client" class="col-sm-2 col-form-label">Cliente</label>
+                            <div class="col-sm-4 ">
+                                <input type="text" name="client" class="form-control" id="" disabled
+                                    value="{% if contract %}{{contract.client}}{% endif %}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id_start_date" class="col-sm-2 col-form-label">Fecha Inicio</label>
+                            <div class="col-sm-4 ">
+                                <input type="date" name="start_date" class="form-control" id="id_start_date" disabled
+                                    value="{% if contract %}{{contract.start_date|date:'Y-m-d'}}{% endif %}">
+                            </div>
+
+                            <label for="id_end_date" class="col-sm-2 col-form-label">Fecha Final</label>
+                            <div class="col-sm-4 ">
+                                <input type="date" name="end_date" class="form-control" id="id_end_date" disabled
+                                    value="{% if contract %}{{contract.end_date|date:'Y-m-d'}}{% endif %}">
+                            </div>
+
+                        </div>
+                        <div class="dropdown-divider"></div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <table class="table table-sm" id="detalles">
+                                    <thead>
+                                        <tr>
+                                            
+                                            <td><label for="product_id">Producto</label></td>
+                                            <td>Pases</td>
+                                            <td>Porcentaje</td>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for item in order %}
+                                        
+
+                                        <tr>
+                                            
+                                            <td>{{item.product}}</td>
+                                            <td>{{item.pass_contract}}</td>
+                                            <td>{{item.porcentage_contract}}</td>
+
+
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        
+                            <!-- {{form.as_p}} -->
+                            <div class="form-group text-center">
+                                <div class="col-sm-10">
+                                    
+                                    <a href="{% url 'sales:contract_list' %}" class="btn btn-success"><span
+                                            class="fa fa-undo"> Cancelar</span></a>
+                                </div>
+                            </div>
+
+
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>
+
+{% endblock %}
+{% block js_page %}
+
+
+{% endblock %}

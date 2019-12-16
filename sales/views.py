@@ -13,10 +13,9 @@ from component.models import Product
 from .forms import ClientForm
 
 
-
 # Create your views here.
 
-# vistas para Categorias 
+# vistas para Categorias
 
 class ClientView(LoginRequiredMixin, generic.ListView):
     model = Client
@@ -35,8 +34,9 @@ class ClientNew(LoginRequiredMixin, generic.CreateView):
 
     def form_valid(self, form):
         form.instance.user_created = self.request.user
-        
+
         return super().form_valid(form)
+
 
 class ClientEdit(LoginRequiredMixin, generic.UpdateView):
     model = Client
@@ -48,55 +48,78 @@ class ClientEdit(LoginRequiredMixin, generic.UpdateView):
 
     def form_valid(self, form):
         form.instance.user_updated = self.request.user.id
-        
+
         return super().form_valid(form)
 
 
-def client_delete(request,id):
-    template_name='sales/client_delete.html'
-    contexto={}
+def client_delete(request, id):
+    template_name = 'sales/client_delete.html'
+    contexto = {}
     cat = Client.objects.filter(pk=id).first()
-    
 
     if not cat:
         return HttpResponse('cliente no existe' + str(id))
-    
-    if request.method=='GET':
-        contexto={'obj':cat}
 
-    if request.method=='POST':
-        cat.state=False
+    if request.method == 'GET':
+        contexto = {'obj': cat}
+
+    if request.method == 'POST':
+        cat.state = False
         cat.save()
-        contexto={'obj':'OK'}
+        contexto = {'obj': 'OK'}
         return HttpResponse('cliente Inactivo')
 
-    return render(request,template_name,contexto)
+    return render(request, template_name, contexto)
 
 
 # ====================================================================
 # vistas necesarias para crear orden de trabajo
 # ====================================================================
 
-class ContractView(LoginRequiredMixin, generic.ListView):
+class ContractList(LoginRequiredMixin, generic.ListView):
     model = Contract
-    template_name = 'sales/contract_view.html'
+    template_name = 'sales/contract_list.html'
     context_object_name = 'obj'
     login_url = 'bases:login'
 
 
+def contract_view(request, id):
+    template_name = 'sales/contract_view.html'
+    contexto = {}
+
+    contract = Contract.objects.filter(pk=id).first()
+    order = Order.objects.filter(contract_id=id).all()
+    print('============================================================')
+    
+    print(order)
+
+    print('============================================================')
+    if not contract:
+        return HttpResponse('no se pudieron encontrar datos')
+
+    if request.method == 'GET':
+        contexto = {'contract': contract, 'order': order}
+
+    if request.method == 'POST':
+        contexto = {'obj': 'OK'}
+        return HttpResponse('no tienes por que enviar datos a esta ruta')
+
+    return render(request, template_name, contexto)
+
+
 def contract_create(request):
-    template_name='sales/contract_form.html'
-    contexto={}
+    template_name = 'sales/contract_form.html'
+    contexto = {}
     client = Client.objects.filter(state=True).all()
     product = Product.objects.filter(state=True).all()
 
     if not client:
         return HttpResponse('no se pudieron encontrar datos')
-    
-    if request.method=='GET':
-        contexto={'obj':client, 'product':product}
 
-    if request.method=='POST':
+    if request.method == 'GET':
+        contexto = {'obj': client, 'product': product}
+
+    if request.method == 'POST':
         # cat.state=False
         # cat.save()
         contract = Contract
@@ -110,14 +133,14 @@ def contract_create(request):
             end_date = None
 
         # TODO: limpiar o borrar comentario de lineas con codigo
-        
+
         # pass_contract = request.POST.get("pass_contract")
         # porcentage_contract = request.POST.get("porcentage_contract")
 
         product_list = request.POST.getlist("products[]")
         pass_list = request.POST.getlist("pass[]")
-        porcentage_list = request.POST.get("porcentage[]")
-        
+        porcentage_list = request.POST.getlist("porcentage[]")
+
         client_c = Client.objects.get(pk=client_id)
 
         contract = Contract(
@@ -126,15 +149,15 @@ def contract_create(request):
             end_date=end_date,
             state=1,
             user_created=request.user
-            )
+        )
         contract.save()
 
         # contract_id=contract.id #no sirve
         aux = 0
         for item in product_list:
             print('============================================================')
-            print(pass_list)
-        
+            print(porcentage_list)
+
             print('============================================================')
             product = Product.objects.get(pk=int(item))
             order = Order
@@ -144,15 +167,13 @@ def contract_create(request):
                 pass_contract=pass_list[aux],
                 porcentage_contract=porcentage_list[aux],
                 state=1,
-                user_created=request.user 
+                user_created=request.user
             )
             order.save()
-            aux+=1
+            aux += 1
 
-            
-
-        contexto={'obj':'OK'}
+        contexto = {'obj': 'OK'}
         # TODO: ver la forma de enviar mensaje de contrato creado creado con ventana popup
         return HttpResponse('cliente Inactivo')
 
-    return render(request,template_name,contexto)
+    return render(request, template_name, contexto)
