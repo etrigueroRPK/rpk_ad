@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.views import generic
 from django.urls import reverse_lazy
+
+from django.contrib import messages
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
@@ -173,7 +175,8 @@ def contract_create(request):
             aux += 1
 
         contexto = {'obj': 'OK'}
+        messages.success(request, 'Se creo correctamente')
         # TODO: ver la forma de enviar mensaje de contrato creado creado con ventana popup
-        return HttpResponse('cliente Inactivo')
+        return redirect("sales:contract_list")
 
     return render(request, template_name, contexto)
