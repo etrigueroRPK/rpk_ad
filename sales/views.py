@@ -9,6 +9,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 import json
 
+# from django.utils import simplejson
+
 from .models import Client, Contract, Order
 
 from component.models import Product
@@ -92,7 +94,7 @@ def contract_view(request, id):
     contract = Contract.objects.filter(pk=id, state=True).first()
     order = Order.objects.filter(contract_id=id).all()
     print('============================================================')
-    
+
     print(order)
 
     print('============================================================')
@@ -181,21 +183,20 @@ def contract_create(request):
 
     return render(request, template_name, contexto)
 
+
 def contract_edit(request, id):
     template_name = 'sales/contract_edit.html'
     contexto = {}
     contract = Contract.objects.filter(state=True).first()
     product = Product.objects.filter(state=True).all()
     order = Order.objects.filter(contract_id=id).all()
-    
 
     if not contract:
         messages.error(request, 'No se encontraron datos')
         return redirect("sales:contract_list")
-        
 
     if request.method == 'GET':
-        contexto = {'contract':contract, 'product':product, 'order':order}
+        contexto = {'contract': contract, 'product': product, 'order': order}
 
     if request.method == 'POST':
         # cat.state=False
@@ -252,31 +253,44 @@ def contract_edit(request, id):
 
         # contexto = {'obj': 'OK'}
         messages.success(request, 'Se creo correctamente ;)')
-        
+
         return redirect("sales:contract_list")
 
     return render(request, template_name, contexto)
 
+
 def order_delete(request, id):
     template_name = 'sales/contract_edit.html'
     contexto = {}
-    contract = Contract.objects.filter(state=True).first()
-    product = Product.objects.filter(state=True).all()
-    order = Order.objects.filter(contract_id=id).all()
+    print(id)
+    id_ctt = Order.objects.get(id=int(id))
+    # product = Product.objects.filter(state=True).all()
+    order = Order.objects.filter(contract_id=id_ctt.contract.id).all()
+    Order.objects.get(id=int(id)).delete()
     
-
     # if not contract:
     #     messages.error(request, 'No se encontraron datos')
     #     return redirect("sales:contract_list")
-        
 
     # if request.method == 'GET':
     #     contexto = {'contract':contract, 'product':product, 'order':order}
 
     if request.method == 'POST':
-       
-        contexto = {'obj': 'OK','id':id}
-        return HttpResponse(contexto)
-        
+        lista_order_json = []
+        for item in order:
+            objeto_order = {}
+            objeto_order["id"] = item.id
+            objeto_order["category"] = item.product.category.name 
+            objeto_order["product"] = item.product.name
+            objeto_order["location"] = item.product.location.name 
+            objeto_order["pass"] = item.pass_contract
+            objeto_order["porcentage"] = item.porcentage_contract
+            objeto_order["description"] = item.description
+            # Se deberia asignar al dictionary todos los atributos que desee enviar en el json.
+            lista_order_json.append(objeto_order)
+        # print(lista_order_json)
+
+        contexto = {'obj':'OK', 'order':lista_order_json}
+        return HttpResponse(json.dumps(contexto), content_type=json)
 
     return render(request, template_name, contexto)

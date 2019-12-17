@@ -154,21 +154,21 @@
                                         </tr>
                                     </thead>
 
-                                    {% for item in order %}
-                                    <tr>
-                                        <td><button type="button" class="btn btn-outline-primary btn-sm"
-                                                onclick="eliminar({{item.id}})">X</button>
-                                            <button type="button" class="btn btn-outline-primary btn-sm"
-                                                onclick="eliminar(' + cont + ');">Edit</button>
-                                        </td>
-                                        <td>{{item.product}}</td>
-                                        <td>{{item.pass_contract}}</td>
-                                        <td>{{item.porcentage_contract}}</td>
-                                        <td>{{item.description}}</td>
-                                    </tr>
-                                    {% endfor %}
-
-                                    <tbody>
+                                    
+                                    <tbody id="tbodyid">
+                                        {% for item in order %}
+                                        <tr>
+                                            <td><button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="eliminar({{item.id}})">X</button>
+                                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="eliminar(' + cont + ');">Edit</button>
+                                            </td>
+                                            <td>{{item.product}}</td>
+                                            <td>{{item.pass_contract}}</td>
+                                            <td>{{item.porcentage_contract}}</td>
+                                            <td>{{item.description}}</td>
+                                        </tr>
+                                        {% endfor %}
 
 
                                     </tbody>
@@ -215,7 +215,7 @@
     // varibles glbales
     var cont = 0;
     var tiempo_default_spot = 30;
-
+    var aux = {};
 
 
 
@@ -295,6 +295,50 @@
 
     // funciones
 
+    function grardar(id) {
+        var data = { id: id };
+        data = JSON.stringify(data);
+        var token = '{{csrf_token}}';
+        // alert(token);
+        // alert(id);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/sales/order/delete/" + id,
+            data: data,
+            success: function (response) {
+                // aux["order"][0].category
+                if (response['obj'] == 'OK') {
+                    mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
+                    $("#tbodyid").empty();
+                    for (let index = 0; index < response["order"].length; index++) {
+                    var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
+                        '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar('+response["order"][index].id+');" >X</button></td>' +
+                        '<td> '+response["order"][index].category +':'+response["order"][index].product+':'+response["order"][index].location+'</td>' +
+                        '<td> '+response["order"][index].pass+'</td>' +
+                        '<td> '+response["order"][index].porcentage+'</td>' +
+                        '<td> '+response["order"][index].description+'</td>' +
+                        '</tr>';
+
+                    $('#detalles').append(fila);
+
+                }
+                } else {
+                    
+                }
+                
+                aux = response;
+                // console.log(aux);
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+
 
 
     function eliminar(id) {
@@ -310,7 +354,28 @@
             url: "/sales/order/delete/" + id,
             data: data,
             success: function (response) {
-                console.log(response);
+                // aux["order"][0].category
+                if (response['obj'] == 'OK') {
+                    mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
+                    $("#tbodyid").empty();
+                    for (let index = 0; index < response["order"].length; index++) {
+                    var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
+                        '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar('+response["order"][index].id+');" >X</button></td>' +
+                        '<td> '+response["order"][index].category +':'+response["order"][index].product+':'+response["order"][index].location+'</td>' +
+                        '<td> '+response["order"][index].pass+'</td>' +
+                        '<td> '+response["order"][index].porcentage+'</td>' +
+                        '<td> '+response["order"][index].description+'</td>' +
+                        '</tr>';
+
+                    $('#detalles').append(fila);
+
+                }
+                } else {
+                    
+                }
+                
+                aux = response;
+                // console.log(aux);
             },
             error: function (jqXHR, textStatus, errorThrow) {
                 console.log(textStatus, errorThrow);
