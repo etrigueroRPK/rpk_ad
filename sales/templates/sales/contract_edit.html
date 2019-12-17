@@ -1,0 +1,359 @@
+{% extends 'base/base.html' %} {% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12">
+
+        <div class="card border-left-primary shadow h-100 py-2">
+
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Edicion de Orden de pauta
+                        </div>
+                        <small class="text-danger">
+                            {% if form.errors %}
+                            {% for field in form %}
+                            {% if field.errors %}
+                            {% for error in field.errors %}
+                            {{ error|escape }}
+                            {% endfor %}
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if form.non_field_errors%}
+                            {% for error in form.non_field_errors %}
+                            {{ error|escape }}
+                            {% endfor %}
+                            {% endif %}
+                            {% endif %}
+                        </small>
+                        <div class="dropdown-divider"></div>
+
+                        <div class="form-group row">
+                            <label for="id_client" class="col-sm-2 col-form-label">Cliente</label>
+                            <div class="col-sm-4 ">
+                                <input type="text" name="client" class="form-control" id="" disabled
+                                    value="{% if contract %}{{contract.client}}{% endif %}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id_start_date" class="col-sm-2 col-form-label">Fecha Inicio</label>
+                            <div class="col-sm-4 ">
+                                <input type="date" name="start_date" class="form-control" id="id_start_date" disabled
+                                    value="{% if contract %}{{contract.start_date|date:'Y-m-d'}}{% endif %}">
+                            </div>
+
+                            <label for="id_end_date" class="col-sm-2 col-form-label">Fecha Final</label>
+                            <div class="col-sm-4 ">
+                                <input type="date" name="end_date" class="form-control" id="id_end_date" disabled
+                                    value="{% if contract %}{{contract.end_date|date:'Y-m-d'}}{% endif %}">
+                            </div>
+
+                        </div>
+                        <div class="dropdown-divider"></div>
+
+
+
+                        <div class="form-group row">
+                            <label for="id_pass_contract" class="col-sm-2 col-form-label">Pases contratados</label>
+                            <div class="col-sm-3 ">
+                                <input type="number" name="pass_contract" class="form-control" id="id_pass_contract"
+                                    value="{% if obj %}{{obj.start_date|date:'Y-m-d'}}{% endif %}">
+
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-check">
+                                    <input type="checkbox" name="state" class="form-check-input" id="check_pass">
+                                    <label class="form-check-label" for="id_state">
+
+                                    </label>
+                                </div>
+
+                            </div>
+
+                            <label for="id_porcentage_contract" class="col-sm-2 col-form-label">Porcentaje
+                                Contratado</label>
+                            <div class="col-sm-3 ">
+                                <input type="number" name="porcentage_contract" class="form-control"
+                                    id="id_porcentage_contract"
+                                    value="{% if obj %}{{obj.end_date|date:'Y-m-d'}}{% endif %}">
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="form-check">
+                                    <input type="checkbox" name="state" class="form-check-input" id="check_porc">
+                                    <label class="form-check-label" for="id_state">
+
+                                    </label>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="dropdown-divider"></div>
+
+
+                        <div class="form-row">
+                            <div class="form-group col-md-8">
+                                <label for="product_id">Producto</label>
+                                <select id="product_id" name="product_id" class="form-control form-control-sm">
+                                    <option selected value="">Choose...</option>
+
+                                    {% for item in product %}
+                                    <option value="{{item.id}}">{{item.category}}:{{item.name}}:{{item.location}} -
+                                        {{item.time_operating}}</option>
+                                    {% endfor %}
+
+
+                                </select>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="pases">Pases</label>
+                                <input id="pases" name="pases" type="number" class="form-control form-control-sm"
+                                    value="">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="porcentaje">Porcentaje</label>
+                                <input id="porcentaje" name="porcentaje" type="number"
+                                    class="form-control form-control-sm">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-8">
+                                <label for="desc">Descripcion</label>
+                                <input id="desc" name="desc" class="form-control form-control-sm"
+                                    placeholder="Ingrese algun comentario">
+
+                            </div>
+                            <div class="form-group col-md-4">
+                                <div class="text-center mt-4 ">
+                                    <button id="enviar_orden" name="enviar_orden" type="button"
+                                        class="btn btn-outline-success btn-sm">Enviar</button>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Listado de productos
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <table class="table table-sm" id="detalles">
+                                    <thead>
+                                        <tr>
+                                            <td></td>
+                                            <td><label for="product_id">Producto</label></td>
+                                            <td>Pases</td>
+                                            <td>Porcentaje</td>
+                                            <td>Descripcion</td>
+                                        </tr>
+                                    </thead>
+
+                                    {% for item in order %}
+                                    <tr>
+                                        <td><button type="button" class="btn btn-outline-primary btn-sm"
+                                                onclick="eliminar({{item.id}})">X</button>
+                                            <button type="button" class="btn btn-outline-primary btn-sm"
+                                                onclick="eliminar(' + cont + ');">Edit</button>
+                                        </td>
+                                        <td>{{item.product}}</td>
+                                        <td>{{item.pass_contract}}</td>
+                                        <td>{{item.porcentage_contract}}</td>
+                                        <td>{{item.description}}</td>
+                                    </tr>
+                                    {% endfor %}
+
+                                    <tbody>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+                        <div class="dropdown-divider"></div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-10 text-center">
+                                <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>
+                                    Guardar</button>
+                                <a href="{% url 'sales:contract_list' %}" class="btn btn-success"><span
+                                        class="fa fa-undo"> Cancelar</span></a>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>
+
+{% endblock %}
+{% block js_page %}
+<script>
+
+    window.onload = function () {
+
+        producto_name = $("#product_id option:selected").text();
+        if (producto_name == 'Chosse...') {
+            producto_name = '';
+        }
+        // console.log(producto_name);
+        document.getElementById("id_porcentage_contract").disabled = true;
+        document.getElementById("check_pass").checked = true;
+
+    }
+
+    // varibles glbales
+    var cont = 0;
+    var tiempo_default_spot = 30;
+
+
+
+
+    // envia a la elemento de la lista a la tabla 
+
+    $("#product_id").change(function () {
+        producto_id = $("#product_id").val();
+        producto_name = $("#product_id option:selected").text();
+
+        horas_defunc = producto_name.split("-")[1];
+        pases = 0;
+        porcentaje = 0.0;
+        // console.log(horas_defunc);
+        if (producto_name == 'Choose...') {
+            producto_name = '';
+            mensaje("escoger un producto con valor", "red");
+            return;
+        }
+        if ($("#check_pass").is(":checked")) {
+            if ($("#id_pass_contract").val() == "") {
+                mensaje("debe ingresar un valor", "red");
+                return;
+            }
+            pases = $("#id_pass_contract").val();
+            porcentaje = calculo_tiempo(horas_defunc, pases, null);
+
+            // console.log(horas_defunc + " | " + pases + " => " + porcentaje)
+        }
+        if ($("#check_porc").is(":checked")) {
+            if ($("#id_porcentage_contract").val() == "") {
+                alert("debe ingresar un valor");
+                return;
+            }
+            porcentaje = $("#id_porcentage_contract").val();
+            // console.log("-------------" + porcentaje);
+            pases = calculo_tiempo(horas_defunc, null, porcentaje);
+
+            console.log(horas_defunc + " | " + pases + " => " + Math.round(porcentaje, -1))
+        }
+
+
+        console.log(producto_id + ' - ' + producto_name);
+
+        $("#pases").val(pases);
+        $("#porcentaje").val(porcentaje);
+
+
+        pases = 0;
+        porcentaje = 0.0;
+
+
+    });
+    // para validar que se encuentre pases o porcentaje colocado
+    $("#check_pass").change(function () {
+
+        // console.log($("#check_pass").is(":checked"));
+        if ($("#check_pass").is(":checked")) {
+            document.getElementById("id_pass_contract").disabled = false;
+            document.getElementById("id_porcentage_contract").disabled = true;
+            document.getElementById("check_porc").checked = false;
+        }
+
+    });
+    $("#check_porc").change(function () {
+
+        // console.log($("#check_porc").is(":checked"));
+        // TODO: vaciar las cajas de los checkboxs
+
+        if ($("#check_porc").is(":checked")) {
+            document.getElementById("id_pass_contract").disabled = true;
+            document.getElementById("id_porcentage_contract").disabled = false;
+            document.getElementById("check_pass").checked = false;
+
+        }
+
+    });
+
+    // funciones
+
+
+
+    function eliminar(id) {
+        var data = { id: id };
+        data = JSON.stringify(data);
+        var token = '{{csrf_token}}';
+        // alert(token);
+        // alert(id);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/sales/order/delete/" + id,
+            data: data,
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+
+    $(".pases_number").change(function () {
+        console.log($(".pases_number").val())
+    });
+
+    function calculo_tiempo(horas, pass = null, porc = null) {
+
+        // console.log(horas, pass, porc);
+        horas_fun = horas.split(":")[0];
+        minutos_fun = horas.split(":")[1];
+
+        total_segundos = (horas_fun * 60 * 60) + (minutos_fun * 60);
+        // console.log(total_segundos);
+        if (pass) {
+            seg_contract = tiempo_default_spot * pass;
+            porcentaje = (seg_contract * 100) / total_segundos;
+            return porcentaje;
+            // console.log(porcentaje);
+
+        }
+        if (porc) {
+            seg_contract = (porc * total_segundos) / 100;
+            pass = seg_contract / tiempo_default_spot;
+            return pass;
+            // console.log(pass);
+
+        }
+
+    }
+
+
+
+
+
+
+</script>
+
+{% endblock %}

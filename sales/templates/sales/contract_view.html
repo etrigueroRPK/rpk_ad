@@ -16,23 +16,6 @@
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Detalle de Orden de pauta
                         </div>
-                        <small class="text-danger">
-                            {% if form.errors %}
-                            {% for field in form %}
-                            {% if field.errors %}
-                            {% for error in field.errors %}
-                            {{ error|escape }}
-                            {% endfor %}
-                            {% endif %}
-                            {% endfor %}
-
-                            {% if form.non_field_errors%}
-                            {% for error in form.non_field_errors %}
-                            {{ error|escape }}
-                            {% endfor %}
-                            {% endif %}
-                            {% endif %}
-                        </small>
                         <div class="dropdown-divider"></div>
 
 
@@ -97,7 +80,7 @@
                                 <div class="col-sm-10">
                                     
                                     <a href="{% url 'sales:contract_list' %}" class="btn btn-success"><span
-                                            class="fa fa-undo"> Cancelar</span></a>
+                                            class="fa fa-undo"> Volver</span></a>
                                 </div>
                             </div>
 

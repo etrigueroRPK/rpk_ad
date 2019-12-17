@@ -48,8 +48,8 @@
                     {% for item in obj %}
                     <tr>
                         <td>{{ item.id }}</td>
-                        <td>{{ item.category }}:{{item.name}}</td>
-                        <td>{{ item.places }}</td>
+                        <td>{{ item.category }}:{{item.name}}:{{item.location}}</td>
+                        <td>{{ item.place }}</td>
                         <td class="text-center">
                             {% if item.img %}
                             <img src="{{ item.img.url }}" class="img-thumbnail" alt="IMG" width="60" height="60">
