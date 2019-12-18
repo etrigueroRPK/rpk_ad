@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'bases',
     'component',
     'sales',
+    'content',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,103 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="col-xl-8 col-md-8 mb-8">
+
+        {% if obj %}
+        <div class="card border-left-warning shadow h-100 py-2">
+            {% else %}
+
+            <div class="card border-left-primary shadow h-100 py-2">
+                {% endif %}
+
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                {% if obj %} Editar {% else %} Nueva {% endif %} Video
+                            </div>
+                            <small class="text-danger">
+                                {% if form.errors %}
+                                {% for field in form %}
+                                {% if field.errors %}
+                                {% for error in field.errors %}
+                                {{ error|escape }}
+                                {% endfor %}
+                                {% endif %}
+                                {% endfor %}
+
+                                {% if form.non_field_errors%}
+                                {% for error in form.non_field_errors %}
+                                {{ error|escape }}
+                                {% endfor %}
+                                {% endif %}
+                                {% endif %}
+                            </small>
+                            <div class="dropdown-divider"></div>
+                            <!--  -->
+                            <!-- <div class="form-group row">
+                                <label for="id_name" class="col-sm-2 col-form-label">Nombre</label>
+                                <div class="col-sm-10 ">
+                                    <input type="text" name="name" maxlength="50" class="form-control" required
+                                        id="id_name" value="{% if obj %} {{obj.name}} {% endif %}">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="id_description" class="col-sm-2 col-form-label">Descripcion</label>
+                                <div class="col-sm-10">
+                                    <input type="" name="description" maxlength="100" class="form-control"
+                                        id="id_description" value="{% if obj %} {{obj.description}} {% endif %}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="id_img" class="col-sm-2 col-form-label">Imagen</label>
+                                <div class="col-sm-10">
+                                    <input type="file" name="img" maxlength="300" class="form-control-file" accept="image/*"
+                                         id="id_img" value="{% if obj %} {{obj.img}} {% endif %}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2">Estado</div>
+                                <div class="col-sm-10">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="state" class="form-check-input" {% if obj.state %} checked {% endif %}
+                                            id="id_state">
+                                        <label class="form-check-label" for="id_state">
+                                            Marcar estado.
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div> -->
+
+
+                            <!--  -->
+
+
+                            {{form.as_p}}
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>
+                                        Guardar</button>
+                                    <a href="{% url 'content:videos_list' %}" class="btn btn-success"><span
+                                            class="fa fa-undo"> Cancelar</span></a>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>
+
+{% endblock %}
+{% block js_page %}
+{% endblock %}
