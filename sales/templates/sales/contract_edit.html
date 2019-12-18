@@ -42,13 +42,13 @@
                         <div class="form-group row">
                             <label for="id_start_date" class="col-sm-2 col-form-label">Fecha Inicio</label>
                             <div class="col-sm-4 ">
-                                <input type="date" name="start_date" class="form-control" id="id_start_date" disabled
+                                <input type="date" name="start_date" class="form-control" id="id_start_date" 
                                     value="{% if contract %}{{contract.start_date|date:'Y-m-d'}}{% endif %}">
                             </div>
 
                             <label for="id_end_date" class="col-sm-2 col-form-label">Fecha Final</label>
                             <div class="col-sm-4 ">
-                                <input type="date" name="end_date" class="form-control" id="id_end_date" disabled
+                                <input type="date" name="end_date" class="form-control" id="id_end_date" 
                                     value="{% if contract %}{{contract.end_date|date:'Y-m-d'}}{% endif %}">
                             </div>
 
@@ -61,7 +61,7 @@
                             <label for="id_pass_contract" class="col-sm-2 col-form-label">Pases contratados</label>
                             <div class="col-sm-3 ">
                                 <input type="number" name="pass_contract" class="form-control" id="id_pass_contract"
-                                    value="{% if obj %}{{obj.start_date|date:'Y-m-d'}}{% endif %}">
+                                    value="">
 
                             </div>
                             <div class="col-sm-1">
@@ -79,7 +79,7 @@
                             <div class="col-sm-3 ">
                                 <input type="number" name="porcentage_contract" class="form-control"
                                     id="id_porcentage_contract"
-                                    value="{% if obj %}{{obj.end_date|date:'Y-m-d'}}{% endif %}">
+                                    value="">
                             </div>
                             <div class="col-sm-1">
                                 <div class="form-check">
@@ -123,15 +123,15 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-8">
-                                <label for="desc">Descripcion</label>
-                                <input id="desc" name="desc" class="form-control form-control-sm"
+                                <label for="description">Descripcion</label>
+                                <input id="description" name="description" class="form-control form-control-sm"
                                     placeholder="Ingrese algun comentario">
 
                             </div>
                             <div class="form-group col-md-4">
                                 <div class="text-center mt-4 ">
                                     <button id="enviar_orden" name="enviar_orden" type="button"
-                                        class="btn btn-outline-success btn-sm">Enviar</button>
+                                        class="btn btn-outline-success btn-sm" onclick="guardar({{contract.id}})">Enviar</button>
 
                                 </div>
                             </div>
@@ -154,7 +154,7 @@
                                         </tr>
                                     </thead>
 
-                                    
+
                                     <tbody id="tbodyid">
                                         {% for item in order %}
                                         <tr>
@@ -237,7 +237,8 @@
         if ($("#check_pass").is(":checked")) {
             if ($("#id_pass_contract").val() == "") {
                 mensaje("debe ingresar un valor", "red");
-                return;
+                $("#product_id").val('');
+                return ;
             }
             pases = $("#id_pass_contract").val();
             porcentaje = calculo_tiempo(horas_defunc, pases, null);
@@ -247,6 +248,7 @@
         if ($("#check_porc").is(":checked")) {
             if ($("#id_porcentage_contract").val() == "") {
                 alert("debe ingresar un valor");
+                $("#product_id").val('');
                 return;
             }
             porcentaje = $("#id_porcentage_contract").val();
@@ -262,10 +264,11 @@
         $("#pases").val(pases);
         $("#porcentaje").val(porcentaje);
 
-
         pases = 0;
         porcentaje = 0.0;
+        
 
+        
 
     });
     // para validar que se encuentre pases o porcentaje colocado
@@ -275,6 +278,8 @@
         if ($("#check_pass").is(":checked")) {
             document.getElementById("id_pass_contract").disabled = false;
             document.getElementById("id_porcentage_contract").disabled = true;
+            $("#id_porcentage_contract").val('');
+            $("#id_pass_contract").focus();
             document.getElementById("check_porc").checked = false;
         }
 
@@ -287,6 +292,8 @@
         if ($("#check_porc").is(":checked")) {
             document.getElementById("id_pass_contract").disabled = true;
             document.getElementById("id_porcentage_contract").disabled = false;
+            $("#id_pass_contract").val('');
+            $("#id_porcentage_contract").focus();
             document.getElementById("check_pass").checked = false;
 
         }
@@ -295,41 +302,53 @@
 
     // funciones
 
-    function grardar(id) {
-        var data = { id: id };
-        data = JSON.stringify(data);
+    function guardar(id_contract) {
+        
+            id_product = $("#product_id").val();
+            pases = $("#pases").val();
+            porcentage = $("#porcentaje").val();
+            description = $("#description").val();
+        var data = {
+            id_contract: id_contract,
+            id_product: id_product,
+            pases: pases,
+            porcentaje: porcentage,
+            description: description
+        };
+        // data = JSON.stringify(data);
         var token = '{{csrf_token}}';
         // alert(token);
         // alert(id);
+        console.log(data);
 
         $.ajax({
             headers: { "X-CSRFToken": token },
             type: "POST",
-            url: "/sales/order/delete/" + id,
+            url: "/sales/order/new",
             data: data,
             success: function (response) {
                 // aux["order"][0].category
                 if (response['obj'] == 'OK') {
-                    mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
+                    // mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
                     $("#tbodyid").empty();
                     for (let index = 0; index < response["order"].length; index++) {
-                    var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
-                        '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar('+response["order"][index].id+');" >X</button></td>' +
-                        '<td> '+response["order"][index].category +':'+response["order"][index].product+':'+response["order"][index].location+'</td>' +
-                        '<td> '+response["order"][index].pass+'</td>' +
-                        '<td> '+response["order"][index].porcentage+'</td>' +
-                        '<td> '+response["order"][index].description+'</td>' +
-                        '</tr>';
+                        var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
+                            '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar(' + response["order"][index].id + ');" >X</button></td>' +
+                            '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +
+                            '<td> ' + response["order"][index].pass + '</td>' +
+                            '<td> ' + response["order"][index].porcentage + '</td>' +
+                            '<td> ' + response["order"][index].description + '</td>' +
+                            '</tr>';
 
-                    $('#detalles').append(fila);
+                        $('#detalles').append(fila);
 
-                }
+                    }
                 } else {
-                    
+
                 }
-                
+
                 aux = response;
-                // console.log(aux);
+                 console.log(aux);
             },
             error: function (jqXHR, textStatus, errorThrow) {
                 console.log(textStatus, errorThrow);
@@ -337,6 +356,13 @@
                 cerrar_modal();
             }
         });
+        $("#product_id").val('');
+        $("#pases").val('');
+        $("#porcentaje").val('');
+        $("#description").val('');
+        
+
+        
     }
 
 
@@ -359,21 +385,21 @@
                     mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
                     $("#tbodyid").empty();
                     for (let index = 0; index < response["order"].length; index++) {
-                    var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
-                        '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar('+response["order"][index].id+');" >X</button></td>' +
-                        '<td> '+response["order"][index].category +':'+response["order"][index].product+':'+response["order"][index].location+'</td>' +
-                        '<td> '+response["order"][index].pass+'</td>' +
-                        '<td> '+response["order"][index].porcentage+'</td>' +
-                        '<td> '+response["order"][index].description+'</td>' +
-                        '</tr>';
+                        var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
+                            '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar(' + response["order"][index].id + ');" >X</button></td>' +
+                            '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +
+                            '<td> ' + response["order"][index].pass + '</td>' +
+                            '<td> ' + response["order"][index].porcentage + '</td>' +
+                            '<td> ' + response["order"][index].description + '</td>' +
+                            '</tr>';
 
-                    $('#detalles').append(fila);
+                        $('#detalles').append(fila);
 
-                }
+                    }
                 } else {
-                    
+
                 }
-                
+
                 aux = response;
                 // console.log(aux);
             },

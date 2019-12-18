@@ -187,7 +187,7 @@ def contract_create(request):
 def contract_edit(request, id):
     template_name = 'sales/contract_edit.html'
     contexto = {}
-    contract = Contract.objects.filter(state=True).first()
+    contract = Contract.objects.get(id=id)
     product = Product.objects.filter(state=True).all()
     order = Order.objects.filter(contract_id=id).all()
 
@@ -199,60 +199,15 @@ def contract_edit(request, id):
         contexto = {'contract': contract, 'product': product, 'order': order}
 
     if request.method == 'POST':
-        # cat.state=False
-        # cat.save()
-        # contract = Contract
+        
+        contract.start_date=request.POST.get('start_date')
+        contract.end_date=request.POST.get('end_date')
+        
+        contract.save()
 
-        # client_id = int(request.POST.get("client"))
-        # start_date = request.POST.get("start_date")
-        # end_date = request.POST.get("end_date")
-        # if start_date == "":
-        #     start_date = None
-        # if end_date == "":
-        #     end_date = None
-
-        # # TODO: limpiar o borrar comentario de lineas con codigo
-
-        # # pass_contract = request.POST.get("pass_contract")
-        # # porcentage_contract = request.POST.get("porcentage_contract")
-
-        # product_list = request.POST.getlist("products[]")
-        # pass_list = request.POST.getlist("pass[]")
-        # porcentage_list = request.POST.getlist("porcentage[]")
-
-        # client_c = Client.objects.get(pk=client_id)
-
-        # contract = Contract(
-        #     client=client_c,
-        #     start_date=start_date,
-        #     end_date=end_date,
-        #     state=1,
-        #     user_created=request.user
-        # )
-        # contract.save()
-
-        # # contract_id=contract.id #no sirve
-        # aux = 0
-        # for item in product_list:
-        #     print('============================================================')
-        #     print(porcentage_list)
-
-        #     print('============================================================')
-        #     product = Product.objects.get(pk=int(item))
-        #     order = Order
-        #     order = Order(
-        #         contract=contract,
-        #         product=product,
-        #         pass_contract=pass_list[aux],
-        #         porcentage_contract=porcentage_list[aux],
-        #         state=1,
-        #         user_created=request.user
-        #     )
-        #     order.save()
-        #     aux += 1
-
+        contract = Contract
         # contexto = {'obj': 'OK'}
-        messages.success(request, 'Se creo correctamente ;)')
+        messages.success(request, 'Se modifico correctamente ;)')
 
         return redirect("sales:contract_list")
 
@@ -268,12 +223,6 @@ def order_delete(request, id):
     order = Order.objects.filter(contract_id=id_ctt.contract.id).all()
     Order.objects.get(id=int(id)).delete()
     
-    # if not contract:
-    #     messages.error(request, 'No se encontraron datos')
-    #     return redirect("sales:contract_list")
-
-    # if request.method == 'GET':
-    #     contexto = {'contract':contract, 'product':product, 'order':order}
 
     if request.method == 'POST':
         lista_order_json = []
@@ -293,4 +242,49 @@ def order_delete(request, id):
         contexto = {'obj':'OK', 'order':lista_order_json}
         return HttpResponse(json.dumps(contexto), content_type=json)
 
-    return render(request, template_name, contexto)
+    # return render(request, template_name, contexto)
+
+
+def order_new(request):
+    template_name = 'sales/contract_edit.html'
+    contexto = {}
+
+    if request.method == 'POST':
+        id_contract = request.POST.get('id_contract')
+        id_product = request.POST.get('id_product')
+        pases = request.POST.get('pases')
+        porcentaje = request.POST.get('porcentaje')
+        desc = request.POST.get('description')
+
+        order = Order
+        order = Order(
+            contract_id=id_contract,
+            product_id=id_product,
+            pass_contract=pases,
+            porcentage_contract=porcentaje,
+            description=desc,
+            state=True,
+            user_created=request.user
+        )
+        order.save()
+
+        order = Order.objects.filter(contract_id=id_contract).all()
+        
+        lista_order_json = []
+        for item in order:
+            objeto_order = {}
+            objeto_order["id"] = item.id
+            objeto_order["category"] = item.product.category.name 
+            objeto_order["product"] = item.product.name
+            objeto_order["location"] = item.product.location.name 
+            objeto_order["pass"] = item.pass_contract
+            objeto_order["porcentage"] = item.porcentage_contract
+            objeto_order["description"] = item.description
+            # Se deberia asignar al dictionary todos los atributos que desee enviar en el json.
+            lista_order_json.append(objeto_order)
+        # print(lista_order_json)
+
+        contexto = {'obj':"OK",'order':lista_order_json}
+        return HttpResponse(json.dumps(contexto), content_type=json)
+
+    # return render(request, template_name, contexto)
