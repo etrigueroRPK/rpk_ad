@@ -36,9 +36,12 @@
                         <th>Nombre</th>
                         <th>Lugar</th>
                         <th>Imagen</th>
+                        <th>H inicio</th>
+                        <th>H final</th>
+                        <th>Horas fun</th>
                         <th>Estado</th>
-                        <th>F. Creacion</th>
-                        <th>F. Modificacion</th>
+                        <!-- <th>F. Creacion</th>
+                        <th>F. Modificacion</th> -->
                         <th>UC</th>
                         <th>UM</th>
                         <th class="all">Acciones</th>
@@ -56,9 +59,12 @@
 
                             {% endif %}
                         </td>
+                        <td>{{ item.start_time }}</td>
+                        <td>{{ item.end_time }}</td>
+                        <td>{{ item.time_operating }}</td>
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
-                        <td>{{ item.created_at}}</td>
-                        <td>{{ item.updated_at}}</td>
+                        <!-- <td>{{ item.created_at}}</td>
+                        <td>{{ item.updated_at}}</td> -->
                         <td>{{ item.user_created}}</td>
                         <td>{{ item.user_updated}}</td>
                         <!-- para fecha formateada |date: "d/m/Y H:i:s" -->

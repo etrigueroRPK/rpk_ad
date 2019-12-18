@@ -24,7 +24,7 @@ class Location(ClassModel):
         return '{}'.format(self.name)
 
 class Product(ClassModel):
-    name = models.CharField(max_length=50, help_text='Name location', unique=True)
+    name = models.CharField(max_length=50, help_text='Name location', unique=False)
     place = models.CharField(max_length=100)
     img = models.ImageField(upload_to='product', null=True, blank=True)
     start_date = models.DateField(auto_now=False, null=True, blank=True)
@@ -36,4 +36,4 @@ class Product(ClassModel):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '{}:{}:{}'.format(self.category.name, self.name, self.location.name)
+        return '{} : {} : {}'.format(self.location.name, self.category.name, self.name)
