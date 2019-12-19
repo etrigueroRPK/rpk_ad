@@ -22,6 +22,8 @@ class Contract(ClassModel):
     def __str__(self):
         return '{}:{}:{}'.format(self.client.name,self.start_date,self.end_date)
 
+    
+
 class Order(ClassModel):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -32,3 +34,5 @@ class Order(ClassModel):
 
     def __str__(self):
         return '{}'.format(self.description)
+
+    

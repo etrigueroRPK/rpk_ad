@@ -114,7 +114,8 @@
                                         <option selected value="">Choose...</option>
 
                                         {% for item in product %}
-                                        <option value="{{item.id}}">{{item.location}} : {{item.category}} : {{item.name}} - {{item.time_operating}}</option>
+                                        <option value="{{item.id}}">{{item.location}} : {{item.category}} : {{item.name}} - {{item.time_operating_valid}}
+                                        </option>
                                         {% endfor %}
 
 
@@ -189,6 +190,9 @@
         producto_name = $("#product_id option:selected").text();
 
         horas_defunc = producto_name.split("-")[1];
+        // if (horas_defunc == '00:00'){
+        //     horas_defunc = '24:00'
+        // }
         pases = 0;
         porcentaje = 0.0;
         console.log(horas_defunc);

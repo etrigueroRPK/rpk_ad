@@ -1,5 +1,7 @@
 from django.db import models
 
+from datetime import time
+
 from bases.models import ClassModel
 # Create your models here.
 
@@ -37,3 +39,11 @@ class Product(ClassModel):
 
     def __str__(self):
         return '{} : {} : {}'.format(self.location.name, self.category.name, self.name)
+    
+    def time_operating_valid(self):
+         
+        hora = time(0,0,0)
+        if self.time_operating == hora:
+            return '24:00'
+
+        return self.time_operating
