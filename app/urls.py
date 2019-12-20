@@ -12,8 +12,11 @@ urlpatterns = [
 
     # rutas del modulo ventas
     path('sales/',include(('sales.urls','sales'), namespace='sales')),
-
+    # rutas para ocontenidos y videos pautas
     path('content/',include(('content.urls','content'), namespace='content')),
+    # ruta para los reportes y envio de mails
+    path('report/',include(('report.urls','report'), namespace='report')),
+
 
 
     path('admin/', admin.site.urls),

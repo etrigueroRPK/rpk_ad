@@ -1,11 +1,7 @@
 {% extends 'base/base.html' %}
 
 {% block page_content %}
-{% for item in obj2 %}
-{{item.product}}
 
-{% endfor %}
-{{obj3}}
 <div class="container-fluid">
 
     <!-- Page Heading -->
@@ -184,12 +180,25 @@
                 <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
             </div>
             <div class="card-body">
-                {{obj2}}
+                <!-- TODO: solucionar la forma de imprimir el punto flotante. Porque cuando se imprime float directo imprime con coma -->
                 {% for item in obj2 %}
-                {{item.total}}
-                <h4 class="small font-weight-bold">Server Migration <span class="float-right">20%</span></h4>
+
+                <h4 class="small font-weight-bold">
+                  {% for prd in obj3 %}
+                  <!-- {{prd.id}}:{{item.product}} -->
+                    {% if prd.id|stringformat:'s' == item.product|stringformat:'s' %}
+                    {{prd.location.name}} : {{prd.category.name}}  : {{prd.name}}  
+                    
+                    {% endif %}
+                    
+                   
+                      
+                      
+                  {% endfor %}
+                  <span class="float-right">{{item.total|floatformat:-3}}%</span>
+                </h4>
                 <div class="progress mb-4">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="15"
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{item.total}}%" aria-valuenow="15"
                         aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                

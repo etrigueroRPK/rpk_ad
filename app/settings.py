@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'component',
     'sales',
     'content',
+    'report'
 ]
 
 MIDDLEWARE = [
@@ -139,3 +140,12 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# configuraciones para envio de mails
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'edmundotriguero@gmail.com'
+EMAIL_HOST_PASSWORD = 'camilagael2015'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False

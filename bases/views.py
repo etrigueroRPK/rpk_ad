@@ -36,11 +36,17 @@ def home(request):
     products = Product.objects.all()
     contracts_count = Contract.objects.count()
     general_porcentaje = Order.objects.values('product').annotate(total=Sum('porcentage_contract')).order_by('total')
-    print(general_porcentaje)
-    for c in general_porcentaje:
-        print(c)
 
-    contexto = {'obj':contracts_count,'obj2':general_porcentaje,'obj3':products}
+    lista_por = []
+    for item in general_porcentaje:
+        objeto_order = {}
+        objeto_order["product"] = str(item['product'])
+        objeto_order["total"] = str(item['total'])
+           
+            # Se deberia asignar al dictionary todos los atributos que desee enviar en el json.
+        lista_por.append(objeto_order)
+
+    contexto = {'obj':contracts_count,'obj2':lista_por,'obj3':products}
     return render(request, template_name, contexto)
 
 # class Home(LoginRequiredMixin  ,generic.ListView):
