@@ -214,6 +214,32 @@ def contract_edit(request, id):
     return render(request, template_name, contexto)
 
 
+
+def contract_delete(request, id):
+    template_name = 'sales/contract_delete.html'
+    contexto = {}
+    cat = Contract.objects.filter(pk=id).first()
+
+    if not cat:
+        return HttpResponse('orden no existe' + str(id))
+
+    if request.method == 'GET':
+        contexto = {'obj': cat}
+
+    if request.method == 'POST':
+        cat.state = False
+        cat.save()
+        contexto = {'obj': 'OK'}
+        return HttpResponse('orden se desactivo')
+
+    return render(request, template_name, contexto)
+
+
+# ====================================================================
+# vistas necesarias para crear orden de trabajo
+# ====================================================================
+
+
 def order_delete(request, id):
     template_name = 'sales/contract_edit.html'
     contexto = {}
