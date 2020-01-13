@@ -12,6 +12,13 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Edicion de Orden de pauta
+
+                            <div class=" text-right ">
+
+                                <label for="estado" >Estado </label>
+                                <input name="estado"  id="estado"  type="checkbox" >
+
+                            </div>
                         </div>
                         <small class="text-danger">
                             {% if form.errors %}
@@ -42,13 +49,13 @@
                         <div class="form-group row">
                             <label for="id_start_date" class="col-sm-2 col-form-label">Fecha Inicio</label>
                             <div class="col-sm-4 ">
-                                <input type="date" name="start_date" class="form-control" id="id_start_date" 
+                                <input type="date" name="start_date" class="form-control" id="id_start_date"
                                     value="{% if contract %}{{contract.start_date|date:'Y-m-d'}}{% endif %}">
                             </div>
 
                             <label for="id_end_date" class="col-sm-2 col-form-label">Fecha Final</label>
                             <div class="col-sm-4 ">
-                                <input type="date" name="end_date" class="form-control" id="id_end_date" 
+                                <input type="date" name="end_date" class="form-control" id="id_end_date"
                                     value="{% if contract %}{{contract.end_date|date:'Y-m-d'}}{% endif %}">
                             </div>
 
@@ -78,8 +85,7 @@
                                 Contratado</label>
                             <div class="col-sm-3 ">
                                 <input type="number" name="porcentage_contract" class="form-control"
-                                    id="id_porcentage_contract"
-                                    value="">
+                                    id="id_porcentage_contract" value="">
                             </div>
                             <div class="col-sm-1">
                                 <div class="form-check">
@@ -131,7 +137,8 @@
                             <div class="form-group col-md-4">
                                 <div class="text-center mt-4 ">
                                     <button id="enviar_orden" name="enviar_orden" type="button"
-                                        class="btn btn-outline-success btn-sm" onclick="guardar({{contract.id}})">Enviar</button>
+                                        class="btn btn-outline-success btn-sm"
+                                        onclick="guardar({{contract.id}})">Enviar</button>
 
                                 </div>
                             </div>
@@ -184,7 +191,8 @@
                                 <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>
                                     Guardar</button>
                                 <a href="{% url 'sales:contract_list' %}" class="btn btn-success"><span
-                                        class="fa fa-undo"> Cancelar</span></a>
+                                        class="fa fa-undo">
+                                        Cancelar</span></a>
                             </div>
                         </div>
 
@@ -238,7 +246,7 @@
             if ($("#id_pass_contract").val() == "") {
                 mensaje("debe ingresar un valor", "red");
                 $("#product_id").val('');
-                return ;
+                return;
             }
             pases = $("#id_pass_contract").val();
             porcentaje = calculo_tiempo(horas_defunc, pases, null);
@@ -266,9 +274,9 @@
 
         pases = 0;
         porcentaje = 0.0;
-        
 
-        
+
+
 
     });
     // para validar que se encuentre pases o porcentaje colocado
@@ -303,11 +311,11 @@
     // funciones
 
     function guardar(id_contract) {
-        
-            id_product = $("#product_id").val();
-            pases = $("#pases").val();
-            porcentage = $("#porcentaje").val();
-            description = $("#description").val();
+
+        id_product = $("#product_id").val();
+        pases = $("#pases").val();
+        porcentage = $("#porcentaje").val();
+        description = $("#description").val();
         var data = {
             id_contract: id_contract,
             id_product: id_product,
@@ -348,7 +356,7 @@
                 }
 
                 aux = response;
-                 console.log(aux);
+                console.log(aux);
             },
             error: function (jqXHR, textStatus, errorThrow) {
                 console.log(textStatus, errorThrow);
@@ -360,9 +368,9 @@
         $("#pases").val('');
         $("#porcentaje").val('');
         $("#description").val('');
-        
 
-        
+
+
     }
 
 

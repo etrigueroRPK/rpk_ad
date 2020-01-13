@@ -199,9 +199,25 @@ def contract_edit(request, id):
         contexto = {'contract': contract, 'product': product, 'order': order}
 
     if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        estado = request.POST.get('estado')
         
-        contract.start_date=request.POST.get('start_date')
-        contract.end_date=request.POST.get('end_date')
+        print(estado)
+        
+        if start_date == '':
+            start_date = '0001-01-01'
+        
+        if end_date == '':
+            end_date = '0001-01-01'
+
+        if estado == 'on':
+            estado = True
+        else:
+            estado = False
+        contract.start_date=start_date
+        contract.end_date=end_date
+        contract.state=estado
         
         contract.save()
 
@@ -225,6 +241,7 @@ def contract_delete(request, id):
 
     if request.method == 'GET':
         contexto = {'obj': cat}
+        
 
     if request.method == 'POST':
         cat.state = False

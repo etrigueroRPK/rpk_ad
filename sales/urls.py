@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import  ContractList, ClientView, ClientNew, ClientEdit, client_delete, \
-    ContractList,contract_view,  contract_create, contract_edit, \
+    ContractList,contract_view,  contract_create, contract_edit, contract_delete, \
     order_delete, order_new
 
 urlpatterns = [
@@ -14,6 +14,8 @@ urlpatterns = [
     path('contract/view/<int:id>',contract_view, name='contract_view'),
     path('contract/new/',contract_create, name='contract_new'),
     path('contract/edit/<int:id>',contract_edit, name='contract_edit'),
+    path('contract/delete/<int:id>',contract_delete, name='contract_delete'),
+
 
     path('order/new',order_new, name='order_new'),
     path('order/delete/<int:id>',order_delete, name='order_delete'),

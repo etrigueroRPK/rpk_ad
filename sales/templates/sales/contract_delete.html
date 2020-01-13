@@ -54,7 +54,7 @@ $(document).ready(function(){
         // alert("provando");
 
         var id = {{ obj.id }};
-        var template = "{% url 'sales:client_delete' obj.id %}";
+        var template = "{% url 'sales:contract_delete' obj.id %}";
         var data = {"id":id};
         data = JSON.stringify(data);
 

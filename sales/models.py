@@ -24,6 +24,8 @@ class Contract(ClassModel):
 
     
 
+    
+
 class Order(ClassModel):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
