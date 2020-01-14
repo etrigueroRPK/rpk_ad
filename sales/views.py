@@ -232,6 +232,7 @@ def contract_edit(request, id):
 
 
 def contract_delete(request, id):
+    # TODO: Inabilitar las ordenes que se asocian al contrato para que no lo muestre en los reportes. 
     template_name = 'sales/contract_delete.html'
     contexto = {}
     cat = Contract.objects.filter(pk=id).first()

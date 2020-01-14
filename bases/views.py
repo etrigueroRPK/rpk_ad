@@ -33,10 +33,10 @@ def home(request):
     template_name = 'bases/home.html'
     contexto= {}
 
-    products = Product.objects.all()
-    contracts_count = Contract.objects.count()
-    general_porcentaje = Order.objects.values('product').annotate(total=Sum('porcentage_contract')).order_by('total')
-
+    products = Product.objects.filter(state=True).all()
+    contracts_count = Contract.objects.filter(state=True).count()
+    general_porcentaje = Order.objects.values('product').annotate(total=Sum('porcentage_contract')).order_by('total').filter(state=True)
+    print(general_porcentaje)
     lista_por = []
     for item in general_porcentaje:
         objeto_order = {}

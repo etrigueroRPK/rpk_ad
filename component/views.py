@@ -197,6 +197,8 @@ class ProductEdit(LoginRequiredMixin, generic.UpdateView):
 
 
 def product_delete(request, id):
+
+    # TODO: Inabilitar las ordenes que se asocian al producto para que no lo muestre en los reportes.
     template_name = 'component/product_delete.html'
     contexto = {}
     loc = Product.objects.filter(pk=id).first()
