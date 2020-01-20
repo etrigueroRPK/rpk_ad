@@ -24,6 +24,8 @@
   <link href="{% static 'base/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
   <link href="{% static 'base/vendor/jquery-confirm/jquery-confirm.min.css' %}" rel="stylesheet">
   <link href="{% static 'base/css/bootstrap4-toggle.min.css' %}" rel="stylesheet">
+  <!-- buscador en select -->
+  <link href="{% static 'base/css/select2.min.css' %}" rel="stylesheet">
 
 </head>
 <!-- agregar la siguete linea para que inicie el menu minimizado -->
@@ -62,7 +64,13 @@
 
       <!-- Divider -->
       <hr class="sidebar-divider">
-
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fas fa-file-video"></i>
+          <span>Generar orden de pauta</span></a>
+      </li>
+      <!-- Divider -->
+      <hr class="sidebar-divider">
       <!-- Heading -->
       <div class="sidebar-heading">
         Interface
@@ -259,7 +267,7 @@
 
       </div>
       <!-- End of Main Content -->
-
+      
       <!-- Footer -->
       {% block footer %}
       <footer class="sticky-footer bg-white">
@@ -331,11 +339,12 @@
   <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
   <!-- <script src="{% static 'base/js/bootstrap4-toggle.min.js' %}"></script> -->
 
-  <!-- jquery confirm -->
+  <!-- jquery confirm  modales -->
 
   <script src="{% static 'base/vendor/jquery-confirm/jquery-confirm.min.js' %}"></script>
 
-
+  <!-- juqery para select2  -->
+  <script src="{% static 'base/js/select2.min.js' %}"></script>
 
 
 

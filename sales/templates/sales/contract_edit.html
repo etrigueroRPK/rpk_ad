@@ -15,8 +15,15 @@
 
                             <div class=" text-right ">
 
-                                <label for="estado" >Estado </label>
-                                <input name="estado"  id="estado"  type="checkbox" >
+                                <label for="estado">Estado </label>
+                                
+                                {% if contract.state %}
+                                <input name="estado" id="estado" type="checkbox" checked>
+                                {% else %}
+                                <input name="estado" id="estado" type="checkbox">
+
+                                {% endif %}
+                                    
 
                             </div>
                         </div>
@@ -109,8 +116,8 @@
                                     <option selected value="">Choose...</option>
 
                                     {% for item in product %}
-                                    <option value="{{item.id}}">{{item.category}}:{{item.name}}:{{item.location}} -
-                                        {{item.time_operating}}</option>
+                                    <option value="{{item.id}}">{{item.category}}:{{item.location}}:{{item.name}} -
+                                        {{item.time_operating_valid}}</option>
                                     {% endfor %}
 
 
@@ -131,7 +138,7 @@
                             <div class="form-group col-md-8">
                                 <label for="description">Descripcion</label>
                                 <input id="description" name="description" class="form-control form-control-sm"
-                                    placeholder="Ingrese algun comentario">
+                                    placeholder="Ingrese algun comentario" autocomplete="off">
 
                             </div>
                             <div class="form-group col-md-4">
@@ -153,11 +160,12 @@
                                 <table class="table table-sm" id="detalles">
                                     <thead>
                                         <tr>
-                                            <td></td>
                                             <td><label for="product_id">Producto</label></td>
                                             <td>Pases</td>
                                             <td>Porcentaje</td>
                                             <td>Descripcion</td>
+                                            <td>Estado</td>
+                                            <td>Acciones</td>
                                         </tr>
                                     </thead>
 
@@ -165,15 +173,27 @@
                                     <tbody id="tbodyid">
                                         {% for item in order %}
                                         <tr>
-                                            <td><button type="button" class="btn btn-outline-primary btn-sm"
-                                                    onclick="eliminar({{item.id}})">X</button>
-                                                <button type="button" class="btn btn-outline-primary btn-sm"
-                                                    onclick="eliminar(' + cont + ');">Edit</button>
-                                            </td>
                                             <td>{{item.product}}</td>
                                             <td>{{item.pass_contract}}</td>
                                             <td>{{item.porcentage_contract}}</td>
                                             <td>{{item.description}}</td>
+                                            <td>
+                                                {% if item.state == True %}
+                                                <button type="button" class="btn btn-outline-success btn-sm">
+                                                    <i class="far fa-check-circle"></i>
+                                                </button>
+                                                {% else %}
+                                                <button type="button" class="btn btn-outline-danger btn-sm">
+                                                    <i class="far fa-times-circle"></i>
+                                                </button>
+                                                {% endif %}
+                                            </td>
+                                            <td><button type="button" class="btn btn-outline-danger btn-sm"
+                                                    onclick="eliminar({{item.id}})">X</button>
+                                                <!-- <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="eliminar(' + cont + ');">Edit</button> -->
+
+                                            </td>
                                         </tr>
                                         {% endfor %}
 
@@ -204,6 +224,12 @@
         </div>
 </form>
 
+<div>
+    <p class="font-weight-lighter">El tiempo del spot por defecto es considerado de 30 segundos, para el calculo de pases y porcentaje. <br/> 
+    El tiempo de spot se podra especificar en la seccion de "AD contenido". 
+    </p>
+</div>
+
 {% endblock %}
 {% block js_page %}
 <script>
@@ -217,6 +243,9 @@
         // console.log(producto_name);
         document.getElementById("id_porcentage_contract").disabled = true;
         document.getElementById("check_pass").checked = true;
+
+
+        $('#product_id').select2({placeholder:"Seleccione", allowClear:true});
 
     }
 
@@ -244,8 +273,9 @@
         }
         if ($("#check_pass").is(":checked")) {
             if ($("#id_pass_contract").val() == "") {
-                mensaje("debe ingresar un valor", "red");
+                mensaje("Debe ingresar un valor en: pases o porcentaje valido!!!", "red");
                 $("#product_id").val('');
+                // $("#id_pass_contract").focus();
                 return;
             }
             pases = $("#id_pass_contract").val();
@@ -257,6 +287,7 @@
             if ($("#id_porcentage_contract").val() == "") {
                 alert("debe ingresar un valor");
                 $("#product_id").val('');
+
                 return;
             }
             porcentaje = $("#id_porcentage_contract").val();
@@ -340,12 +371,18 @@
                     // mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
                     $("#tbodyid").empty();
                     for (let index = 0; index < response["order"].length; index++) {
+                        var estado = '<button type="button" class="btn btn-outline-danger btn-sm"><i class="far fa-times-circle"></i></button>';
+                        if (response["order"][index].estado == true)
+                        {
+                            estado = '<button type="button" class="btn btn-outline-success btn-sm"><i class="far fa-check-circle"></i></button>';
+                        }
                         var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
-                            '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar(' + response["order"][index].id + ');" >X</button></td>' +
                             '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +
                             '<td> ' + response["order"][index].pass + '</td>' +
                             '<td> ' + response["order"][index].porcentage + '</td>' +
                             '<td> ' + response["order"][index].description + '</td>' +
+                            '<td> ' + estado + '</td>' +
+                            '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar(' + response["order"][index].id + ');" >X</button></td>' +
                             '</tr>';
 
                         $('#detalles').append(fila);
@@ -393,12 +430,18 @@
                     mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
                     $("#tbodyid").empty();
                     for (let index = 0; index < response["order"].length; index++) {
+                        var estado = '<button type="button" class="btn btn-outline-danger btn-sm"><i class="far fa-times-circle"></i></button>';
+                        if (response["order"][index].estado == true)
+                        {
+                            estado = '<button type="button" class="btn btn-outline-success btn-sm"><i class="far fa-check-circle"></i></button>';
+                        }
                         var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
-                            '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar(' + response["order"][index].id + ');" >X</button></td>' +
                             '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +
                             '<td> ' + response["order"][index].pass + '</td>' +
                             '<td> ' + response["order"][index].porcentage + '</td>' +
                             '<td> ' + response["order"][index].description + '</td>' +
+                            '<td> ' + estado + '</td>' +
+                            '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar(' + response["order"][index].id + ');" >X</button></td>' +
                             '</tr>';
 
                         $('#detalles').append(fila);
@@ -448,7 +491,12 @@
 
     }
 
-
+    
+    
+       
+        
+    
+</script>
 
 
 

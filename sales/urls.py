@@ -19,9 +19,5 @@ urlpatterns = [
 
     path('order/new',order_new, name='order_new'),
     path('order/delete/<int:id>',order_delete, name='order_delete'),
-
-
-
-
     
 ]

@@ -29,7 +29,7 @@
         {% else %}
         <div class="table-responsive">
 
-            <table class="table table-striped table-hover table-bordered table-sm">
+            <table class="table table-striped table-hover table-bordered table-sm" data-page-length='25'>
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -51,7 +51,7 @@
                     {% for item in obj %}
                     <tr>
                         <td>{{ item.id }}</td>
-                        <td>{{ item.category }}:{{item.name}}:{{item.location}}</td>
+                        <td>{{ item.category }} : {{item.location}} : {{item.name}}</td>
                         <td>{{ item.place }}</td>
                         <td class="text-center">
                             {% if item.img %}
@@ -95,7 +95,9 @@
 {% block js_page %}
 <script>
     $(document).ready(function () {
-        $('.table').DataTable();
+        $('.table').DataTable({
+            show: 20
+        });
     })
 </script>
 

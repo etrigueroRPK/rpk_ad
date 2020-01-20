@@ -30,7 +30,7 @@
         {% else %}
         <div class="table-responsive">
 
-            <table class="table table-striped table-hover table-bordered table-sm">
+            <table class="table table-striped table-hover table-bordered table-sm" data-page-length='25'>
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -38,8 +38,8 @@
                         <th>F. Inicio</th>
                         <th>F. Final</th>
                         <th>Estado</th>
-                        <th>F. Creacion</th>
-                        <th>F. Mod</th>
+                        <!-- <th>F. Creacion</th> -->
+                        <!-- <th>F. Mod</th> -->
                         <th>U.C</th>
                         <th>U.M</th>
                         <th class="all">Acciones</th>
@@ -55,8 +55,8 @@
                         <td>{{ item.end_date|date:"d/m/Y" }}</td>
 
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
-                        <td>{{ item.created_at|date:"d/m/Y"}}</td>
-                        <td>{{ item.updated_at|date:"d/m/Y"}}</td>
+                        <!-- <td>{{ item.created_at|date:"d/m/Y"}}</td> -->
+                        <!-- <td>{{ item.updated_at|date:"d/m/Y"}}</td> -->
                         <td>{{ item.user_created}}</td>
                         <td>{{ item.user_updated}}</td>
                         <!-- para fecha formateada |date: "d/m/Y H:i:s" -->
@@ -89,7 +89,12 @@
 {% block js_page %}
 <script>
     $(document).ready(function () {
-        $('.table').DataTable();
+        $('.table').DataTable({
+           
+        }
+
+        );
+
     })
 </script>
 
