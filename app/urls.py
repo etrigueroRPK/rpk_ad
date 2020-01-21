@@ -16,6 +16,8 @@ urlpatterns = [
     path('content/',include(('content.urls','content'), namespace='content')),
     # ruta para los reportes y envio de mails
     path('report/',include(('report.urls','report'), namespace='report')),
+    # rutas para los reportes que se pueden imprimir
+    path('reportprint/',include(('reportprint.urls','reportprint'), namespace='reportprint')),
 
 
 

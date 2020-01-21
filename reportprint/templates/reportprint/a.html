@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Orden de pauta: Ministerio Comunicacion</title>
+
+    <style type="text/css">
+        @page {
+            size: letter;
+            margin: 1cm;
+            border: 1px solid #000;
+        }
+
+        body {
+            width: 21.59cm;
+            height: 27.94cm;
+
+        }
+
+        /* Cambios sobre la propia tabla */
+        table {
+            width: 95%;
+            border-collapse: collapse;
+            border: 1px solid #CCC;
+
+            margin: 0 auto;
+        }
+
+        /* Espacio de relleno en celdas y cabeceras */
+        td,
+        th {
+            padding: 0;
+        }
+
+        /* Modificación de estilos en cabeceras */
+        th {
+            background: #fff;
+            border-bottom: 2px solid #000;
+            text-transform: uppercase;
+        }
+
+        /* Modificación de estilos en celdas */
+        td {
+            text-align: center;
+            border-bottom: 1px solid #111;
+            border-left: 1px solid #111;
+            color: #333;
+            font-size: 1em;
+        }
+
+        .list-group {
+            display: block;
+            width: 100%;
+            list-style: none;
+
+        }
+
+        .list-group p {
+            width: 100%;
+            height: 20px;
+            line-height: 20px;
+            list-style: none;
+            font-size: 1.1em;
+        }
+
+        .contenedor-logo {
+            text-align: center;
+        }
+
+        .logo {
+            display: block;
+            color: #1c7ffe;
+            font-size: 3em;
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+
+        .card-header h5,
+        h4 {
+            margin: 0;
+            margin-bottom: 10px;
+            padding: 0;
+        }
+
+        .card-header h4 {
+            margin-bottom: 5px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="contenedor-logo">
+
+            <div class="logo">RPK. Srl.</div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h4> SISTEMA DE ADMINISTRACION PUBLICITARIA</h4>
+                <h5> Fecha de reporte: {{ today|date:"d/m/Y" }}</h5>
+            </div>
+            <div class="info-contract">
+                <span></span>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>No. Compra</th>
+                        <th>Proveedor</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in obj %}
+                    <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.proveedor }}</td>
+                        <td>{{ item.fecha_compra | date:"d/m/Y" }}</td>
+                        <td>{{ item.total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

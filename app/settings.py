@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'component',
     'sales',
     'content',
-    'report'
+    'report',
+    'reportprint',
 ]
 
 MIDDLEWARE = [
