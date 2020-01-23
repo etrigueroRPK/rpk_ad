@@ -218,6 +218,15 @@ def contract_delete(request, id):
         cat.state = False
         cat.user_updated = request.user.id
         cat.save()
+
+        orders = Order.objects.filter(contract_id=id)
+        for order in orders:
+            aux = Order.objects.filter(pk=order.id).first()
+            aux.state = False
+            aux.user_updated = request.user.id
+            aux.save()
+            
+
         contexto = {'obj': 'OK'}
         return HttpResponse('orden se desactivo')
 
@@ -260,7 +269,6 @@ def order_delete(request, id):
 
     # return render(request, template_name, contexto)
 
-
 def order_new(request):
     template_name = 'sales/contract_edit.html'
     contexto = {}
@@ -302,6 +310,27 @@ def order_new(request):
         # print(lista_order_json)
 
         contexto = {'obj':"OK",'order':lista_order_json}
+        return HttpResponse(json.dumps(contexto), content_type=json)
+
+    # return render(request, template_name, contexto)
+
+
+def order_update(request, id):
+    # solo actualiza el estado de la orden  
+    contexto = {}
+    print('esta llegando ')
+    if request.method == 'POST':
+        # id_order = request.POST.get('id')
+
+        order = Order.objects.filter(pk=id).first()
+        if order.state == True:
+            order.state = False
+        else: 
+            order.state = True
+        order.user_updated = request.user.id
+        order.save()
+
+        contexto = {'obj':"OK"}
         return HttpResponse(json.dumps(contexto), content_type=json)
 
     # return render(request, template_name, contexto)

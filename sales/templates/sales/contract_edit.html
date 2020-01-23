@@ -16,14 +16,14 @@
                             <div class=" text-right ">
 
                                 <label for="estado">Estado </label>
-                                
+
                                 {% if contract.state %}
                                 <input name="estado" id="estado" type="checkbox" checked>
                                 {% else %}
                                 <input name="estado" id="estado" type="checkbox">
 
                                 {% endif %}
-                                    
+
 
                             </div>
                         </div>
@@ -179,11 +179,11 @@
                                             <td>{{item.description}}</td>
                                             <td>
                                                 {% if item.state == True %}
-                                                <button type="button" class="btn btn-outline-success btn-sm">
+                                                <button type="button" class="btn btn-outline-success btn-sm" onclick="update({{item.id}})">
                                                     <i class="far fa-check-circle"></i>
                                                 </button>
                                                 {% else %}
-                                                <button type="button" class="btn btn-outline-danger btn-sm">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="update({{item.id}})">
                                                     <i class="far fa-times-circle"></i>
                                                 </button>
                                                 {% endif %}
@@ -225,8 +225,9 @@
 </form>
 
 <div>
-    <p class="font-weight-lighter">El tiempo del spot por defecto es considerado de 30 segundos, para el calculo de pases y porcentaje. <br/> 
-    El tiempo de spot se podra especificar en la seccion de "AD contenido". 
+    <p class="font-weight-lighter">El tiempo del spot por defecto es considerado de 30 segundos, para el calculo de
+        pases y porcentaje. <br />
+        El tiempo de spot se podra especificar en la seccion de "AD contenido".
     </p>
 </div>
 
@@ -245,7 +246,7 @@
         document.getElementById("check_pass").checked = true;
 
 
-        $('#product_id').select2({placeholder:"Seleccione", allowClear:true});
+        $('#product_id').select2({ placeholder: "Seleccione", allowClear: true });
 
     }
 
@@ -371,10 +372,9 @@
                     // mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
                     $("#tbodyid").empty();
                     for (let index = 0; index < response["order"].length; index++) {
-                        var estado = '<button type="button" class="btn btn-outline-danger btn-sm"><i class="far fa-times-circle"></i></button>';
-                        if (response["order"][index].estado == true)
-                        {
-                            estado = '<button type="button" class="btn btn-outline-success btn-sm"><i class="far fa-check-circle"></i></button>';
+                        var estado = '<button type="button" class="btn btn-outline-danger btn-sm" onclick="update('+response["order"][index].id+')" ><i class="far fa-times-circle"></i></button>';
+                        if (response["order"][index].estado == true) {
+                            estado = '<button type="button" class="btn btn-outline-success btn-sm" onclick="update('+response["order"][index].id+')" ><i class="far fa-check-circle"></i></button>';
                         }
                         var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
                             '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +
@@ -430,10 +430,9 @@
                     mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
                     $("#tbodyid").empty();
                     for (let index = 0; index < response["order"].length; index++) {
-                        var estado = '<button type="button" class="btn btn-outline-danger btn-sm"><i class="far fa-times-circle"></i></button>';
-                        if (response["order"][index].estado == true)
-                        {
-                            estado = '<button type="button" class="btn btn-outline-success btn-sm"><i class="far fa-check-circle"></i></button>';
+                        var estado = '<button type="button" class="btn btn-outline-danger btn-sm"><i class="far fa-times-circle" onclick="update('+response["order"][index].id+')" ></i></button>';
+                        if (response["order"][index].estado == true) {
+                            estado = '<button type="button" class="btn btn-outline-success btn-sm"><i class="far fa-check-circle" onclick="update('+response["order"][index].id+')" ></i></button>';
                         }
                         var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
                             '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +
@@ -461,6 +460,64 @@
             }
         });
     }
+
+    // ==========================================================================================================
+    // actualiza el estado de la orden 
+    function update(id) {
+        var data = { id: id };
+        data = JSON.stringify(data);
+        var token = '{{csrf_token}}';
+        // alert(token);
+        // alert(id);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/sales/order/update/" + id,
+            data: data,
+            success: function (response) {
+                // aux["order"][0].category
+                if (response['obj'] == 'OK') {
+                    location.reload();
+                    // mensaje("Orden actualizada. ", "orange");
+
+
+                    // $("#tbodyid").empty();
+                    // for (let index = 0; index < response["order"].length; index++) {
+                    //     var estado = '<button type="button" class="btn btn-outline-danger btn-sm"><i class="far fa-times-circle"></i></button>';
+                    //     if (response["order"][index].estado == true) {
+                    //         estado = '<button type="button" class="btn btn-outline-success btn-sm"><i class="far fa-check-circle"></i></button>';
+                    //     }
+                    //     var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
+                    //         '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +
+                    //         '<td> ' + response["order"][index].pass + '</td>' +
+                    //         '<td> ' + response["order"][index].porcentage + '</td>' +
+                    //         '<td> ' + response["order"][index].description + '</td>' +
+                    //         '<td> ' + estado + '</td>' +
+                    //         '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar(' + response["order"][index].id + ');" >X</button></td>' +
+                    //         '</tr>';
+
+                    //     $('#detalles').append(fila);
+
+                    // }
+
+                } else {
+
+                }
+
+                aux = response;
+                // console.log(aux);
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+
+    // ==========================================================================================================
+
 
     $(".pases_number").change(function () {
         console.log($(".pases_number").val())
@@ -491,11 +548,11 @@
 
     }
 
-    
-    
-       
-        
-    
+
+
+
+
+
 </script>
 
 

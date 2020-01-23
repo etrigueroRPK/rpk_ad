@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Orden de pauta: Ministerio Comunicacion</title>
+    <title>Orden de pauta: {{ contract.client}}</title>
 
     <style type="text/css">
         @page {
@@ -112,7 +112,7 @@
         .info-contract {
             margin-left: 50px;
             display: block;
-           
+
 
 
         }
@@ -122,9 +122,9 @@
             text-decoration: none;
             font-style: inherit;
             text-transform: uppercase;
-            
+
             line-height: 0px;
-            
+
         }
 
         .subtitulo .nombre-cliente {
@@ -134,8 +134,6 @@
             margin-right: 20px;
             text-transform: none;
         }
-
-        
     </style>
 </head>
 
@@ -154,8 +152,35 @@
 
             <div class="info-contract">
                 <h6 class="subtitulo">Cliente: <strong class="nombre-cliente">{{contract.client}}</strong> </h6>
-                <h6 class="subtitulo">Fecha de inicio: <strong class="nombre-cliente">{{contract.start_date|date:"d/m/Y"}}</strong>
-                     Fecha de inicio: <strong class="nombre-cliente">{{contract.end_date|date:"d/m/Y"}}</strong> </h6>
+                <h6 class="subtitulo">Fecha de inicio: <strong class="nombre-cliente">
+                        {% if contract.start_date %}
+                            
+                            {% if contract.start_date|date:"d/m/Y" == '01/01/1' %}
+                                Sin fecha
+                            {% else %}
+                                {{contract.start_date|date:"d/m/Y"}}
+
+                            {% endif %}
+                                
+                        {% else %}
+                            Sin fecha
+                        {% endif %}
+                    </strong>
+                    Fecha final: <strong class="nombre-cliente">
+                        {% if contract.start_date %}
+                            
+                            {% if contract.end_date|date:"d/m/Y" == '01/01/1' %}
+                                Sin fecha
+                            {% else %}
+                                {{contract.end_date|date:"d/m/Y"}}
+
+                            {% endif %}
+                                
+                        {% else %}
+                             Sin fecha
+                        {% endif %}
+                    </strong> </h6>
+                <h6 class="subtitulo">Estado: <strong class="nombre-cliente">{{contract.state|yesno:'Activo,Inactivo'}}</strong></h6>
 
             </div>
             <div class="linea-divisora"></div>

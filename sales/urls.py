@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import  ContractList, ClientView, ClientNew, ClientEdit, client_delete, \
     ContractList,contract_view,  contract_create, contract_edit, contract_delete, \
-    order_delete, order_new
+    order_delete, order_new, order_update
 
 urlpatterns = [
     # vistas para ventas
@@ -19,5 +19,7 @@ urlpatterns = [
 
     path('order/new',order_new, name='order_new'),
     path('order/delete/<int:id>',order_delete, name='order_delete'),
+    path('order/update/<int:id>',order_update, name='order_update'),
+
     
 ]
