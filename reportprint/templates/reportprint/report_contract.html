@@ -80,15 +80,62 @@
 
         .card-header h5,
         h4 {
+
             margin: 0;
             margin-bottom: 10px;
             padding: 0;
         }
 
         .card-header h4 {
+            text-align: center;
             margin-bottom: 5px;
 
         }
+
+        .card-header h5 {
+            margin-left: 100px;
+
+            margin-bottom: 10px;
+
+        }
+
+        .linea-divisora {
+            border-bottom: solid 1px rgb(201, 201, 201);
+            width: 90%;
+            height: 2px;
+            margin: 0 auto;
+            margin-bottom: 10px;
+            display: block;
+
+        }
+
+        .info-contract {
+            margin-left: 50px;
+            display: block;
+           
+
+
+        }
+
+        .subtitulo {
+            font-size: 1.1em;
+            text-decoration: none;
+            font-style: inherit;
+            text-transform: uppercase;
+            
+            line-height: 0px;
+            
+        }
+
+        .subtitulo .nombre-cliente {
+            font-style: italic;
+            font-size: 1.2em;
+            margin-left: 20px;
+            margin-right: 20px;
+            text-transform: none;
+        }
+
+        
     </style>
 </head>
 
@@ -103,26 +150,33 @@
                 <h4> SISTEMA DE ADMINISTRACION PUBLICITARIA</h4>
                 <h5> Fecha de reporte: {{ today|date:"d/m/Y" }}</h5>
             </div>
-            <div class="info-contract">
-                <span></span>
-            </div>
+            <div class="linea-divisora"></div>
 
+            <div class="info-contract">
+                <h6 class="subtitulo">Cliente: <strong class="nombre-cliente">{{contract.client}}</strong> </h6>
+                <h6 class="subtitulo">Fecha de inicio: <strong class="nombre-cliente">{{contract.start_date|date:"d/m/Y"}}</strong>
+                     Fecha de inicio: <strong class="nombre-cliente">{{contract.end_date|date:"d/m/Y"}}</strong> </h6>
+
+            </div>
+            <div class="linea-divisora"></div>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>No. Compra</th>
-                        <th>Proveedor</th>
-                        <th>Fecha</th>
-                        <th>Total</th>
+                        <th>Producto</th>
+                        <th>Pases</th>
+                        <th>Porcentaje</th>
+                        <th>Descripcion</th>
+                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in obj %}
+                    {% for item in order %}
                     <tr>
-                        <td>{{ item.id }}</td>
-                        <td>{{ item.proveedor }}</td>
-                        <td>{{ item.fecha_compra | date:"d/m/Y" }}</td>
-                        <td>{{ item.total }}</td>
+                        <td>{{ item.product }}</td>
+                        <td>{{ item.pass_contract }}</td>
+                        <td>{{ item.porcentage_contract|floatformat:3 }} %</td>
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -62,6 +62,8 @@
                         <!-- para fecha formateada |date: "d/m/Y H:i:s" -->
 
                         <td>
+                            <a target="blank" href="{% url 'reportprint:report_contract' item.id %}"
+                                class="btn btn-sm btn-outline-primary btn-circle"><i class="far fa-file-alt"></i></a>
                             <a href="{% url 'sales:contract_view' item.id %}"
                                 class="btn btn-sm btn-outline-success btn-circle"><i class="fas fa-eye"></i></a>
                             <a href="{% url 'sales:contract_edit' item.id %}"

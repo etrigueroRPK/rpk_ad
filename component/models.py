@@ -38,7 +38,7 @@ class Product(ClassModel):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '{} : {} : {}'.format(self.location.name, self.category.name, self.name)
+        return '{} : {} : {}'.format(self.category.name, self.location.name,  self.name)
     
     def time_operating_valid(self):
          

@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 import json
+import datetime
 
 # from django.utils import simplejson
 
@@ -16,27 +17,25 @@ import json
 
 # from .forms import ClientForm, ContractForm
 
-from component.models import Product
+from sales.models import Contract, Order
 
 
 
 
-def report_contract(request):
+def report_contract(request,id):
     template_name = 'reportprint/report_contract.html'
     contexto = {}
-    product = Product.objects.all()
-
-    # if not cat:
-    #     return HttpResponse('cliente no existe' + str(id))
+    contract = Contract.objects.filter(pk=id).first()
+    
+    today = datetime.datetime.now()
+    order = Order.objects.filter(contract=id)
+    if not contract:
+        return HttpResponse('el registro con id: ' + str(id) + ' no existe!!!')
 
     if request.method == 'GET':
-        contexto = {'obj': product}
-        print('=============================================================')
-        print(template_name)
-    # if request.method == 'POST':
-    #     cat.state = False
-    #     cat.save()
-    #     contexto = {'obj': 'OK'}
-    #     return HttpResponse('cliente Inactivo')
 
-    return render(request, 'reportprint/a.html',contexto)
+        contexto = {'today': today, 'contract':contract, 'order':order }
+        
+    
+
+    return render(request, template_name,contexto)
