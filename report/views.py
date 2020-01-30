@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 
 @login_required(login_url='/login/')
-def reporte(request):
+def reporte():
     print('+++++++++++++++++++')
     send_mail(
         'hola desde djnago',
@@ -16,4 +16,4 @@ def reporte(request):
         ['etriguero@rpk.com.bo'],
         fail_silently = False
     )
-    return render(request, 'report/report.html')
+    # return render(request, 'report/report.html')

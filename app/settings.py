@@ -25,7 +25,7 @@ SECRET_KEY = 'ap!3u2!%-u)_@^7ki%sawiw1+^f6^g)&vnj(t3ns6cc)xts81f'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.2.52', 'localhost']
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'content',
     'report',
     'reportprint',
+    'app'
 ]
 
 MIDDLEWARE = [
@@ -143,6 +144,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # configuraciones para envio de mails
+#___________________________________
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
