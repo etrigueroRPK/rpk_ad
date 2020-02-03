@@ -47,3 +47,12 @@ class Product(ClassModel):
             return '24:00'
 
         return self.time_operating
+    # TODO: buscar la forma de continuar la tabla de inventarios 
+# class Subproduct(ClassModel):
+#     name = models.CharField(max_length=50, unique=False)
+#     place = models.CharField(max_length=100, null=True, blank=True)
+#     cantidad = models.IntegerField()
+    
+
+
+

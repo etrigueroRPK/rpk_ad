@@ -5,7 +5,7 @@
 <form method="POST" class="form-group" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <div class="col-xl-8 col-md-8 mb-8">
+    <div class="col-xl-12 col-md-12 mb-12">
 
         {% if obj %}
         <div class="card border-left-warning shadow h-100 py-2">
@@ -18,7 +18,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                {% if obj %} Editar {% else %} Nueva {% endif %} Video
+                                {% if obj %} Editar {% else %} Nuevo {% endif %} Video
                             </div>
                             <small class="text-danger">
                                 {% if form.errors %}
@@ -38,12 +38,12 @@
                                 {% endif %}
                             </small>
                             <div class="dropdown-divider"></div>
-                            <!--  -->
-                            <!-- <div class="form-group row">
+
+                            <div class="form-group row">
                                 <label for="id_name" class="col-sm-2 col-form-label">Nombre</label>
                                 <div class="col-sm-10 ">
                                     <input type="text" name="name" maxlength="50" class="form-control" required
-                                        id="id_name" value="{% if obj %} {{obj.name}} {% endif %}">
+                                        autocomplete="off" id="id_name" value="{% if obj %} {{obj.name}} {% endif %}">
                                 </div>
                             </div>
 
@@ -51,45 +51,89 @@
                                 <label for="id_description" class="col-sm-2 col-form-label">Descripcion</label>
                                 <div class="col-sm-10">
                                     <input type="" name="description" maxlength="100" class="form-control"
-                                        id="id_description" value="{% if obj %} {{obj.description}} {% endif %}">
+                                        autocomplete="off" id="id_description"
+                                        value="{% if obj %} {{obj.description}} {% endif %}">
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="id_contract" class="col-sm-2 col-form-label">Orden de pauta</label>
+                                <div class="col-sm-10">
+                                    <!-- <select name="category" id="id_category" required class="form-control">
+                                        <option value="" selected>---------</option>
+                                        
+                                    </select> -->
+                                    {{ form.contract}}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="id_start_date" class="col-sm-2 col-form-label">Fecha Inicio</label>
+                                <div class="col-sm-4 ">
+                                    <input type="date" name="start_date" class="form-control" id="id_start_date"
+                                        value="{% if obj %}{{obj.start_date|date:'Y-m-d'}}{% endif %}">
+                                </div>
+
+                                <label for="id_end_date" class="col-sm-2 col-form-label">Fecha Final</label>
+                                <div class="col-sm-4 ">
+                                    <input type="date" name="end_date" class="form-control" id="id_end_date"
+                                        value="{% if obj %}{{obj.end_date|date:'Y-m-d'}}{% endif %}">
+                                </div>
+                            </div>
+                            <div class="form-group row ">
+                                <div class="embed-responsive embed-responsive-21by9">
+
+                                    <video width="320" height="240" controls class="embed-responsive-item" id="video_rep">
+                                        <source type="video/mp4" src="" id="video_local">
+                                    </video>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="form-group row">
                                 <label for="id_img" class="col-sm-2 col-form-label">Imagen</label>
                                 <div class="col-sm-10">
-                                    <input type="file" name="img" maxlength="300" class="form-control-file" accept="image/*"
-                                         id="id_img" value="{% if obj %} {{obj.img}} {% endif %}">
+                                    <input type="file" name="img" maxlength="300" class="form-control-file"
+                                        accept="image/*" id="id_img" value="{% if obj %} {{obj.img}} {% endif %}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="id_video" class="col-sm-2 col-form-label">Video</label>
+                                <div class="col-sm-10">
+                                    <input type="file" name="video" maxlength="300" class="form-control-file"
+                                        accept="video/*" id="id_video" value="{% if obj %} {{obj.video}} {% endif %}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-sm-2">Estado</div>
                                 <div class="col-sm-10">
                                     <div class="form-check">
-                                        <input type="checkbox" name="state" class="form-check-input" {% if obj.state %} checked {% endif %}
-                                            id="id_state">
+                                        <input type="checkbox" name="state" class="form-check-input" {% if obj.state %}
+                                            checked {% endif %} id="id_state">
                                         <label class="form-check-label" for="id_state">
                                             Marcar estado.
                                         </label>
                                     </div>
 
                                 </div>
-                            </div> -->
-
-
-                            <!--  -->
-
-
-                            {{form.as_p}}
-                            <div class="dropdown-divider"></div>
-                            <div class="form-group row">
-                                <div class="col-sm-10">
-                                    <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>
-                                        Guardar</button>
-                                    <a href="{% url 'content:videos_list' %}" class="btn btn-success"><span
-                                            class="fa fa-undo"> Cancelar</span></a>
-                                </div>
                             </div>
 
+
+
+
+
+                            <!-- {{form.as_p}} -->
+
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group row text-center">
+                                <div class="col-sm-12">
+                                    <a href="{% url 'content:videos_list' %}" class="btn btn-danger"><span
+                                            class="fa fa-undo"> Cancelar</span></a>
+                                    <button type="submit" class="btn btn-success"><span class="fa fa-save"></span>
+                                        Guardar</button>
+                                </div>
+                            </div>
+                            <button type="button" id="sacar_tiempo">sacr</button>
 
                         </div>
                     </div>
@@ -100,4 +144,34 @@
 
 {% endblock %}
 {% block js_page %}
+<script>
+    $(document).ready(function () {
+        $('#id_contract').select2({ placeholder: "Seleccione", allowClear: true });
+
+    })
+
+    $("#id_video").change(function () {
+        var $source = $("#video_local");
+        $source[0].src = URL.createObjectURL(this.files[0]);
+        $source.parent()[0].load();
+        console.log($source.parent()[0].duration);
+
+
+    });
+
+    $("#sacar_tiempo").click(function () {
+        
+        console.log($("#video_rep"));
+
+
+    });
+
+
+    
+
+
+
+
+</script>
+
 {% endblock %}
