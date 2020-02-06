@@ -48,10 +48,20 @@ class Product(ClassModel):
 
         return self.time_operating
     # TODO: buscar la forma de continuar la tabla de inventarios 
-# class Subproduct(ClassModel):
-#     name = models.CharField(max_length=50, unique=False)
-#     place = models.CharField(max_length=100, null=True, blank=True)
-#     cantidad = models.IntegerField()
+
+class Subproduct(ClassModel):
+    name = models.CharField(max_length=50, unique=False, null=True, blank=True)
+    img = models.ImageField(upload_to='sub product', null=True, blank=True)
+    medidas = models.CharField(max_length=50, unique=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+
+class item(ClassModel):
+    name = models.CharField(max_length=50, unique=False, null=True, blank=True)
+    serie = models.CharField(max_length=50, unique=True)
+    description = models.CharField(max_length=100, blank=True, null=True)
+    sub_product = models.ForeignKey(Subproduct, on_delete=models.CASCADE)
+
     
 
 

@@ -182,18 +182,21 @@ class ProductNew(LoginRequiredMixin, generic.CreateView):
 # vista para editar productos
 
 
-class ProductEdit(LoginRequiredMixin, generic.UpdateView):
-    model = Product
-    template_name = 'component/product_form.html'
-    context_object_name = 'obj'
-    form_class = ProductForm
-    success_url = reverse_lazy('component:product_list')
-    login_url = 'bases:login'
+def product_edit(request, id):
+    template_name = 'component/product_edit.html'
+    contexto = {}
 
-    def form_valid(self, form):
-        form.instance.user_updated = self.request.user.id
+    if request.method == 'GET':
+        contexto = {'obj':'funciona'}
 
-        return super().form_valid(form)
+    return render(request, template_name, contexto)
+    
+    
+    
+    
+    
+
+    
 
 
 def product_delete(request, id):
