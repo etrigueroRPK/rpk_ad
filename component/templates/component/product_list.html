@@ -73,6 +73,9 @@
                             <a href="{% url 'component:product_edit' item.id %}"
                                 class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
                                     class="far fa-edit"></i></a>
+                            <a href="{% url 'component:sub_product' item.id %}"
+                                class="btn btn-sm btn-outline-info btn-circle" role="button">
+                                <i class="fab fa-product-hunt"></i></a>
                             <button class="btn btn-sm btn-outline-danger btn-circle"
                                 onclick="return abrir_modal('{% url 'component:product_delete' item.id %}')"><i
                                     class="far fa-trash-alt"></i></button>

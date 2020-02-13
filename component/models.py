@@ -53,7 +53,7 @@ class Subproduct(ClassModel):
     name = models.CharField(max_length=50, unique=False, null=True, blank=True)
     img = models.ImageField(upload_to='sub product', null=True, blank=True)
     place = models.CharField(max_length=50, null=True, blank=True)
-    medidas = models.CharField(max_length=50, unique=False)
+    measure = models.CharField(max_length=50, unique=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 
