@@ -15,7 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, \
 from django.http import HttpResponse
 import json
 
-from .models import Category, Location, Product
+from .models import Category, Location, Product, Subproduct
 from .forms import CategoryForm, LocationForm, ProductForm
 
 from bases.views import SinPrivilegios
@@ -198,9 +198,26 @@ class ProductEdit(LoginRequiredMixin, generic.UpdateView):
 # para actualizar sub productos 
 #=======================================================================
     
+def product_edit(request, id):
+    template_name = 'component/product_edit.html'
+    contexto = {}
+
+    if request.method == 'GET':
+        contexto = {'obj':'funciona'}
+
+    return render(request, template_name, contexto)
+
+
 def sub_product_view(request, id):
     template_name = 'component/sub_product_admin.html'
     contexto = {}
+    
+    if request.method == 'GET':
+        product = Product.objects.filter(id=id).first()
+        sub_products = Subproduct.objects.filter(product_id=id).all()
+        print(product)
+        contexto = {'product':product,'obj':sub_products}
+
 
     return render(request, template_name, contexto)
 
@@ -213,14 +230,6 @@ def sub_product_new(request):
     return render(request, template_name, contexto)
     
 
-def product_edit(request, id):
-    template_name = 'component/product_edit.html'
-    contexto = {}
-
-    if request.method == 'GET':
-        contexto = {'obj':'funciona'}
-
-    return render(request, template_name, contexto)
     
 
 
