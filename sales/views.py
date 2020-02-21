@@ -308,7 +308,7 @@ def order_new(request):
             # Se deberia asignar al dictionary todos los atributos que desee enviar en el json.
             lista_order_json.append(objeto_order)
         # print(lista_order_json)
-
+ 
         contexto = {'obj':"OK",'order':lista_order_json}
         return HttpResponse(json.dumps(contexto), content_type=json)
 

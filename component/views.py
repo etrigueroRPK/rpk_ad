@@ -215,9 +215,37 @@ def sub_product_view(request, id):
     if request.method == 'GET':
         product = Product.objects.filter(id=id).first()
         sub_products = Subproduct.objects.filter(product_id=id).all()
-        print(product)
         contexto = {'product':product,'obj':sub_products}
 
+    if request.method == 'POST':
+
+        name = request.POST.get('name')
+        place = request.POST.get('place')
+        img = request.FILES.get('img')
+        if request.POST.get('estado') == 'on':
+            state = True
+        else:
+            state = False
+         
+
+
+        sub_product = Subproduct
+        sub_product = Subproduct(
+            name = name,
+            place = place,
+            img = img,
+            state = state,
+            product_id = id,
+            user_created = request.user
+
+        )
+        sub_product.save()
+
+        product = Product.objects.filter(id=id).first()
+        sub_products = Subproduct.objects.filter(product_id=id).all()
+        
+        contexto = {'product':product,'obj':sub_products}
+        
 
     return render(request, template_name, contexto)
 
@@ -226,8 +254,19 @@ def sub_product_new(request):
     template_name = ''
     contexto = {}
     
+    if request.method == 'POST':
 
-    return render(request, template_name, contexto)
+        
+        print("=================================")
+        print(request.POST.get('name'))
+        print("=================================")
+
+        return HttpResponse("funciana manco!!!")
+
+    
+    
+
+    # return render(request, template_name, contexto)
     
 
     

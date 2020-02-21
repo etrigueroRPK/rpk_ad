@@ -2,7 +2,7 @@ from django.urls import path
 from .views import CategoryView, CategoryNew, CategoryEdit, category_delete, \
     LocationView, LocationNew, LocationEdit, location_delete, \
     ProductView, ProductNew, ProductEdit, product_delete, \
-    sub_product_view
+    sub_product_view, sub_product_new
 
 urlpatterns = [
     # vistas para categorias
@@ -28,4 +28,7 @@ urlpatterns = [
     # vistas para sub_productos
 
     path('sub_product/view/<int:id>', sub_product_view, name='sub_product'),
+    path('sub_product/new/<int:id>', sub_product_new, name='sub_product_new'),
+    path('sub_product/new', sub_product_new, name='sub_product_new'),
+
 ]

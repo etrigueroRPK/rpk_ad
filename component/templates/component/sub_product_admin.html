@@ -12,7 +12,8 @@
                         <div class="dropdown-divider"></div>
                         <!--  -->
                         <div class="row ml-3">
-                            <p>Producto: <strong>{{product.category}} : {{product.location}} : {{product.name}} </strong></p> <br>
+                            <p>Producto: <strong>{{product.category}} : {{product.location}} : {{product.name}}
+                                </strong></p> <br>
                         </div>
                         <div class="row ml-3">
                             <p>Ubicacion: <strong> {{product.place}} </strong></p>
@@ -23,16 +24,17 @@
                         </div>
                         <div class="row ml-3">
                             <p>Hora inicio: <strong class="mr-5">{{product.start_time}}</strong> Hora final: <strong
-                                    class="mr-5">{{product.end_time}}</strong> Tiempo de funcionamiento: <strong>{{product.time_operating}}</strong> </p>
+                                    class="mr-5">{{product.end_time}}</strong> Tiempo de funcionamiento:
+                                <strong>{{product.time_operating}}</strong> </p>
                         </div>
                         <div class="row ml-3">
-                            <p>Estado: <strong>Activo</strong> </p>
+                            <p>Estado: <strong>{{product.state|yesno:'Activo, Desactivo'}}</strong> </p>
                         </div>
 
 
                     </div>
                     <div class="col-auto">
-                        <img src="..." class="img-fluid" alt="Responsive image">
+                        <img src="{{product.img.url}}" class="img-fluid" alt="{{product.img}}">
                     </div>
                 </div>
             </div>
@@ -47,8 +49,10 @@
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Nuevo Sub producto:</div>
                         <div class="dropdown-divider"></div>
                         <!--  -->
-                        <form method="POST" class="form-group mb-0" enctype="multipart/form-data">
+                        <form method="POST" class="form-group mb-0" enctype="multipart/form-data" id="formulario"
+                            name="formulario">
                             {% csrf_token %}
+
                             <div class="form-group row">
                                 <label for="id_name" class="col-sm-2 col-form-label">Nombre</label>
                                 <div class="col-sm-10 ">
@@ -80,7 +84,7 @@
                                 <div class="col-sm-2">Estado</div>
                                 <div class="col-sm-10">
                                     <div class="form-check">
-                                        <input type="checkbox" name="state" class="form-check-input" checked
+                                        <input type="checkbox" name="estado" class="form-check-input" checked
                                             {% if obj.state %} checked {% endif %} id="id_state">
                                         <label class="form-check-label" for="id_state">
                                             Marcar estado.
@@ -141,7 +145,7 @@
                 {% for item in obj %}
                 <tr>
                     <td>{{ item.id }}</td>
-                    <td>{{ item.category }} : {{item.location}} : {{item.name}}</td>
+                    <td> {{item.name}}</td>
                     <td>{{ item.place }}</td>
                     <td class="text-center">
                         {% if item.img %}
@@ -187,9 +191,111 @@
 {% block js_page %}
 <script>
     $(document).ready(function () {
-        $('#id_category').select2({ placeholder: "Seleccione", allowClear: true });
-        $('#id_location').select2({ placeholder: "Seleccione", allowClear: true });
+
+
     })
+
+
+    $("form").submit(function (e) {
+
+        e.preventDefault();
+        var data = new FormData($("#formulario").get(0));
+
+        var token = '{{csrf_token}}';
+
+        console.log(data);
+
+        $.ajax({
+            headers: { "X-CSRFToken":token },
+            type: "POST",
+            url: "/component/sub_product/new",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+
+                aux = response;
+                console.log(aux);
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+
+
+    });
+
+
+    // funcion para guardar sub producto
+    function guardar(id_product) {
+
+        id_product = id_product;
+        // name = $("#pases").val();
+        // place = $("#porcentaje").val();
+        // img = $("#description").val();
+        // var data = {
+        //     id_contract: id_contract,
+        //     id_product: id_product,
+        //     pases: pases,
+        //     porcentaje: porcentage,
+        //     description: description
+        // };
+        var data = new FormData($('#formulario').get(0));
+
+        var token = '{{csrf_token}}';
+
+        // console.log(data);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/component/sub_product/new",
+            data: data,
+            success: function (response) {
+                // aux["order"][0].category
+                // if (response['obj'] == 'OK') {
+                //     // mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
+                //     $("#tbodyid").empty();
+                //     for (let index = 0; index < response["order"].length; index++) {
+                //         var estado = '<button type="button" class="btn btn-outline-danger btn-sm" onclick="update(' + response["order"][index].id + ')" ><i class="far fa-times-circle"></i></button>';
+                //         if (response["order"][index].estado == true) {
+                //             estado = '<button type="button" class="btn btn-outline-success btn-sm" onclick="update(' + response["order"][index].id + ')" ><i class="far fa-check-circle"></i></button>';
+                //         }
+                //         var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
+                //             '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +
+                //             '<td> ' + response["order"][index].pass + '</td>' +
+                //             '<td> ' + response["order"][index].porcentage + '</td>' +
+                //             '<td> ' + response["order"][index].description + '</td>' +
+                //             '<td> ' + estado + '</td>' +
+                //             '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar(' + response["order"][index].id + ');" >X</button></td>' +
+                //             '</tr>';
+
+                //         $('#detalles').append(fila);
+
+                //     }
+                // } else {
+
+                // }
+
+                aux = response;
+                console.log(aux);
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+        $("#product_id").val('');
+        $("#pases").val('');
+        $("#porcentaje").val('');
+        $("#description").val('');
+
+
+
+    }
 </script>
 
 
