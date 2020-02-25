@@ -86,6 +86,27 @@ class ContractList(LoginRequiredMixin, generic.ListView):
     context_object_name = 'obj'
     login_url = 'bases:login'
 
+def contract_list(request):
+    # usado por AJAX
+    if request.method == 'GET':
+        product = Product.objects.filter(state=True).all()
+        lista_order_json = []
+        for item in product:
+            objeto = {}
+            objeto["id"] = item.id
+            objeto["category"] = item.category.name 
+            objeto["product"] = item.name
+            objeto["location"] = item.location.name 
+            objeto["time_operation"] = str(item.time_operating_valid())
+            print(item.time_operating_valid())
+            # Se deberia asignar al dictionary todos los atributos que desee enviar en el json.
+            lista_order_json.append(objeto)
+        # print(lista_order_json)
+
+        contexto = {'obj':'OK', 'order':lista_order_json}
+        return HttpResponse(json.dumps(contexto), content_type=json)
+        
+
 
 def contract_view(request, id):
     template_name = 'sales/contract_view.html'

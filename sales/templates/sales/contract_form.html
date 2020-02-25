@@ -66,7 +66,42 @@
                                         value="{% if obj %}{{obj.end_date|date:'Y-m-d'}}{% endif %}">
                                 </div>
                             </div>
-
+                            
+                            <div class="form-group row">
+                                <label for="id_pass_contract" class="col-sm-2 col-form-label">Pases contratados</label>
+                                <div class="col-sm-3 ">
+                                    <input type="number" name="pass_contract" class="form-control" id="id_pass_contract"
+                                        value="">
+    
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="state" class="form-check-input" id="check_pass">
+                                        <label class="form-check-label" for="id_state">
+    
+                                        </label>
+                                    </div>
+    
+                                </div>
+    
+                                <label for="id_porcentage_contract" class="col-sm-2 col-form-label">Porcentaje
+                                    Contratado</label>
+                                <div class="col-sm-3 ">
+                                    <input type="number" name="porcentage_contract" class="form-control"
+                                        id="id_porcentage_contract" value="">
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="state" class="form-check-input" id="check_porc">
+                                        <label class="form-check-label" for="id_state">
+    
+                                        </label>
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+    
 
                             <div class="dropdown-divider"></div>
                             <div class="form-row text-center ">
@@ -93,6 +128,25 @@
 <script>
     $(document).ready(function () {
         $('#id_client').select2({placeholder:"Seleccione", allowClear:true});
+
+        var token = '{{csrf_token}}';
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "GET",
+            url: "/sales/contract/list",
+            
+            success: function (response) {
+                // aux["order"][0].category
+               
+                aux = response;
+                console.log(aux);
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
         
     })
 </script>
