@@ -11,6 +11,7 @@
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Datos de Producto:</div>
                         <div class="dropdown-divider"></div>
                         <!--  -->
+                        <input type="hidden" name="id_product" id="id_product" value="{{product.id}}">
                         <div class="row ml-3">
                             <p>Producto: <strong>{{product.category}} : {{product.location}} : {{product.name}}
                                 </strong></p> <br>
@@ -19,8 +20,9 @@
                             <p>Ubicacion: <strong> {{product.place}} </strong></p>
                         </div>
                         <div class="row ml-3">
-                            <p>Fecha inicio: <strong class="mr-5">{{product.start_date}}</strong> Fecha final:
-                                <strong>{{product.end_date}}</strong> </p>
+                            <p>Fecha inicio: <strong class="mr-5">{{product.start_date|date:'d/m/Y'}}</strong> Fecha
+                                final:
+                                <strong>{{product.end_date|date:'d/m/Y'}}</strong> </p>
                         </div>
                         <div class="row ml-3">
                             <p>Hora inicio: <strong class="mr-5">{{product.start_time}}</strong> Hora final: <strong
@@ -34,7 +36,11 @@
 
                     </div>
                     <div class="col-auto">
+
+                        {% if product.img %}
                         <img src="{{product.img.url}}" class="img-fluid" alt="{{product.img}}">
+                        {% endif %}
+
                     </div>
                 </div>
             </div>
@@ -68,6 +74,13 @@
                                         value="{% if obj %} {{obj.place}} {% endif %}" autocomplete="off">
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="id_mesaure" class="col-sm-2 col-form-label">Medidas</label>
+                                <div class="col-sm-10">
+                                    <input type="" name="measure" maxlength="50" class="form-control" id="id_measure"
+                                        value="{% if obj %} {{obj.measure}} {% endif %}" autocomplete="off">
+                                </div>
+                            </div>
 
                             <div class="form-group row">
                                 {% if obj.img %}
@@ -93,6 +106,8 @@
 
                                 </div>
                             </div>
+                            <!-- bandera que determina si es actualizacion de sub producto -->
+                            <input type="hidden" name="sub_product" id="id_sub_product" value="">
 
 
                             <!--  -->
@@ -133,11 +148,11 @@
                     <th>Nombre</th>
                     <th>Lugar</th>
                     <th>Imagen</th>
+                    <th>Medidas</th>
                     <th>Estado</th>
                     <!-- <th>F. Creacion</th>
                     <th>F. Modificacion</th> -->
-                    <th>UC</th>
-                    <th>UM</th>
+                    <!-- <th>UM</th> -->
                     <th class="all">Acciones</th>
                 </tr>
             </thead>
@@ -153,23 +168,20 @@
 
                         {% endif %}
                     </td>
+                    <td>{{ item.measure}}</td>
                     <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
                     <!-- <td>{{ item.created_at}}</td>
                     <td>{{ item.updated_at}}</td> -->
-                    <td>{{ item.user_created}}</td>
-                    <td>{{ item.user_updated}}</td>
+                    <!-- <td>{{ item.user_updated}}</td> -->
                     <!-- para fecha formateada |date: "d/m/Y H:i:s" -->
 
                     <td>
-                        <!-- <a href="{% url 'component:product_edit' item.id %}"
-                            class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
-                                class="far fa-edit"></i></a>
-                        <a href="{% url 'component:sub_product' item.id %}"
-                            class="btn btn-sm btn-outline-info btn-circle" role="button">
-                            <i class="fab fa-product-hunt"></i></a>
+                        <button class="btn btn-sm btn-outline-warning btn-circle"
+                            onclick="edit_sub_product({{item.id}})"><i class="far fa-edit"></i></button>
+
                         <button class="btn btn-sm btn-outline-danger btn-circle"
-                            onclick="return abrir_modal('{% url 'component:product_delete' item.id %}')"><i
-                                class="far fa-trash-alt"></i></button> -->
+                            onclick="return abrir_modal('{% url 'component:sub_product_delete' item.id %}')"><i
+                                class="far fa-trash-alt"></i></button>
 
 
                     </td>
@@ -200,22 +212,23 @@
 
         e.preventDefault();
         var data = new FormData($("#formulario").get(0));
-
+        var id_product = $("#id_product").val();
         var token = '{{csrf_token}}';
 
-        console.log(data);
+        console.log(id_product);
 
         $.ajax({
-            headers: { "X-CSRFToken":token },
+            headers: { "X-CSRFToken": token },
             type: "POST",
-            url: "/component/sub_product/new",
+            url: "/component/sub_product/new/" + id_product,
             data: data,
             processData: false,
             contentType: false,
             success: function (response) {
 
-                aux = response;
-                console.log(aux);
+                if (response == 'ok') {
+                    location.reload();
+                }
             },
             error: function (jqXHR, textStatus, errorThrow) {
                 console.log(textStatus, errorThrow);
@@ -227,60 +240,23 @@
 
     });
 
+    function edit_sub_product(id) {
 
-    // funcion para guardar sub producto
-    function guardar(id_product) {
-
-        id_product = id_product;
-        // name = $("#pases").val();
-        // place = $("#porcentaje").val();
-        // img = $("#description").val();
-        // var data = {
-        //     id_contract: id_contract,
-        //     id_product: id_product,
-        //     pases: pases,
-        //     porcentaje: porcentage,
-        //     description: description
-        // };
-        var data = new FormData($('#formulario').get(0));
-
+        var id_sub_product = id;
         var token = '{{csrf_token}}';
-
-        // console.log(data);
-
         $.ajax({
             headers: { "X-CSRFToken": token },
-            type: "POST",
-            url: "/component/sub_product/new",
-            data: data,
+            type: "GET",
+            url: "/component/sub_product_id/view/" + id_sub_product,
+
             success: function (response) {
-                // aux["order"][0].category
-                // if (response['obj'] == 'OK') {
-                //     // mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
-                //     $("#tbodyid").empty();
-                //     for (let index = 0; index < response["order"].length; index++) {
-                //         var estado = '<button type="button" class="btn btn-outline-danger btn-sm" onclick="update(' + response["order"][index].id + ')" ><i class="far fa-times-circle"></i></button>';
-                //         if (response["order"][index].estado == true) {
-                //             estado = '<button type="button" class="btn btn-outline-success btn-sm" onclick="update(' + response["order"][index].id + ')" ><i class="far fa-check-circle"></i></button>';
-                //         }
-                //         var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
-                //             '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +
-                //             '<td> ' + response["order"][index].pass + '</td>' +
-                //             '<td> ' + response["order"][index].porcentage + '</td>' +
-                //             '<td> ' + response["order"][index].description + '</td>' +
-                //             '<td> ' + estado + '</td>' +
-                //             '<td><button type="button" class="btn btn-outline-primary btn-sm"  onclick="eliminar(' + response["order"][index].id + ');" >X</button></td>' +
-                //             '</tr>';
 
-                //         $('#detalles').append(fila);
+                console.log(response.sub_product[0].state)
+                $("#id_sub_product").val(response.sub_product[0].id)
+                $("#id_name").val(response.sub_product[0].name)
+                $("#id_place").val(response.sub_product[0].place)
+                $("#id_measure").val(response.sub_product[0].measure)
 
-                //     }
-                // } else {
-
-                // }
-
-                aux = response;
-                console.log(aux);
             },
             error: function (jqXHR, textStatus, errorThrow) {
                 console.log(textStatus, errorThrow);
@@ -288,14 +264,10 @@
                 cerrar_modal();
             }
         });
-        $("#product_id").val('');
-        $("#pases").val('');
-        $("#porcentaje").val('');
-        $("#description").val('');
-
-
-
     }
+
+
+
 </script>
 
 
