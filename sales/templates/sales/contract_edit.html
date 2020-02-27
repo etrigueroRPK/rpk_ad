@@ -427,7 +427,7 @@
             success: function (response) {
                 // aux["order"][0].category
                 if (response['obj'] == 'OK') {
-                    mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
+                    mensaje("El producto asosiado a la orden de pauta se elimino. ", "orange");
                     $("#tbodyid").empty();
                     for (let index = 0; index < response["order"].length; index++) {
                         var estado = '<button type="button" class="btn btn-outline-danger btn-sm"><i class="far fa-times-circle" onclick="update('+response["order"][index].id+')" ></i></button>';
