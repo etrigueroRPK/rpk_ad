@@ -101,18 +101,78 @@
                                 </div>
 
                             </div>
+                            <div class="form-group row text-right">
+                                <div class="col-10">
+                                    <button type="button" class="btn btn-outline-info"
+                                        onclick="asignar_productos()">Seleccionar productos</button>
+                                </div>
+
+                            </div>
 
 
                             <div class="dropdown-divider"></div>
 
-                            <div class="form-group row" id="content_product">
-                                <div class="col-6">
-                                    <div class="form-check">
-                                        <input type="checkbox" name="state" class="form-check-input" id="check_porc">
-                                        <label class="form-check-label" for="id_state">Megacenter</label>
+
+                            <div class="form-row align-items-center" id="content_product">
+                                <!-- <div class="col-auto my-1">
+                                    <div class="custom-control custom-checkbox mr-sm-2">
+                                        <input type="checkbox" name="" class="form-check-input" id="">
+                                        <label class="custom-control-label" for="id_state">Led megacenter Lpz</label>
+                                    </div>
+                                    <div class="col-auto my-1">
+                                        <button type="button" class="btn btn-outline-info"
+                                            onclick="asignar_productos({{item.id}})">Seleccionar productos</button>
+                                    </div>
+                                </div> -->
+
+                                <div class="form-row align-items-center col-12">
+                                    <div class="col-auto my-1">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="autoSizingCheck2">
+                                            <label class="form-check-label" for="autoSizingCheck2">
+                                                Megacenter
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2 my-1">
+                                        <label class="sr-only" for="inlineFormInputGroupUsername"></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">pases</div>
+                                            </div>
+                                            <input type="number" class="form-control" name="" id="" value="80" disabled>
+
+                                        </div>
 
                                     </div>
+                                    <div class="col-sm-2 my-1">
+                                        <label class="sr-only" for="inlineFormInputGroupUsername"></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">porcentaje</div>
+                                            </div>
+                                            <input type="number" class="form-control" name="" id="" value="12.4"
+                                                disabled>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-6 my-1">
+                                        <label class="sr-only" for="inlineFormInputGroupUsername"></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">descripción</div>
+                                            </div>
+                                            <input type="text" class="form-control" name="" id="" value="">
+
+                                        </div>
+
+                                    </div>
+
+
                                 </div>
+
+
 
 
                             </div>
@@ -142,6 +202,22 @@
     $(document).ready(function () {
         $('#id_client').select2({ placeholder: "Seleccione", allowClear: true });
 
+        document.getElementById("id_porcentage_contract").disabled = true;
+        document.getElementById("check_pass").checked = true;
+
+
+
+    })
+
+    function asignar_productos() {
+
+        contrato_pases = $('#id_pass_contract').val();
+        contrato_porcentaje = $('#id_porcentage_contract');
+        // =========================================================================================
+        
+
+        // =========================================================================================
+
         var token = '{{csrf_token}}';
         $.ajax({
             headers: { "X-CSRFToken": token },
@@ -154,12 +230,59 @@
                 aux = response;
                 for (i = 0; i < aux.product.length; i++) {
 
-                    console.log(aux.product[i].location);
+                    console.log(aux.product[i].time_operation);
+                    console.log(validar_pases(aux.product[i].time_operation));
 
-                    var check = '<div class="col-6"><div class="form-check">' +
-                        '<input type="checkbox" name="' + aux.product[i].id + '" class="form-check-input" id="' + aux.product[i].id + '">' +
-                        '<label class="form-check-label" for="id_state">' + aux.product[i].category + ' ' + aux.product[i].location + ' ' + aux.product[i].name + '</label></div></div>';
-                    $('#content_product').append(check);
+                    // var check = '<div class="col-6"><div class="form-check">' +
+                    //     '<input type="checkbox" name="' + aux.product[i].id + '" class="form-check-input" id="' + aux.product[i].id + '">' +
+                    //     '<label class="form-check-label" for="id_state">' + aux.product[i].category + ' ' + aux.product[i].location + ' ' + aux.product[i].name + '</label></div></div>';
+                    // $('#content_product').append(check);
+
+                    // var check = '<div class="form-row align-items-center col-12"><div class="col-auto my-1"><div class="form-check">'+
+                    //     '<input class="form-check-input" type="checkbox"><label class="form-check-label" >'+
+                    //     aux.product[i].category + ' ' + aux.product[i].location + ' ' + aux.product[i].name+'</label></div></div>'+
+                    //     '<div class="col-sm-2 my-1"><label class="sr-only" for=""></label><div class="input-group"><div class="input-group-prepend">'
+
+
+
+
+
+
+
+                    //                                     <div class="input-group-text">pases</div>
+                    //                                 </div>
+                    //                                 <input type="number" class="form-control" name="" id="" value="80"
+                    //                                     disabled>
+
+                    //                             </div>
+
+                    //                         </div>
+                    //                         <div class="col-sm-2 my-1">
+                    //                             <label class="sr-only" for="inlineFormInputGroupUsername"></label>
+                    //                             <div class="input-group">
+                    //                                 <div class="input-group-prepend">
+                    //                                     <div class="input-group-text">porcentaje</div>
+                    //                                 </div>
+                    //                                 <input type="number" class="form-control" name="" id="" value="12.4"
+                    //                                     disabled>
+
+                    //                             </div>
+
+                    //                         </div>
+                    //                         <div class="col-sm-6 my-1">
+                    //                             <label class="sr-only" for="inlineFormInputGroupUsername"></label>
+                    //                             <div class="input-group">
+                    //                                 <div class="input-group-prepend">
+                    //                                     <div class="input-group-text">descripción</div>
+                    //                                 </div>
+                    //                                 <input type="text" class="form-control" name="" id="" value="">
+
+                    //                             </div>
+
+                    //                         </div>
+
+
+                    //                     </div>'
                 }
             },
             error: function (jqXHR, textStatus, errorThrow) {
@@ -168,11 +291,98 @@
                 cerrar_modal();
             }
         });
-
-    })
-
-    function calculo_pases(){
-        
     }
+
+    function validar_pases(horas_defunc) {
+        var pases;
+        var porcentaje; 
+        var contrato = [];
+
+        if ($("#check_pass").is(":checked")) {
+            if ($("#id_pass_contract").val() == "") {
+                mensaje("Debe ingresar un valor en: pases o porcentaje valido!!!", "red");
+                $("#product_id").val('');
+                // $("#id_pass_contract").focus();
+                return;
+            }
+            pases = $("#id_pass_contract").val();
+            porcentaje = calculo_tiempo(horas_defunc, pases, null);
+
+            // console.log(horas_defunc + " | " + pases + " => " + porcentaje)
+        }
+        if ($("#check_porc").is(":checked")) {
+            if ($("#id_porcentage_contract").val() == "") {
+                mensaje("Debe ingresar un valor en: pases o porcentaje valido!!!", "red");
+                $("#product_id").val('');
+
+                return;
+            }
+            porcentaje = $("#id_porcentage_contract").val();
+            // console.log("-------------" + porcentaje);
+            pases = calculo_tiempo(horas_defunc, null, porcentaje);
+
+            // console.log(horas_defunc + " | " + pases + " => " + Math.round(porcentaje, -1))
+        }
+
+        contrato = [pases, porcentaje];
+
+        return contrato;
+
+    }
+
+
+    function calculo_tiempo(horas, pass = null, porc = null) {
+
+        // console.log(horas, pass, porc);
+        horas_fun = horas.split(":")[0];
+        minutos_fun = horas.split(":")[1];
+
+        total_segundos = (horas_fun * 60 * 60) + (minutos_fun * 60);
+        // console.log(total_segundos);
+        if (pass) {
+            seg_contract = tiempo_default_spot * pass;
+            porcentaje = (seg_contract * 100) / total_segundos;
+            return porcentaje;
+            // console.log(porcentaje);
+
+        }
+        if (porc) {
+            seg_contract = (porc * total_segundos) / 100;
+            pass = seg_contract / tiempo_default_spot;
+            return pass;
+            // console.log(pass);
+
+        }
+
+    }
+    // para validar que se encuentre pases o porcentaje colocado
+    $("#check_pass").change(function () {
+
+        // console.log($("#check_pass").is(":checked"));
+        if ($("#check_pass").is(":checked")) {
+            document.getElementById("id_pass_contract").disabled = false;
+            document.getElementById("id_porcentage_contract").disabled = true;
+            $("#id_porcentage_contract").val('');
+            $("#id_pass_contract").focus();
+            document.getElementById("check_porc").checked = false;
+        }
+
+    });
+    $("#check_porc").change(function () {
+
+        // console.log($("#check_porc").is(":checked"));
+        // TODO: vaciar las cajas de los checkboxs
+
+        if ($("#check_porc").is(":checked")) {
+            document.getElementById("id_pass_contract").disabled = true;
+            document.getElementById("id_porcentage_contract").disabled = false;
+            $("#id_pass_contract").val('');
+            $("#id_porcentage_contract").focus();
+            document.getElementById("check_pass").checked = false;
+
+        }
+
+    });
+    // fin para validar pases
 </script>
 {% endblock %}
