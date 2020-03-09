@@ -1,0 +1,203 @@
+{% extends 'base/base.html' %}
+
+
+
+
+{% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data" id="formulario">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12" id="seleccion">
+
+
+
+        <div class="card border-left-primary shadow h-100 py-2">
+
+
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Generador de playlist
+                        </div>
+                        <div class="dropdown-divider"></div>
+
+                        <div class="form-group row">
+                            <label for="id_product" class="col-sm-2 col-form-label">Productos</label>
+                            <div class="col-sm-6">
+                                <select name="product" id="id_product" required class="form-control">
+                                    <option value=""> Selecciona</option>
+                                    {% for item in obj %}
+                                    <option value="{{item.id}}"> {{item.category}} {{item.location}} {{item.name}} {{item.time_operating}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id_create_date" class="col-sm-2 col-form-label">Fecha de creacion</label>
+                            <div class="col-sm-4 ">
+                                <input type="date" name="create_date" class="form-control" id="id_create_date"
+                                    value="{% if obj %}{{obj.start_datev|date:'Y-m-d'}}{% endif %}">
+                            </div>
+                        </div>
+
+                        
+                        <div class="form-group row text-right">
+                                <div class="col-10">
+                                    <button type="button" class="btn btn-outline-info"
+                                        onclick="seleccionar_contratos()">Playlist con contratos activos</button>
+                                        <button type="button" class="btn btn-outline-secondary"
+                                        onclick="seleccionar_contratos()">Simular playlist seleccionando</button>
+                                </div>
+
+                        </div>
+
+
+                        <div class="dropdown-divider"></div>
+
+
+                    
+
+                        <div class="form-row text-center ">
+
+                            <div class="col-sm-10">
+                                <a href="{% url 'sales:contract_list' %}" class="btn btn-danger"><span
+                                        class="fa fa-undo"> Cancelar</span></a>
+                                <button type="submit" class="btn btn-success"><span class="fa fa-save"></span>
+                                    Guardar</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+{% endblock %}
+
+{% block js_page %}
+<script>
+    $(document).ready(function () {
+        $('#id_product').select2({ placeholder: "Seleccione", allowClear: true });
+
+        document.getElementById("id_porcentage_contract").disabled = true;
+        document.getElementById("check_pass").checked = true;
+
+        
+
+    })
+
+    function seleccionar_contratos(){
+        var token = '{{csrf_token}}';
+
+        id_product = $('#id_product').val();
+
+        if(!id_product){
+            mensaje("Debe seleccionar un producto!!!", "red");
+        }
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/content/playlist/contract_list/",
+            data: id_product,
+            
+            success: function (response) {
+                console.log(response)
+                if (response == 'ok') {
+                    
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+
+    $("form").submit(function (e) {
+
+        e.preventDefault();
+
+        if ($("#check_pass").is(":checked")) {
+            if ($("#id_pass_contract").val() == "") {
+                mensaje("Debe ingresar un valor en: 'pases' valido!!!", "red");
+                $("#product_id").val('');
+                return;
+            }
+        }
+        if ($("#check_porc").is(":checked")) {
+            if ($("#id_porcentage_contract").val() == "") {
+                mensaje("Debe ingresar un valor en: 'porcentaje'  valido!!!", "red");
+                $("#product_id").val('');
+
+                return;
+            }
+        }
+        var data = new FormData($("#formulario").get(0));
+
+        var token = '{{csrf_token}}';
+
+        // console.log(data);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/sales/contract/new/",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log(response)
+                if (response == 'ok') {
+                    window.location.href = "/sales/contract/";
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+
+
+    });
+
+
+
+    // para validar que se encuentre pases o porcentaje colocado
+    $("#check_pass").change(function () {
+
+        // console.log($("#check_pass").is(":checked"));
+        if ($("#check_pass").is(":checked")) {
+            document.getElementById("id_pass_contract").disabled = false;
+            document.getElementById("id_porcentage_contract").disabled = true;
+            $("#id_porcentage_contract").val('');
+            $("#id_pass_contract").focus();
+            document.getElementById("check_porc").checked = false;
+        }
+
+    });
+    $("#check_porc").change(function () {
+
+        // console.log($("#check_porc").is(":checked"));
+        // TODO: vaciar las cajas de los checkboxs
+
+        if ($("#check_porc").is(":checked")) {
+            document.getElementById("id_pass_contract").disabled = true;
+            document.getElementById("id_porcentage_contract").disabled = false;
+            $("#id_pass_contract").val('');
+            $("#id_porcentage_contract").focus();
+            document.getElementById("check_pass").checked = false;
+
+        }
+
+    });
+    // fin para validar pases
+</script>
+{% endblock %}

@@ -3,6 +3,8 @@ from bases.models import ClassModel
 
 from component.models import Product
 
+from datetime import datetime
+
 # modelo para clientes
 
 class Client(ClassModel):
@@ -20,7 +22,8 @@ class Contract(ClassModel):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '{}:{}:{}'.format(self.client.name,self.start_date,self.end_date)
+        
+        return '{} desde el {} al {}'.format(self.client.name, self.start_date   ,self.end_date)
 
     
 

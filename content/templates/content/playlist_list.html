@@ -6,7 +6,7 @@
 <div class="card shadow mb-4">
     <!-- Card Header - Dropdown -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Listado de videos</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Listas de reproduccion</h6>
         <div class="dropdown no-arrow">
             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -14,7 +14,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                 <div class="dropdown-header">Acciones:</div>
-                <a class="dropdown-item" href="{% url 'content:video_new' %}">Nuevo</a>
+                <a class="dropdown-item" href="{% url 'content:playlist_generator' %}">Generar nuevo playlist</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Something else here</a>
             </div>
@@ -23,7 +23,7 @@
     <!-- Card Body -->
     <div class="card-body">
         {% if not obj %}
-        <div class="alert alert-info">No hay videos registrados</div>
+        <div class="alert alert-info">No hay listas generadas</div>
 
         {% else %}
         <div class="table-responsive">

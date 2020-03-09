@@ -20,6 +20,8 @@ from .forms import VideoForm
 
 from bases.views import SinPrivilegios
 
+from component.models import Product
+
 # vistas para Categorias
 # TODO: completar los privilegios de los usuarios para cada vista
 
@@ -85,5 +87,30 @@ def video_delete(request, id):
 
         contexto = {'obj': 'OK'}
         return HttpResponse('Video  Inactivada')
+
+    return render(request, template_name, contexto)
+
+
+# ==========================================================
+# para manejar listas de reproduccion
+# ==========================================================
+
+def playlist_list(request):
+    contexto = {}
+    template_name = 'content/playlist_list.html'
+    if request.method == 'GET':
+        contexto = {}
+
+    return render(request, template_name, contexto)
+
+
+
+def playlist_generator(request):
+    contexto = {}
+    template_name = 'content/playlist_form.html'
+
+    if request.method == 'GET':
+        product = Product.objects.filter(state = 1).all()
+        contexto = {'obj':product}
 
     return render(request, template_name, contexto)

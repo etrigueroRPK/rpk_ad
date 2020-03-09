@@ -2,6 +2,7 @@ from django.db import models
 
 from bases.models import ClassModel
 from sales.models import Contract
+from component.models import Product
 # Create your models here.
  
 
@@ -16,5 +17,20 @@ class Video(ClassModel):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
 
     def __str__(self):
+        print("++++++++++++++++++++++++++++++++")
+        print(self.duration)
         return '{}:{}'.format(self.name, self.duration)
 
+    def duration_all(self):
+        duration = str(self.duration)
+        return duration
+
+
+class play_list(ClassModel):
+    create_date = models.DateField()
+    play_list = models.FileField(upload_to='play_list', null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    
+
+    def __str__(self):
+        return '{} del {} '.format(self.product, self.create_date)
