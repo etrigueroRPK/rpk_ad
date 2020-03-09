@@ -5,7 +5,7 @@
 
 {% block page_content %}
 
-<form method="POST" class="form-group" enctype="multipart/form-data">
+<form method="POST" class="form-group" enctype="multipart/form-data" id="formulario">
     {% csrf_token %}
 
     <div class="col-xl-12 col-md-12 mb-12" id="seleccion">
@@ -101,13 +101,13 @@
                                 </div>
 
                             </div>
-                            <div class="form-group row text-right">
+                            <!-- <div class="form-group row text-right">
                                 <div class="col-10">
                                     <button type="button" class="btn btn-outline-info"
                                         onclick="asignar_productos()">Seleccionar productos</button>
                                 </div>
 
-                            </div>
+                            </div> -->
 
 
                             <div class="dropdown-divider"></div>
@@ -125,12 +125,12 @@
                                     </div>
                                 </div> -->
 
-                                <div class="form-row align-items-center col-12">
+                                <!-- <div class="form-row align-items-center col-12">
                                     <div class="col-auto my-1">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="autoSizingCheck2">
+                                            <input class="form-check-input" type="checkbox" id="autoSizingCheck2" name="check[]">
                                             <label class="form-check-label" for="autoSizingCheck2">
-                                                Megacenter
+                                                prueba
                                             </label>
                                         </div>
                                     </div>
@@ -140,7 +140,7 @@
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">pases</div>
                                             </div>
-                                            <input type="number" class="form-control" name="" id="" value="80" disabled>
+                                            <input type="number" class="form-control" name="pases[]"  value="333" >
 
                                         </div>
 
@@ -149,10 +149,9 @@
                                         <label class="sr-only" for="inlineFormInputGroupUsername"></label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <div class="input-group-text">porcentaje</div>
+                                                <div class="input-group-text">%</div>
                                             </div>
-                                            <input type="number" class="form-control" name="" id="" value="12.4"
-                                                disabled>
+                                            <input type="text" class="form-control" name="porcentaje[]"  value="333" readonly>
 
                                         </div>
 
@@ -163,14 +162,14 @@
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">descripción</div>
                                             </div>
-                                            <input type="text" class="form-control" name="" id="" value="">
+                                            <input type="text" class="form-control" name="descripcion[]"  value="">
 
                                         </div>
 
                                     </div>
 
 
-                                </div>
+                                </div> -->
 
 
 
@@ -205,19 +204,6 @@
         document.getElementById("id_porcentage_contract").disabled = true;
         document.getElementById("check_pass").checked = true;
 
-
-
-    })
-
-    function asignar_productos() {
-
-        contrato_pases = $('#id_pass_contract').val();
-        contrato_porcentaje = $('#id_porcentage_contract');
-        // =========================================================================================
-        
-
-        // =========================================================================================
-
         var token = '{{csrf_token}}';
         $.ajax({
             headers: { "X-CSRFToken": token },
@@ -225,64 +211,15 @@
             url: "/sales/contract/list",
 
             success: function (response) {
-                // aux["order"][0].category
 
                 aux = response;
                 for (i = 0; i < aux.product.length; i++) {
 
-                    console.log(aux.product[i].time_operation);
-                    console.log(validar_pases(aux.product[i].time_operation));
+                    var check = '<div class="col-6"><div class="form-check">' +
+                        '<input type="checkbox" name="check[]" class="form-check-input" value="' + aux.product[i].id + '">' +
+                        '<label class="form-check-label" for="id_state">' + aux.product[i].category + ' ' + aux.product[i].location + ' ' + aux.product[i].name + '</label></div></div>';
 
-                    // var check = '<div class="col-6"><div class="form-check">' +
-                    //     '<input type="checkbox" name="' + aux.product[i].id + '" class="form-check-input" id="' + aux.product[i].id + '">' +
-                    //     '<label class="form-check-label" for="id_state">' + aux.product[i].category + ' ' + aux.product[i].location + ' ' + aux.product[i].name + '</label></div></div>';
-                    // $('#content_product').append(check);
-
-                    // var check = '<div class="form-row align-items-center col-12"><div class="col-auto my-1"><div class="form-check">'+
-                    //     '<input class="form-check-input" type="checkbox"><label class="form-check-label" >'+
-                    //     aux.product[i].category + ' ' + aux.product[i].location + ' ' + aux.product[i].name+'</label></div></div>'+
-                    //     '<div class="col-sm-2 my-1"><label class="sr-only" for=""></label><div class="input-group"><div class="input-group-prepend">'
-
-
-
-
-
-
-
-                    //                                     <div class="input-group-text">pases</div>
-                    //                                 </div>
-                    //                                 <input type="number" class="form-control" name="" id="" value="80"
-                    //                                     disabled>
-
-                    //                             </div>
-
-                    //                         </div>
-                    //                         <div class="col-sm-2 my-1">
-                    //                             <label class="sr-only" for="inlineFormInputGroupUsername"></label>
-                    //                             <div class="input-group">
-                    //                                 <div class="input-group-prepend">
-                    //                                     <div class="input-group-text">porcentaje</div>
-                    //                                 </div>
-                    //                                 <input type="number" class="form-control" name="" id="" value="12.4"
-                    //                                     disabled>
-
-                    //                             </div>
-
-                    //                         </div>
-                    //                         <div class="col-sm-6 my-1">
-                    //                             <label class="sr-only" for="inlineFormInputGroupUsername"></label>
-                    //                             <div class="input-group">
-                    //                                 <div class="input-group-prepend">
-                    //                                     <div class="input-group-text">descripción</div>
-                    //                                 </div>
-                    //                                 <input type="text" class="form-control" name="" id="" value="">
-
-                    //                             </div>
-
-                    //                         </div>
-
-
-                    //                     </div>'
+                    $('#content_product').append(check);
                 }
             },
             error: function (jqXHR, textStatus, errorThrow) {
@@ -291,70 +228,128 @@
                 cerrar_modal();
             }
         });
-    }
 
-    function validar_pases(horas_defunc) {
-        var pases;
-        var porcentaje; 
-        var contrato = [];
+    })
+
+    // function asignar_productos() {
+
+    //     $('#content_product').empty();
+
+    //     pases = $('#id_pass_contract').val();
+    //     porcentaje = $('#id_porcentage_contract').val();
+
+    //     var token = '{{csrf_token}}';
+    //     $.ajax({
+    //         headers: { "X-CSRFToken": token },
+    //         type: "GET",
+    //         url: "/sales/contract/list",
+
+    //         success: function (response) {
+
+    //             aux = response;
+    //             for (i = 0; i < aux.product.length; i++) {
+
+    //                 if ($("#check_pass").is(":checked")) {
+    //                     if ($("#id_pass_contract").val() == "") {
+    //                         mensaje("Debe ingresar un valor en: pases o porcentaje valido!!!", "red");
+    //                         $("#product_id").val('');
+    //                         return;
+    //                     }
+    //                     porcentaje = calculo_tiempo(aux.product[i].time_operation, pases, null);
+    //                     console.log(aux.product[i].time_operation + " | " + pases + " => " + porcentaje)
+    //                 }
+    //                 if ($("#check_porc").is(":checked")) {
+    //                     if ($("#id_porcentage_contract").val() == "") {
+    //                         mensaje("Debe ingresar un valor en: pases o porcentaje valido!!!", "red");
+    //                         $("#product_id").val('');
+
+    //                         return;
+    //                     }
+
+    //                     pases = calculo_tiempo(aux.product[i].time_operation, null, porcentaje);
+    //                     console.log(porcentaje)
+    //                     console.log(aux.product[i].time_operation + " | " + pases + " => " + Math.round(porcentaje, -1))
+    //                 }
+
+
+    //                 // var check = '<div class="col-6"><div class="form-check">' +
+    //                 //     '<input type="checkbox" name="' + aux.product[i].id + '" class="form-check-input" id="' + aux.product[i].id + '">' +
+    //                 //     '<label class="form-check-label" for="id_state">' + aux.product[i].category + ' ' + aux.product[i].location + ' ' + aux.product[i].name + '</label></div></div>';
+
+    //                 var check = '<div class="form-row align-items-center col-12"><div class="col-2 my-1"><div class="form-check">' +
+    //                     '<input class="form-check-input" type="checkbox" name="check[]" value="'+aux.product[i].id +'"><label class="form-check-label" >' +
+    //                     aux.product[i].category + ' ' + aux.product[i].location + ' ' + aux.product[i].name + '</label></div></div>' +
+    //                     '<div class="col-sm-2 my-1"><label class="sr-only" for=""></label><div class="input-group"><div class="input-group-prepend">' +
+    //                     '<div class="input-group-text">pases</div></div>' +
+    //                     '<input type="text" class="form-control" name="pases[]"  value="' + pases + '" readonly ></div></div>' +
+    //                     '<div class="col-sm-2 my-1"><label class="sr-only" for="inlineFormInputGroupUsername"></label>' +
+    //                     '<div class="input-group"><div class="input-group-prepend"><div class="input-group-text">%</div> </div>' +
+    //                     ' <input type="text" class="form-control" name="porcentaje[]"  value="' + porcentaje + '" readonly></div></div> ' +
+    //                     '<div class="col-sm-6 my-1"><label class="sr-only" for="inlineFormInputGroupUsername"></label><div class="input-group">' +
+    //                     '<div class="input-group-prepend"><div class="input-group-text">descripción</div></div>' +
+    //                     '<input type="text" class="form-control" name="descripcion[]" value=""> </div></div> </div>';
+
+    //                 $('#content_product').append(check);
+    //             }
+    //         },
+    //         error: function (jqXHR, textStatus, errorThrow) {
+    //             console.log(textStatus, errorThrow);
+    //             mensaje(errorThrow, 'red');
+    //             cerrar_modal();
+    //         }
+    //     });
+    // }
+
+    $("form").submit(function (e) {
+
+        e.preventDefault();
 
         if ($("#check_pass").is(":checked")) {
             if ($("#id_pass_contract").val() == "") {
-                mensaje("Debe ingresar un valor en: pases o porcentaje valido!!!", "red");
+                mensaje("Debe ingresar un valor en: 'pases' valido!!!", "red");
                 $("#product_id").val('');
-                // $("#id_pass_contract").focus();
                 return;
             }
-            pases = $("#id_pass_contract").val();
-            porcentaje = calculo_tiempo(horas_defunc, pases, null);
-
-            // console.log(horas_defunc + " | " + pases + " => " + porcentaje)
         }
         if ($("#check_porc").is(":checked")) {
             if ($("#id_porcentage_contract").val() == "") {
-                mensaje("Debe ingresar un valor en: pases o porcentaje valido!!!", "red");
+                mensaje("Debe ingresar un valor en: 'porcentaje'  valido!!!", "red");
                 $("#product_id").val('');
 
                 return;
             }
-            porcentaje = $("#id_porcentage_contract").val();
-            // console.log("-------------" + porcentaje);
-            pases = calculo_tiempo(horas_defunc, null, porcentaje);
-
-            // console.log(horas_defunc + " | " + pases + " => " + Math.round(porcentaje, -1))
         }
+        var data = new FormData($("#formulario").get(0));
 
-        contrato = [pases, porcentaje];
+        var token = '{{csrf_token}}';
 
-        return contrato;
+        // console.log(data);
 
-    }
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/sales/contract/new/",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log(response)
+                if (response == 'ok') {
+                    window.location.href = "/sales/contract/";
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
 
 
-    function calculo_tiempo(horas, pass = null, porc = null) {
+    });
 
-        // console.log(horas, pass, porc);
-        horas_fun = horas.split(":")[0];
-        minutos_fun = horas.split(":")[1];
 
-        total_segundos = (horas_fun * 60 * 60) + (minutos_fun * 60);
-        // console.log(total_segundos);
-        if (pass) {
-            seg_contract = tiempo_default_spot * pass;
-            porcentaje = (seg_contract * 100) / total_segundos;
-            return porcentaje;
-            // console.log(porcentaje);
 
-        }
-        if (porc) {
-            seg_contract = (porc * total_segundos) / 100;
-            pass = seg_contract / tiempo_default_spot;
-            return pass;
-            // console.log(pass);
-
-        }
-
-    }
     // para validar que se encuentre pases o porcentaje colocado
     $("#check_pass").change(function () {
 
