@@ -21,6 +21,7 @@ from .forms import VideoForm
 from bases.views import SinPrivilegios
 
 from component.models import Product
+from sales.models import Contract, Order
 
 # vistas para Categorias
 # TODO: completar los privilegios de los usuarios para cada vista
@@ -112,5 +113,39 @@ def playlist_generator(request):
     if request.method == 'GET':
         product = Product.objects.filter(state = 1).all()
         contexto = {'obj':product}
+
+    if request.method == 'POST':
+        
+        id_product = request.POST.get("id_product")
+        
+        order = Order.objects.filter(product_id = id_product, state = 1).all()
+        
+        
+
+
+        lista_order_json = []
+        for item in order:
+            print(item.contract.id)
+            videos = Video.objects.all().filter(contract_id = item.contract.id, state = True)
+            for video in videos:
+                
+                print(video)
+                objeto_order = {}
+                objeto_order["id"] = item.id          
+                objeto_order["pass"] = item.pass_contract
+                objeto_order["porcentage"] = item.porcentage_contract
+                objeto_order["contract"] = item.contract.client.name + " desde " + str(item.contract.start_date) + " al " + str(item.contract.end_date)
+                objeto_order["description"] = item.description
+                objeto_order["video_name"] = video.name
+                objeto_order["video_duration"] = video.duration_all()
+                # Se deberia asignar al dictionary todos los atributos que desee enviar en el json.
+                lista_order_json.append(objeto_order)
+            
+        print(lista_order_json)
+
+        contexto = {'obj': 'OK', 'order': lista_order_json}
+        return HttpResponse(json.dumps(contexto), content_type=json)
+
+        # return HttpResponse('ok')
 
     return render(request, template_name, contexto)

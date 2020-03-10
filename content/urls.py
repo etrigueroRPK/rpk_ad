@@ -14,7 +14,7 @@ urlpatterns = [
     # rutas para videos
     path('playlist/', playlist_list, name='playlist_list'),
     path('playlist/generator', playlist_generator, name='playlist_generator'),
-    path('playlist/contract_list', playlist_generator, name='playlist_contract_list'),
+    path('playlist/contract_list/', playlist_generator, name='playlist_contract_list'),
     
 
 

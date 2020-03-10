@@ -95,17 +95,20 @@
         var token = '{{csrf_token}}';
 
         id_product = $('#id_product').val();
-
+        var data = {'id_product': id_product};
+        
         if(!id_product){
             mensaje("Debe seleccionar un producto!!!", "red");
+            return
         }
 
         $.ajax({
             headers: { "X-CSRFToken": token },
             type: "POST",
             url: "/content/playlist/contract_list/",
-            data: id_product,
-            
+            data: data,
+            // processData: false,
+            // contentType: false,
             success: function (response) {
                 console.log(response)
                 if (response == 'ok') {

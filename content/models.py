@@ -17,8 +17,7 @@ class Video(ClassModel):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
 
     def __str__(self):
-        print("++++++++++++++++++++++++++++++++")
-        print(self.duration)
+        
         return '{}:{}'.format(self.name, self.duration)
 
     def duration_all(self):
