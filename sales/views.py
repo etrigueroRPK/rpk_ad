@@ -153,10 +153,19 @@ def contract_create(request):
         check = request.POST.getlist("check[]")
         pass_contract = request.POST.get("pass_contract")
         porcentage_contract = request.POST.get("porcentage_contract")
+        auspice = request.POST.get("auspice")
+        aux = False
+        if auspice == 'on':
+            aux = True
+        else:
+            aux = False
+
         if start_date == "":
             start_date = None
         if end_date == "":
             end_date = None
+        print(auspice)
+        print(aux)
         client_c = Client.objects.get(pk=client_id)
 
         contract = Contract(
@@ -164,7 +173,8 @@ def contract_create(request):
             start_date=start_date,
             end_date=end_date,
             state=1,
-            user_created=request.user
+            user_created=request.user,
+            auspice = aux
         )
         contract.save()
         pases = 0
