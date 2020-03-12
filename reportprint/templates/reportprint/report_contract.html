@@ -154,33 +154,36 @@
                 <h6 class="subtitulo">Cliente: <strong class="nombre-cliente">{{contract.client}}</strong> </h6>
                 <h6 class="subtitulo">Fecha de inicio: <strong class="nombre-cliente">
                         {% if contract.start_date %}
-                            
-                            {% if contract.start_date|date:"d/m/Y" == '01/01/1' %}
-                                Sin fecha
-                            {% else %}
-                                {{contract.start_date|date:"d/m/Y"}}
 
-                            {% endif %}
-                                
+                        {% if contract.start_date|date:"d/m/Y" == '01/01/1' %}
+                        Sin fecha
                         {% else %}
-                            Sin fecha
+                        {{contract.start_date|date:"d/m/Y"}}
+
+                        {% endif %}
+
+                        {% else %}
+                        Sin fecha
                         {% endif %}
                     </strong>
                     Fecha final: <strong class="nombre-cliente">
                         {% if contract.start_date %}
-                            
-                            {% if contract.end_date|date:"d/m/Y" == '01/01/1' %}
-                                Sin fecha
-                            {% else %}
-                                {{contract.end_date|date:"d/m/Y"}}
 
-                            {% endif %}
-                                
+                        {% if contract.end_date|date:"d/m/Y" == '01/01/1' %}
+                        Sin fecha
                         {% else %}
-                             Sin fecha
+                        {{contract.end_date|date:"d/m/Y"}}
+
+                        {% endif %}
+
+                        {% else %}
+                        Sin fecha
                         {% endif %}
                     </strong> </h6>
-                <h6 class="subtitulo">Estado: <strong class="nombre-cliente">{{contract.state|yesno:'Activo,Inactivo'}}</strong></h6>
+                <h6 class="subtitulo">Estado: <strong
+                        class="nombre-cliente">{{contract.state|yesno:'Activo,Inactivo'}}</strong>
+                         <strong
+                        class="nombre-cliente">{{contract.auspice|yesno:'Auspicio,_'}}</strong></h6>
 
             </div>
             <div class="linea-divisora"></div>
