@@ -29,7 +29,8 @@
                                 <select name="product" id="id_product" required class="form-control">
                                     <option value=""> Selecciona</option>
                                     {% for item in obj %}
-                                    <option value="{{item.id}}"> {{item.category}} {{item.location}} {{item.name}} {{item.time_operating}}</option>
+                                    <option value="{{item.id}}"> {{item.category}} {{item.location}} {{item.name}}
+                                        {{item.time_operating}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -42,22 +43,36 @@
                             </div>
                         </div>
 
-                        
+
                         <div class="form-group row text-right">
-                                <div class="col-10">
-                                    <button type="button" class="btn btn-outline-info"
-                                        onclick="seleccionar_contratos()">Playlist con contratos activos</button>
-                                        <button type="button" class="btn btn-outline-secondary"
-                                        onclick="seleccionar_contratos()">Simular playlist seleccionando</button>
-                                </div>
+                            <div class="col-10">
+                                <button type="button" class="btn btn-outline-info"
+                                    onclick="seleccionar_contratos()">Playlist con contratos activos</button>
+                                <button type="button" class="btn btn-outline-secondary"
+                                    onclick="seleccionar_contratos()">Simular playlist seleccionando</button>
+                            </div>
 
                         </div>
 
 
                         <div class="dropdown-divider"></div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-xs font-weight-bold text-primary mb-1">
+                                    Lista de clientes y spots
+                                </div>
+                                <div class="col-12" id="content_product">
+                                    
+                                </div>
+
+                                <div class="col-auto my-1">
+                                    <button type="button" class="btn btn-outline-info"
+                                        onclick="asignar_productos({{item.id}})">Seleccionar productos</button>
+                                </div>
+                            </div>
+                        </div>
 
 
-                    
 
                         <div class="form-row text-center ">
 
@@ -87,17 +102,17 @@
         document.getElementById("id_porcentage_contract").disabled = true;
         document.getElementById("check_pass").checked = true;
 
-        
+
 
     })
 
-    function seleccionar_contratos(){
+    function seleccionar_contratos() {
         var token = '{{csrf_token}}';
 
         id_product = $('#id_product').val();
-        var data = {'id_product': id_product};
-        
-        if(!id_product){
+        var data = { 'id_product': id_product };
+
+        if (!id_product) {
             mensaje("Debe seleccionar un producto!!!", "red");
             return
         }
@@ -110,13 +125,37 @@
             // processData: false,
             // contentType: false,
             success: function (response) {
-                console.log(response)
-                if (response == 'ok') {
+                aux = response;
+
+                for (i = 0; i < aux.order.length; i++) {
+
+
+                    // var check = '<div class="form-row align-items-center col-12"><div class="col-2 my-1"><div class="form-check">' +
+                    //     '<input class="form-check-input" type="checkbox" name="check[]" value="' + aux.product[i].id + '"><label class="form-check-label" >' +
+                    //     aux.product[i].category + ' ' + aux.product[i].location + ' ' + aux.product[i].name + '</label></div></div>' +
+                    //     '<div class="col-sm-2 my-1"><label class="sr-only" for=""></label><div class="input-group"><div class="input-group-prepend">' +
+                    //     '<div class="input-group-text">pases</div></div>' +
+                    //     '<input type="text" class="form-control" name="pases[]"  value="' + pases + '" readonly ></div></div>' +
+                    //     '<div class="col-sm-2 my-1"><label class="sr-only" for="inlineFormInputGroupUsername"></label>' +
+                    //     '<div class="input-group"><div class="input-group-prepend"><div class="input-group-text">%</div> </div>' +
+                    //     ' <input type="text" class="form-control" name="porcentaje[]"  value="' + porcentaje + '" readonly></div></div> ' +
+                    //     '<div class="col-sm-6 my-1"><label class="sr-only" for="inlineFormInputGroupUsername"></label><div class="input-group">' +
+                    //     '<div class="input-group-prepend"><div class="input-group-text">descripción</div></div>' +
+                    //     '<input type="text" class="form-control" name="descripcion[]" value=""> </div></div> </div>';
                     
+                    var check = '<div class="col-12" id="content_product"><div class="form-check">'+
+                    '<input class="form-check-input" type="checkbox" value="'+aux.order[i].id+'">'+
+                    '<label class="form-check-label">'+aux.order[i].contract +','+ aux.order[i].video_name +' </label></div></div>';
+
+                    $('#content_product').append(check);
+
                 }
+
+
+
             },
             error: function (jqXHR, textStatus, errorThrow) {
-                console.log(textStatus, errorThrow);
+                            console.log(textStatus, errorThrow);
                 mensaje(errorThrow, 'red');
                 cerrar_modal();
             }
@@ -125,18 +164,18 @@
 
     $("form").submit(function (e) {
 
-        e.preventDefault();
+                            e.preventDefault();
 
         if ($("#check_pass").is(":checked")) {
             if ($("#id_pass_contract").val() == "") {
-                mensaje("Debe ingresar un valor en: 'pases' valido!!!", "red");
+                            mensaje("Debe ingresar un valor en: 'pases' valido!!!", "red");
                 $("#product_id").val('');
                 return;
             }
         }
         if ($("#check_porc").is(":checked")) {
             if ($("#id_porcentage_contract").val() == "") {
-                mensaje("Debe ingresar un valor en: 'porcentaje'  valido!!!", "red");
+                            mensaje("Debe ingresar un valor en: 'porcentaje'  valido!!!", "red");
                 $("#product_id").val('');
 
                 return;
@@ -144,25 +183,25 @@
         }
         var data = new FormData($("#formulario").get(0));
 
-        var token = '{{csrf_token}}';
+        var token = '{{ csrf_token }}';
 
         // console.log(data);
 
         $.ajax({
-            headers: { "X-CSRFToken": token },
+                            headers: {"X-CSRFToken": token },
             type: "POST",
             url: "/sales/contract/new/",
             data: data,
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log(response)
+                            console.log(response)
                 if (response == 'ok') {
-                    window.location.href = "/sales/contract/";
+                            window.location.href = "/sales/contract/";
                 }
             },
             error: function (jqXHR, textStatus, errorThrow) {
-                console.log(textStatus, errorThrow);
+                            console.log(textStatus, errorThrow);
                 mensaje(errorThrow, 'red');
                 cerrar_modal();
             }
@@ -178,7 +217,7 @@
 
         // console.log($("#check_pass").is(":checked"));
         if ($("#check_pass").is(":checked")) {
-            document.getElementById("id_pass_contract").disabled = false;
+                            document.getElementById("id_pass_contract").disabled = false;
             document.getElementById("id_porcentage_contract").disabled = true;
             $("#id_porcentage_contract").val('');
             $("#id_pass_contract").focus();
@@ -192,7 +231,7 @@
         // TODO: vaciar las cajas de los checkboxs
 
         if ($("#check_porc").is(":checked")) {
-            document.getElementById("id_pass_contract").disabled = true;
+                            document.getElementById("id_pass_contract").disabled = true;
             document.getElementById("id_porcentage_contract").disabled = false;
             $("#id_pass_contract").val('');
             $("#id_porcentage_contract").focus();

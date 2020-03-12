@@ -136,6 +136,7 @@ def playlist_generator(request):
                 objeto_order["porcentage"] = item.porcentage_contract
                 objeto_order["contract"] = item.contract.client.name + " desde " + str(item.contract.start_date) + " al " + str(item.contract.end_date)
                 objeto_order["description"] = item.description
+                objeto_order["video_id"] = video.id
                 objeto_order["video_name"] = video.name
                 objeto_order["video_duration"] = video.duration_all()
                 # Se deberia asignar al dictionary todos los atributos que desee enviar en el json.
