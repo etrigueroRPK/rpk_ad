@@ -116,7 +116,7 @@
                                 <div class="col-sm-2">Estado</div>
                                 <div class="col-sm-10">
                                     <div class="form-check">
-                                        <input type="checkbox" name="state" class="form-check-input" {% if obj.state %}
+                                        <input type="checkbox" name="state" class="form-check-input" {% if obj.state == True %}
                                             checked {% endif %} id="id_state">
                                         <label class="form-check-label" for="id_state">
                                             Marcar estado.
@@ -155,6 +155,8 @@
 <script>
     $(document).ready(function () {
         $('#id_contract').select2({ placeholder: "Seleccione", allowClear: true });
+
+        $('#id_state').prop("checked", true);
 
     })
 
