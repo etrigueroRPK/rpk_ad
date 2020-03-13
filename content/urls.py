@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import VideoView, VideoNew, VideoEdit, VideoForm, video_delete, \
-    playlist_list, playlist_generator
+    playlist_list, playlist_generator, playlist_order
 
 urlpatterns = [
     # vistas para categorias
@@ -16,7 +16,7 @@ urlpatterns = [
     path('playlist/generator', playlist_generator, name='playlist_generator'),
     path('playlist/contract_list/', playlist_generator, name='playlist_contract_list'),
 
-    path('playlist/generator/generate', playlist_generator, name='playlist_generate'),
+    path('playlist/generator/order/', playlist_order, name='playlist_order'),
     
 
 
