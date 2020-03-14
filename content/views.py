@@ -143,6 +143,8 @@ def playlist_generator(request):
 
         # print(lista_order_json)
 
+
+
         contexto = {'obj': 'OK', 'order': lista_order_json}
         return HttpResponse(json.dumps(contexto), content_type=json)
 
@@ -153,7 +155,7 @@ def playlist_generator(request):
 
 def playlist_order(request):
     contexto = {}
-    template_name = ''
+    
 
     if request.method == 'POST':
 
@@ -190,20 +192,18 @@ def playlist_order(request):
 
         lista_nueva = complet_pass(lista_clientes_spot)
 
-        # for lista in lista_clientes_spot:
-        #     print(lista)
-        
-        
-        
-        # print(convert_to_seconds(time_operating))
 
-        # print(time_operating)
-
-        # print(product_id)
-        # print(client_spot_list)
         contexto = {'obj': 'OK', 'order': lista_nueva}
         return HttpResponse(json.dumps(contexto), content_type=json)
     return HttpResponse('ok')
+
+# def extraxt_data_list(listas):
+#     time_pauta = 0
+#     time_client = 0
+#     loop_pauta = 0
+#     time_day = 0
+#     time_contract = 
+#     for item in listas:
 
 
 def complet_pass(listas):

@@ -48,7 +48,7 @@
                             <div class="col-10">
                                 <button type="button" class="btn btn-outline-info" id="btn_clientes"
                                     onclick="seleccionar_contratos()">Playlist con contratos activos</button>
-                                <button type="button" class="btn btn-outline-secondary"
+                                <button type="button" class="btn btn-outline-secondary" id="btn_clientes_antiguos"
                                     onclick="seleccionar_contratos()">Simular playlist seleccionando</button>
                             </div>
 
@@ -64,6 +64,10 @@
                                 <div class="col-12" id="content_product">
 
                                 </div>
+                                <div class="col-12" id="content_product_spots">
+
+                                </div>
+
 
                                
                             </div>
@@ -128,15 +132,14 @@
                 aux = response;
 
                 for (i = 0; i < aux.order.length; i++) {
-
                     var check = '<div class="col-12" id="content_product"><div class="form-check">' +
                         '<input class="form-check-input" type="checkbox" name="clientes_spots"  value="' + aux.order[i].id+'-'+aux.order[i].video_id + '" checked>' +
                         '<label class="form-check-label">' + aux.order[i].contract + ', pases: ' + aux.order[i].pass +', %: '+ aux.order[i].porcentage + ', ' + aux.order[i].video_name + ' , duracion: ' + aux.order[i].video_duration + ' </label></div></div>';
                     $('#content_product').append(check);
-
                 }
 
                 $('#btn_clientes').prop('disabled', true);
+                $('#btn_clientes_antiguos').prop('disabled', true);
 
             },
             error: function (jqXHR, textStatus, errorThrow) {
@@ -162,10 +165,15 @@
             processData: false,
             contentType: false,
             success: function (response) {
+                $('#content_product').remove();
                 console.log(response)
-                // if (response == 'ok') {
-                //     window.location.href = "/sales/contract/";
-                // }
+                aux = response;
+                for (i = 0; i < aux.order.length; i++) {
+                    var check = '<div class="col-12" id="content_product"><div class="form-check">' +
+                        '<label class="form-check-label">' + aux.order[i].client + ', ' + aux.order[i].video_name + ' , duracion: ' + aux.order[i].duration + ' </label></div></div>';
+                    
+                    $('#content_product_spots').append(check);
+                }
             },
             error: function (jqXHR, textStatus, errorThrow) {
                 console.log(textStatus, errorThrow);
