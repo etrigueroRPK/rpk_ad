@@ -53,11 +53,76 @@
                             </div>
 
                         </div>
+                        <div class="dropdown-divider"> </div>
+                        <div class="row" id="informacion_spots">
+                            <div class="card col-8 ">
+                                <div class="card-body">
+                                    <table class="table table-sm table-bordered" id="tabla_spot">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Cliente, spot</th>
+                                                <th scope="col">Duracion</th>
+                                                <th scope="col">Repeticiones</th>
+                                                <th scope="col">Tiempo total (s)</th>
+                                                <th scope="col">Porcentaje por spot</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla_boby_spot">
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card col-4">
+                                <div class="card-body p-0">
+                                    <div id="grafico_spots" style="width: 500px; height: 400px;"></div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row" id="informacion_clientes">
+                            <div class="card col-8 ">
+                                <div class="card-body">
+                                    <table class="table table-sm table-bordered" id="tabla_cliente">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Cliente</th>
+                                                <th scope="col">tiempo total (s)</th>
+                                                <th scope="col">repeticiones de pauta</th>
+                                                <th scope="col">total segundos</th>
+                                                <th scope="col">tiempo contratado (s)</th>
+                                                <th scope="col">tiempo de bonificion</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla_body_cliente">
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card col-4">
+                                <div class="card-body p-0">
+                                    <div id="grafico_clientes" style="width: 500px; height: 400px;"></div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
 
                         <div class="dropdown-divider"></div>
-                        <div class="card">
-                            <div class="card-body">
+                        <div class="card ">
+                            <div class="card-body ">
                                 <div class="text-xs font-weight-bold text-primary mb-1">
                                     Lista de clientes y spots
                                 </div>
@@ -69,14 +134,16 @@
                                 </div>
 
 
-                               
+
                             </div>
+
                         </div>
 
+
                         <div class="col-auto my-1 text-right">
-                            <button type="button" class="btn btn-outline-info"
-                                onclick="generar_lista()">Generar Lista</button>
-                        </div> 
+                            <button type="button" class="btn btn-outline-info" onclick="generar_lista()">Generar
+                                Lista</button>
+                        </div>
 
                         <div class="form-row text-center ">
 
@@ -86,7 +153,7 @@
                                 <button type="submit" class="btn btn-success"><span class="fa fa-save"></span>
                                     Guardar</button>
                             </div>
-
+                            <button onclick="exportar()" download="your-foo.csv">Exportar CSV</button>
                         </div>
                     </div>
                 </div>
@@ -102,10 +169,18 @@
 <script>
     $(document).ready(function () {
         $('#id_product').select2({ placeholder: "Seleccione", allowClear: true });
+        $('#informacion_spots').hide();
+        $('#informacion_clientes').hide();
 
-        document.getElementById("id_porcentage_contract").disabled = true;
-        document.getElementById("check_pass").checked = true;
 
+        //    para graficos 
+        google.charts.load("current", { packages: ["corechart"] });
+
+        // otro grafico
+
+
+
+        // fin para graficos
 
 
     })
@@ -133,10 +208,12 @@
 
                 for (i = 0; i < aux.order.length; i++) {
                     var check = '<div class="col-12" id="content_product"><div class="form-check">' +
-                        '<input class="form-check-input" type="checkbox" name="clientes_spots"  value="' + aux.order[i].id+'-'+aux.order[i].video_id + '" checked>' +
-                        '<label class="form-check-label">' + aux.order[i].contract + ', pases: ' + aux.order[i].pass +', %: '+ aux.order[i].porcentage + ', ' + aux.order[i].video_name + ' , duracion: ' + aux.order[i].video_duration + ' </label></div></div>';
+                        '<input class="form-check-input" type="checkbox" name="clientes_spots"  value="' + aux.order[i].id + '-' + aux.order[i].video_id + '" checked>' +
+                        '<label class="form-check-label">' + aux.order[i].contract + ', pases: ' + aux.order[i].pass + ', %: ' + aux.order[i].porcentage + ', ' + aux.order[i].video_name + ' , duracion: ' + aux.order[i].video_duration + ' </label></div></div>';
                     $('#content_product').append(check);
                 }
+
+
 
                 $('#btn_clientes').prop('disabled', true);
                 $('#btn_clientes_antiguos').prop('disabled', true);
@@ -150,7 +227,7 @@
         });
     }
 
-    function generar_lista(){
+    function generar_lista() {
         var data = new FormData($("#formulario").get(0));
 
         var token = '{{ csrf_token }}';
@@ -166,14 +243,84 @@
             contentType: false,
             success: function (response) {
                 $('#content_product').remove();
-                console.log(response)
+                $('#informacion_spots').show();
+                $('#informacion_clientes').show();
+                // console.log(response)
                 aux = response;
+                
+
+
+
                 for (i = 0; i < aux.order.length; i++) {
                     var check = '<div class="col-12" id="content_product"><div class="form-check">' +
                         '<label class="form-check-label">' + aux.order[i].client + ', ' + aux.order[i].video_name + ' , duracion: ' + aux.order[i].duration + ' </label></div></div>';
-                    
+
                     $('#content_product_spots').append(check);
                 }
+                var datos_spot = [['Cliente, spot', 'tiempo(s)']]
+                for (j = 0; j < aux.info_spot.length; j++) {
+                    var spot = [aux.info_spot[j].client, parseInt(aux.info_spot[j].time_total)]
+                    datos_spot.push(spot)
+                    var fila = '<tr class="col-md-12" id="fila">' +
+                        '<td> ' + (parseInt(j) + parseInt(1)) + '</td>' +
+                        '<td> ' + aux.info_spot[j].client + ', ' + aux.info_spot[j].video_name + '</td>' +
+                        '<td> ' + aux.info_spot[j].duration + '</td>' +
+                        '<td> ' + aux.info_spot[j].count_repeat + '</td>' +
+                        '<td> ' + aux.info_spot[j].time_total + '</td>' +
+                        '<td> ' + aux.info_spot[j].porcentage + '</td>' +
+                        '</tr>';
+
+                    $('#tabla_spot').append(fila);
+
+
+                }
+                var datos_client = [['Cliente', 'tiempo(s)']]
+                for (k = 0; k < aux.info_client.length; k++) {
+                    var client = [aux.info_client[k].client, parseInt(aux.info_client[k].time_total_pauta)]
+                    datos_client.push(client)
+                    var fila2 = '<tr class="col-md-12" id="fila">' +
+                        '<td> ' + (parseInt(j) + parseInt(1)) + '</td>' +
+                        '<td> ' + aux.info_client[k].client + '</td>' +
+                        '<td> ' + aux.info_client[k].time_total_pauta + '</td>' +
+                        '<td> ' + aux.info_client[k].loop_pauta + '</td>' +
+                        '<td> ' + aux.info_client[k].time_total_all + '</td>' +
+                        '<td> ' + aux.info_client[k].time_contract + '</td>' +
+                        '<td> ' + aux.info_client[k].time_bonification + '</td>' +
+                        '</tr>';
+
+                    $('#tabla_cliente').append(fila2);
+
+
+                }
+
+                // para grafico===========================================
+                google.charts.setOnLoadCallback(drawChart2);
+                function drawChart2() {
+                    var data = google.visualization.arrayToDataTable(datos_spot);
+
+                    var options = {
+                        title: 'Grafico de spots',
+                        pieHole: 0.4,
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('grafico_spots'));
+                    chart.draw(data, options);
+                }
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart() {
+                    var data = google.visualization.arrayToDataTable(datos_client);
+
+                    var options = {
+                        title: 'Grafico de pauta',
+                        pieHole: 0.4,
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('grafico_clientes'));
+                    chart.draw(data, options);
+                }
+                // fin grafico ===========================================
+
+
             },
             error: function (jqXHR, textStatus, errorThrow) {
                 console.log(textStatus, errorThrow);
@@ -182,6 +329,11 @@
             }
         });
     }
+    // funcion de prueba 
+    function exportar(){
+        $("#tabla_cliente").toCSV();
+    }
+    // ++++++++++++++++++++++
 
     $("form").submit(function (e) {
 

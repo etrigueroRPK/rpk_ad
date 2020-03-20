@@ -79,15 +79,27 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+# configuracion para    POSTGRESQL
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'db_rpk_admin',
+#         'HOST': 'localhost',
+#         'USER': 'rpk_admin',
+#         'PASSWORD': '12345',
+#         'PORT': 5432
 
+#     }
+# }
+# configuracion de MYSQL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db_rpk_admin',
-        'HOST': 'localhost',
+        'HOST': '127.0.0.1',
         'USER': 'rpk_admin',
         'PASSWORD': '12345',
-        'PORT': 5432
+        'PORT': 3306
 
     }
 }

@@ -14,12 +14,16 @@ class Category(ClassModel):
     def __str__(self):
         return '{}'.format(self.name)
 
+class City(ClassModel):
+    name = models.CharField(max_length=50, unique=True, null=False, blank=False)
+
 class Location(ClassModel):
     name = models.CharField(max_length=50, help_text='Name location', unique=True)
     address = models.CharField(max_length=100, null=True, blank=True)
     img = models.ImageField(upload_to='categories', null=True, blank=True)
     start_date = models.DateField(auto_now=False, null=True, blank=True)
     end_date = models.DateField(auto_now=False, null=True, blank=True)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
 
 
     def __str__(self):

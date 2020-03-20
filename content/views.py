@@ -166,7 +166,7 @@ def playlist_order(request):
         time_operating = product.time_operating_valid()
         time_operating_second = convert_to_seconds(time_operating)
         lista_clientes_spot = []
-
+        # se vuelve a generar la lista de clientes y spots con los que selecciono el cliente
         for item in client_spot_list:
             contract_id = item.split('-')[0]
             video_id = item.split('-')[1]
@@ -189,22 +189,101 @@ def playlist_order(request):
             lista_clientes_spot.append(objeto)
 
         lista_nueva = []
+        lista_info_spots = []
+        lista_info_cliente = []
 
         lista_nueva = complet_pass(lista_clientes_spot)
+        lista_info_spots = extraxt_data_spots(lista_nueva)
+        lista_info_cliente = extract_data_client(lista_nueva)
 
-
-        contexto = {'obj': 'OK', 'order': lista_nueva}
+        contexto = {'obj': 'OK', 'order': lista_nueva, 'info_spot':lista_info_spots, 'info_client':lista_info_cliente}
         return HttpResponse(json.dumps(contexto), content_type=json)
     return HttpResponse('ok')
 
-# def extraxt_data_list(listas):
-#     time_pauta = 0
-#     time_client = 0
-#     loop_pauta = 0
-#     time_day = 0
-#     time_contract = 
-#     for item in listas:
+def extract_data_client(listas):
+    lista_nueva = []
+    aux_agregado = []
+    aux = listas
+    time_total = 0
+    for item in listas:
+        time_total = time_total + convert_to_seconds(item['duration']) 
 
+    print(time_total)
+    for item in listas:
+        if(not item['client'] in aux_agregado):
+            aux_agregado.append(item['client'])
+            tiempo_total = count_time_client(aux, item['client'])
+            if tiempo_total >1:
+                order_id = item['order_id']
+                order = Order.objects.filter(pk=order_id).get()
+                print(order.pass_contract)
+                loop_pauta = math.floor(int(item['time_operating']) / time_total)
+                print(loop_pauta)
+                time_contract = int(order.pass_contract) * 30
+                new_item = {}
+                new_item['client'] = item['client']
+                new_item['time_total_pauta'] = tiempo_total
+                new_item['loop_pauta'] = loop_pauta
+                new_item['time_total_all'] = tiempo_total * loop_pauta
+                new_item['time_contract'] = time_contract
+                new_item['time_bonification'] = (tiempo_total * loop_pauta) - time_contract
+                lista_nueva.append(new_item)
+
+    # for  item2 in lista_nueva:
+    #     print(item2)
+
+    
+    return lista_nueva
+
+# contar el tiempo total de los spot por cliente
+def count_time_client(listas, client):
+    suma = 0
+
+    for item in listas:
+        if item['client'] == client:
+            suma = suma + int(convert_to_seconds(item['duration']))
+
+    return suma
+
+# extrae los totales de los spots y devuelve  
+def extraxt_data_spots(listas):
+
+    lista_nueva = []
+    items_founs = []
+
+    # cuenta la cantidad de apariciones en la lista
+    for item in listas:
+        if( not item in items_founs):
+            items_founs.append(item)
+            count = listas.count(item)
+            if count >= 1:
+                new_item = {}
+                new_item['order_id'] = item['order_id']
+                new_item['client'] = item['client']
+                new_item['count_repeat'] = count
+                new_item['video_name'] = item['video_name']
+                new_item['duration'] = convert_to_seconds(item['duration']) 
+                new_item['time_total'] = int(convert_to_seconds(item['duration'])) * count
+                new_item['pass'] = item['pass']
+                new_item['porcentage'] = item['porcentage']
+                new_item['time_operating'] = item['time_operating']
+                lista_nueva.append(new_item)
+
+    
+            
+        # objeto['client'] = aux
+        
+
+    return lista_nueva
+   
+# # cuenta aparicion de clientes
+# def count_client(listas, client):
+#     count = 0
+#     for item in listas:
+#         if item['client'] == client:
+#             count = count + 1
+        
+#     return count
 
 def complet_pass(listas):
     
@@ -236,19 +315,21 @@ def complet_pass(listas):
     bandera = True
     lista_nueva = listas
 
+    # completa los spots de acuerdo a los porcentages que figuran en su espacio de contratado
+
     for item in listas:
 
         suma_tem = time_all(lista_nueva)
         bandera = True
         while bandera:
-            print(suma_tem)
+            # print(suma_tem)
             duracion_seg = count_spot_time(lista_nueva, item['video_id'])
-            print(duracion_seg)
+            # print(duracion_seg)
             porc = item['porcentage']
-            print(porc)
+            # print(porc)
             porc_aux = (duracion_seg * 100) / suma_tem
-            print(porc_aux)
-            if porc > porc_aux:
+            # print(porc_aux)
+            if porc >= porc_aux:
                 lista_nueva.append(item)
             else:
                 bandera = False    
