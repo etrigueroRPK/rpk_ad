@@ -80,6 +80,18 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="id_location" class="col-sm-2 col-form-label">Ciudad</label>
+                                <div class="col-sm-10">
+                                    <!-- <select name="category" id="id_category" required class="form-control">
+                                        <option value="" selected>---------</option>
+                                        
+                                    </select> -->
+                                    {{ form.city}}
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
                                 <div class="col-sm-2">Estado</div>
                                 <div class="col-sm-10">
                                     <div class="form-check">
@@ -99,11 +111,11 @@
 
                             <!-- {{form.as_p}} -->
                             <div class="dropdown-divider"></div>
-                            <div class="form-group row">
+                            <div class="form-group row text-center">
                                 <div class="col-sm-10">
-                                    <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span>
+                                    <button type="submit" class="btn btn-success"><span class="fa fa-save"></span>
                                         Guardar</button>
-                                    <a href="{% url 'component:locations_list' %}" class="btn btn-success"><span
+                                    <a href="{% url 'component:locations_list' %}" class="btn btn-danger"><span
                                             class="fa fa-undo"> Cancelar</span></a>
                                 </div>
                             </div>
@@ -118,4 +130,12 @@
 
 {% endblock %}
 {% block js_page %}
+<script>
+    $(document).ready(function () {
+        $('#id_city').select2({placeholder:"Seleccione", allowClear:true});
+        
+    })
+</script>
+
+
 {% endblock %}

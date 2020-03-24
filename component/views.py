@@ -15,8 +15,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, \
 from django.http import HttpResponse
 import json
 
-from .models import Category, Location, Product, Subproduct
-from .forms import CategoryForm, LocationForm, ProductForm
+from .models import Category, Location, Product, Subproduct, City
+from .forms import CategoryForm, LocationForm, ProductForm, CityForm
 
 from bases.views import SinPrivilegios
 
@@ -88,7 +88,78 @@ def category_delete(request, id):
     return render(request, template_name, contexto)
 
 # =======================================
+# vistas para ciudad # vistas para todo
+# TODO: completar los privilegios de los usuarios para cada vista
+
+
+class CityView(SinPrivilegios,
+                   generic.ListView):
+    # este permision_required es nesesario para ver el tema de permisos a nivel de vista
+    permission_required = 'component.view_city'
+    model = City
+    template_name = 'component/city_view.html'
+    context_object_name = 'obj'
+
+
+class CityNew(SuccessMessageMixin, LoginRequiredMixin, generic.CreateView):
+    model = City
+    template_name = 'component/city_form.html'
+    context_object_name = 'obj'
+    form_class = CityForm
+    success_url = reverse_lazy('component:city_list')
+    login_url = 'bases:login'
+    success_message = "Creado satisfactoriamente"
+
+    def form_valid(self, form):
+        form.instance.user_created = self.request.user
+
+        return super().form_valid(form)
+
+
+class CityEdit(SuccessMessageMixin, LoginRequiredMixin, generic.UpdateView):
+    model = City
+    template_name = 'component/city_form.html'
+    context_object_name = 'obj'
+    form_class = CityForm
+    success_url = reverse_lazy('component:city_list')
+    login_url = 'bases:login'
+    success_message = "Actializado satisfactoriamente"
+
+    def form_valid(self, form):
+        form.instance.user_updated = self.request.user.id
+
+        return super().form_valid(form)
+
+
+@login_required(login_url='/login/')
+@permission_required('component.delete_city', login_url='bases:sin_privilegios')
+def city_delete(request, id):
+    template_name = 'component/city_delete.html'
+    contexto = {}
+    cat = City.objects.filter(pk=id).first()
+
+    if not cat:
+        return HttpResponse('Ciudad no existe' + str(id))
+
+    if request.method == 'GET':
+        contexto = {'obj': cat}
+
+    if request.method == 'POST':
+        cat.state = False
+        cat.save()
+        # mensaje par que la vista lo muestre sin coloca en comentarios pues al momento de los esta haciendo con ajax
+        # messages.success(request, 'Se inactivo correctamente')
+
+        contexto = {'obj': 'OK'}
+        return HttpResponse('Ciudad se desactivo!!!')
+
+    return render(request, template_name, contexto)
+
+# =======================================
+
+
 # Visatas para Locaciones
+
 
 # vista para listar las locaiones
 

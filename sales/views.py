@@ -95,7 +95,7 @@ def contract_list(request):
         for item in product:
             objeto = {}
             objeto["id"] = item.id
-            objeto["category"] = item.category.name
+            objeto["category"] = item.category.name + " " + item.location.city.name 
             objeto["name"] = item.name
             objeto["location"] = item.location.name
             objeto["time_operation"] = str(item.time_operating_valid())

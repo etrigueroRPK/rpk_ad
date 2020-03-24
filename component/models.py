@@ -16,6 +16,9 @@ class Category(ClassModel):
 
 class City(ClassModel):
     name = models.CharField(max_length=50, unique=True, null=False, blank=False)
+    
+    def __str__(self):
+        return '{}'.format(self.name)
 
 class Location(ClassModel):
     name = models.CharField(max_length=50, help_text='Name location', unique=True)
@@ -27,7 +30,7 @@ class Location(ClassModel):
 
 
     def __str__(self):
-        return '{}'.format(self.name)
+        return '{} {}'.format(self.city.name, self.name)
 
 class Product(ClassModel):
     name = models.CharField(max_length=50, help_text='Name location', unique=False)
@@ -42,7 +45,7 @@ class Product(ClassModel):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '{} : {} : {}'.format(self.category.name, self.location.name,  self.name)
+        return '{}   {}   {}'.format(self.category.name, self.location.name,  self.name)
     
     def time_operating_valid(self):
          

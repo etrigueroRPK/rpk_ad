@@ -6,7 +6,7 @@
 <div class="card shadow mb-4">
     <!-- Card Header - Dropdown -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Listado de productos</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Listado de ciudades</h6>
         <div class="dropdown no-arrow">
             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -14,34 +14,29 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                 <div class="dropdown-header">Acciones:</div>
-
-                <a class="dropdown-item" href="{% url 'component:product_new' %}"><i class="far fa-calendar-plus"></i>
-                    Nuevo</a>
-
+                <a class="dropdown-item" href="{% url 'component:city_new' %}">Nuevo</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
             </div>
         </div>
     </div>
     <!-- Card Body -->
     <div class="card-body">
         {% if not obj %}
-        <div class="alert alert-info">No hay productos</div>
+        <div class="alert alert-info">No hay ciudades</div>
 
         {% else %}
         <div class="table-responsive">
 
-            <table class="table table-striped table-hover table-bordered table-sm" data-page-length='25'>
+            <table class="table table-striped table-hover table-bordered table-sm">
                 <thead>
                     <tr>
                         <th>Id</th>
                         <th>Nombre</th>
-                        <th>Lugar</th>
-                        <th>Imagen</th>
-                        <th>H inicio</th>
-                        <th>H final</th>
-                        <th>Horas fun</th>
+                        
                         <th>Estado</th>
-                        <!-- <th>F. Creacion</th>
-                        <th>F. Modificacion</th> -->
+                        <th>F. Creacion</th>
+                        <th>F. Modificacion</th>
                         <th>UC</th>
                         <th>UM</th>
                         <th class="all">Acciones</th>
@@ -51,35 +46,22 @@
                     {% for item in obj %}
                     <tr>
                         <td>{{ item.id }}</td>
-                        <td>{{item.location.city}} {{ item.category }}  {{item.location.name}}  {{item.name}} </td>
-                        <td>{{ item.place }}</td>
-                        <td class="text-center">
-                            {% if item.img %}
-                            <img src="{{ item.img.url }}" class="img-thumbnail" alt="IMG" width="60" height="60">
-
-                            {% endif %}
-                        </td>
-                        <td>{{ item.start_time }}</td>
-                        <td>{{ item.end_time }}</td>
-                        <td>{{ item.time_operating }}</td>
+                        <td>{{ item.name }}</td>
+                        
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
-                        <!-- <td>{{ item.created_at}}</td>
-                        <td>{{ item.updated_at}}</td> -->
+                        <td>{{ item.created_at}}</td>
+                        <td>{{ item.updated_at}}</td>
                         <td>{{ item.user_created}}</td>
                         <td>{{ item.user_updated}}</td>
                         <!-- para fecha formateada |date: "d/m/Y H:i:s" -->
 
                         <td>
-                            <a href="{% url 'component:product_edit' item.id %}"
+                            <a href="{% url 'component:city_edit' item.id %}"
                                 class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
                                     class="far fa-edit"></i></a>
-                            <a href="{% url 'component:sub_product' item.id %}"
-                                class="btn btn-sm btn-outline-info btn-circle" role="button">
-                                <i class="fab fa-product-hunt"></i></a>
                             <button class="btn btn-sm btn-outline-danger btn-circle"
-                                onclick="return abrir_modal('{% url 'component:product_delete' item.id %}')"><i
+                                onclick="return abrir_modal('{% url 'component:city_delete' item.id %}')"><i
                                     class="far fa-trash-alt"></i></button>
-
 
                         </td>
                     </tr>
@@ -98,9 +80,7 @@
 {% block js_page %}
 <script>
     $(document).ready(function () {
-        $('.table').DataTable({
-            show: 20
-        });
+        $('.table').DataTable();
     })
 </script>
 

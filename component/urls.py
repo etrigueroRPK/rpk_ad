@@ -2,7 +2,8 @@ from django.urls import path
 from .views import CategoryView, CategoryNew, CategoryEdit, category_delete, \
     LocationView, LocationNew, LocationEdit, location_delete, \
     ProductView, ProductNew, ProductEdit, product_delete, \
-    sub_product_view, sub_product_new, sub_product_view_id, sub_product_delete
+    sub_product_view, sub_product_new, sub_product_view_id, sub_product_delete, \
+    CityView, CityNew, CityEdit, city_delete
 
 urlpatterns = [
     # vistas para categorias
@@ -28,10 +29,17 @@ urlpatterns = [
     # vistas para sub_productos
 
     path('sub_product/view/<int:id>', sub_product_view, name='sub_product'),
-    path('sub_product_id/view/<int:id>', sub_product_view_id, name='sub_product_id'),
+    path('sub_product_id/view/<int:id>',
+         sub_product_view_id, name='sub_product_id'),
     path('sub_product/new/<int:id>', sub_product_new, name='sub_product_new'),
-    path('sub_product/delete/<int:id>', sub_product_delete, name='sub_product_delete'),
+    path('sub_product/delete/<int:id>',
+         sub_product_delete, name='sub_product_delete'),
 
-    
+    # vistas para ciudad
+    path('city/', CityView.as_view(), name='city_list'),
+    path('city/new', CityNew.as_view(), name='city_new'),
+    path('city/edit/<int:pk>',
+         CityEdit.as_view(), name='city_edit'),
+    path('city/delete/<int:id>', city_delete, name='city_delete'),
 
 ]
