@@ -32,17 +32,13 @@
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Nombre</th>
-                        <th>Duracion</th>
-                        <th>F. inicio</th>
-                        <th>F. final</th>
-                        <th>Descripcion</th>
-                        <th>Imagen</th>
+                        <th>Fecha</th>
+                        <th>Producto</th>
                         <th>Estado</th>
-                        <!-- <th>F. Creacion</th>
-                        <th>F. Modificacion</th> -->
+                        <th>F. Creacion</th>
+                        <!-- <th>F. Modificacion</th> -->
                         <th>UC</th>
-                        <th>UM</th>
+                        <!-- <th>UM</th> -->
                         <th class="all">Acciones</th>
                     </tr>
                 </thead>
@@ -50,26 +46,17 @@
                     {% for item in obj %}
                     <tr>
                         <td>{{ item.id }}</td>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.duration_all}}</td>
-                        <td>{{ item.start_date|date:"d/m/Y" }}</td>
-                        <td>{{ item.end_date|date:"d/m/Y" }}</td>
-                        <td>{{ item.description }}</td>
-                        <td class="text-center">
-                            {% if item.img %}
-                            <img src="{{ item.img.url }}" class="img-thumbnail" alt="IMG" width="60" height="60">
-
-                            {% endif %}
-                        </td>
+                        <td>{{ item.create_date }}</td>
+                        <td>{{ item.product}}</td>
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
-                        <!-- <td>{{ item.created_at}}</td>
-                        <td>{{ item.updated_at}}</td> -->
+                        <td>{{ item.created_at}}</td>
+                        <!-- <td>{{ item.clients_g}}</td> -->
                         <td>{{ item.user_created}}</td>
-                        <td>{{ item.user_updated}}</td>
+                        <!-- <td>{{ item.user_updated}}</td> -->
                         <!-- para fecha formateada |date: "d/m/Y H:i:s" -->
 
                         <td>
-                            <a href="{% url 'content:video_edit' item.id %}"
+                            <a href="{% url 'content:playlist_view' item.id %}"
                                 class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
                                     class="far fa-edit"></i></a>
                             <button class="btn btn-sm btn-outline-danger btn-circle"

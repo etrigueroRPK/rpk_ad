@@ -39,10 +39,9 @@
                             <label for="id_create_date" class="col-sm-2 col-form-label">Fecha de creacion</label>
                             <div class="col-sm-4 ">
                                 <input type="date" name="create_date" class="form-control" id="id_create_date"
-                                    value="{% if obj %}{{obj.start_datev|date:'Y-m-d'}}{% endif %}">
+                                value="{{today|date:'Y-m-d'}}"  required>
                             </div>
                         </div>
-
 
                         <div class="form-group row text-right">
                             <div class="col-10">
@@ -54,6 +53,10 @@
 
                         </div>
                         <div class="dropdown-divider"> </div>
+                        <div class="col-auto my-1 text-right">
+                            <button type="button" id="btn_generar_lista" class="btn btn-outline-info" onclick="generar_lista()">Generar
+                                Lista</button>
+                        </div>
                         <div class="row" id="informacion_spots">
                             <div class="card col-8 ">
                                 <div class="card-body">
@@ -130,7 +133,19 @@
 
                                 </div>
                                 <div class="col-12" id="content_product_spots">
+                                    <table class="table table-bordered table-sm table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Spot</th>
 
+                                            </tr>
+                                        </thead>
+                                        <tbody id="playlist_table">
+
+
+                                        </tbody>
+                                    </table>
                                 </div>
 
 
@@ -138,22 +153,16 @@
                             </div>
 
                         </div>
-
-
-                        <div class="col-auto my-1 text-right">
-                            <button type="button" class="btn btn-outline-info" onclick="generar_lista()">Generar
-                                Lista</button>
-                        </div>
-
+                       <br/>
+                       
                         <div class="form-row text-center ">
 
                             <div class="col-sm-10">
                                 <a href="{% url 'sales:contract_list' %}" class="btn btn-danger"><span
                                         class="fa fa-undo"> Cancelar</span></a>
-                                <button type="submit" class="btn btn-success"><span class="fa fa-save"></span>
+                                <button type="submit" class="btn btn-success" id="btn_guardar"><span class="fa fa-save" ></span>
                                     Guardar</button>
                             </div>
-                            <button onclick="exportar()" download="your-foo.csv">Exportar CSV</button>
                         </div>
                     </div>
                 </div>
@@ -171,6 +180,9 @@
         $('#id_product').select2({ placeholder: "Seleccione", allowClear: true });
         $('#informacion_spots').hide();
         $('#informacion_clientes').hide();
+        $('#content_product_spots').hide();
+        $('#btn_generar_lista').prop('disabled', true);
+        $('#btn_guardar').prop('disabled', true);
 
 
         //    para graficos 
@@ -179,11 +191,13 @@
         // otro grafico
 
 
-
         // fin para graficos
 
 
     })
+    // var clientes_g;
+    var spots_g;
+    var playlist_g;
 
     function seleccionar_contratos() {
         var token = '{{csrf_token}}';
@@ -217,6 +231,8 @@
 
                 $('#btn_clientes').prop('disabled', true);
                 $('#btn_clientes_antiguos').prop('disabled', true);
+                $('#btn_generar_lista').prop('disabled', false);
+
 
             },
             error: function (jqXHR, textStatus, errorThrow) {
@@ -245,23 +261,34 @@
                 $('#content_product').remove();
                 $('#informacion_spots').show();
                 $('#informacion_clientes').show();
+                $('#content_product_spots').show();
                 // console.log(response)
                 aux = response;
-                
 
+                console.log(aux)
+
+                // $('#clientes_g').val(JSON.stringify(clientes_g));
+                $('#spots_g').val(JSON.stringify(spots_g));
+                $('#playlist_g').val(JSON.stringify(playlist_g))
 
 
                 for (i = 0; i < aux.order.length; i++) {
-                    var check = '<div class="col-12" id="content_product"><div class="form-check">' +
-                        '<label class="form-check-label">' + aux.order[i].client + ', ' + aux.order[i].video_name + ' , duracion: ' + aux.order[i].duration + ' </label></div></div>';
+                    var check = '<tr class="col-md-12" id="fila">' +
+                        '<input type="hidden" name="playlist_g" value="' + (parseInt(i) + parseInt(1)) + '|' + aux.order[i].video_id + '">' +
+                        '<td>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                        '<td>' + aux.order[i].client + ', ' + aux.order[i].video_name + ' , duración: ' + aux.order[i].duration + '</td>' +
+                        '</tr>';
 
-                    $('#content_product_spots').append(check);
+
+                    $('#playlist_table').append(check);
                 }
                 var datos_spot = [['Cliente, spot', 'tiempo(s)']]
                 for (j = 0; j < aux.info_spot.length; j++) {
                     var spot = [aux.info_spot[j].client, parseInt(aux.info_spot[j].time_total)]
                     datos_spot.push(spot)
                     var fila = '<tr class="col-md-12" id="fila">' +
+                        '<input type="hidden" name="spots_g" value="' + aux.info_spot[j].count_repeat + '|' + aux.info_spot[j].time_total + '|' +
+                        aux.info_spot[j].porcentage + '|' + aux.info_spot[j].video_id + '"> ' +
                         '<td> ' + (parseInt(j) + parseInt(1)) + '</td>' +
                         '<td> ' + aux.info_spot[j].client + ', ' + aux.info_spot[j].video_name + '</td>' +
                         '<td> ' + aux.info_spot[j].duration + '</td>' +
@@ -278,8 +305,11 @@
                 for (k = 0; k < aux.info_client.length; k++) {
                     var client = [aux.info_client[k].client, parseInt(aux.info_client[k].time_total_pauta)]
                     datos_client.push(client)
-                    var fila2 = '<tr class="col-md-12" id="fila">' +
-                        '<td> ' + (parseInt(j) + parseInt(1)) + '</td>' +
+                    var fila2 = '<tr class="col-md-12" id="fila1">' +
+                        '<input type="hidden" name=clientes_g value="' + aux.info_client[k].time_total_pauta + '|' + aux.info_client[k].loop_pauta + '|' +
+                        aux.info_client[k].time_total_all + '|' + aux.info_client[k].time_contract + '|' +
+                        aux.info_client[k].time_bonification + '|' + + aux.info_client[k].order_id + '">' +
+                        '<td> ' + (parseInt(k) + parseInt(1)) + '</td>' +
                         '<td> ' + aux.info_client[k].client + '</td>' +
                         '<td> ' + aux.info_client[k].time_total_pauta + '</td>' +
                         '<td> ' + aux.info_client[k].loop_pauta + '</td>' +
@@ -320,7 +350,7 @@
                 }
                 // fin grafico ===========================================
 
-
+                $('#btn_guardar').prop('disabled', false);
             },
             error: function (jqXHR, textStatus, errorThrow) {
                 console.log(textStatus, errorThrow);
@@ -330,30 +360,12 @@
         });
     }
     // funcion de prueba 
-    function exportar(){
-        $("#tabla_cliente").toCSV();
-    }
-    // ++++++++++++++++++++++
 
     $("form").submit(function (e) {
 
         e.preventDefault();
 
-        if ($("#check_pass").is(":checked")) {
-            if ($("#id_pass_contract").val() == "") {
-                mensaje("Debe ingresar un valor en: 'pases' valido!!!", "red");
-                $("#product_id").val('');
-                return;
-            }
-        }
-        if ($("#check_porc").is(":checked")) {
-            if ($("#id_porcentage_contract").val() == "") {
-                mensaje("Debe ingresar un valor en: 'porcentaje'  valido!!!", "red");
-                $("#product_id").val('');
 
-                return;
-            }
-        }
         var data = new FormData($("#formulario").get(0));
 
         var token = '{{ csrf_token }}';
@@ -363,14 +375,14 @@
         $.ajax({
             headers: { "X-CSRFToken": token },
             type: "POST",
-            url: "/sales/contract/new/",
+            url: "/content/playlist/new",
             data: data,
             processData: false,
             contentType: false,
             success: function (response) {
                 console.log(response)
                 if (response == 'ok') {
-                    window.location.href = "/sales/contract/";
+                    window.location.href = "/content/playlist/";
                 }
             },
             error: function (jqXHR, textStatus, errorThrow) {
@@ -383,36 +395,5 @@
 
     });
 
-
-
-    // para validar que se encuentre pases o porcentaje colocado
-    $("#check_pass").change(function () {
-
-        // console.log($("#check_pass").is(":checked"));
-        if ($("#check_pass").is(":checked")) {
-            document.getElementById("id_pass_contract").disabled = false;
-            document.getElementById("id_porcentage_contract").disabled = true;
-            $("#id_porcentage_contract").val('');
-            $("#id_pass_contract").focus();
-            document.getElementById("check_porc").checked = false;
-        }
-
-    });
-    $("#check_porc").change(function () {
-
-        // console.log($("#check_porc").is(":checked"));
-        // TODO: vaciar las cajas de los checkboxs
-
-        if ($("#check_porc").is(":checked")) {
-            document.getElementById("id_pass_contract").disabled = true;
-            document.getElementById("id_porcentage_contract").disabled = false;
-            $("#id_pass_contract").val('');
-            $("#id_porcentage_contract").focus();
-            document.getElementById("check_pass").checked = false;
-
-        }
-
-    });
-    // fin para validar pases
 </script>
 {% endblock %}

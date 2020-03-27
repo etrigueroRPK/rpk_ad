@@ -15,7 +15,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, \
 from django.http import HttpResponse
 import json
 
-from .models import Video
+from .models import Video, Playlist, Playlist_client_detail, Playlist_spot_detail, Playlist_document
 from .forms import VideoForm
 
 from bases.views import SinPrivilegios
@@ -24,6 +24,8 @@ from component.models import Product
 from sales.models import Contract, Order
 
 import math
+
+import datetime
 
 # vistas para Categorias
 # TODO: completar los privilegios de los usuarios para cada vista
@@ -101,7 +103,21 @@ def playlist_list(request):
     contexto = {}
     template_name = 'content/playlist_list.html'
     if request.method == 'GET':
-        contexto = {}
+        playlist = Playlist.objects.all()
+        contexto = {'obj': playlist}
+
+    return render(request, template_name, contexto)
+
+
+def playlist_view(request, id):
+    contexto = {}
+    template_name = 'content/playlist_list.html'
+    if request.method == 'GET':
+        playlist = Playlist.objects.filter(id=id).first()
+        pl = list(map(list, playlist.clients_g))
+        # pls = json.loads(pl)
+        print(pl)
+        print(type(pl))
 
     return render(request, template_name, contexto)
 
@@ -112,7 +128,8 @@ def playlist_generator(request):
 
     if request.method == 'GET':
         product = Product.objects.filter(state=1).all()
-        contexto = {'obj': product}
+        today = datetime.datetime.now()
+        contexto = {'obj': product, 'today': today}
 
     if request.method == 'POST':
 
@@ -143,8 +160,6 @@ def playlist_generator(request):
 
         # print(lista_order_json)
 
-
-
         contexto = {'obj': 'OK', 'order': lista_order_json}
         return HttpResponse(json.dumps(contexto), content_type=json)
 
@@ -155,7 +170,6 @@ def playlist_generator(request):
 
 def playlist_order(request):
     contexto = {}
-    
 
     if request.method == 'POST':
 
@@ -170,12 +184,10 @@ def playlist_order(request):
         for item in client_spot_list:
             contract_id = item.split('-')[0]
             video_id = item.split('-')[1]
-            
-            
+
             order = Order.objects.filter(pk=contract_id).get()
             video = Video.objects.filter(pk=video_id).get()
 
-        
             objeto = {}
             objeto["order_id"] = order.id
             objeto["client"] = order.contract.client.name
@@ -191,14 +203,171 @@ def playlist_order(request):
         lista_nueva = []
         lista_info_spots = []
         lista_info_cliente = []
+        lista_ordenada = []
 
         lista_nueva = complet_pass(lista_clientes_spot)
+        lista_ordenada = ordenar_lista(lista_nueva)
         lista_info_spots = extraxt_data_spots(lista_nueva)
         lista_info_cliente = extract_data_client(lista_nueva)
 
-        contexto = {'obj': 'OK', 'order': lista_nueva, 'info_spot':lista_info_spots, 'info_client':lista_info_cliente}
+        contexto = {'obj': 'OK', 'order': lista_ordenada,
+                    'info_spot': lista_info_spots, 'info_client': lista_info_cliente}
         return HttpResponse(json.dumps(contexto), content_type=json)
     return HttpResponse('ok')
+
+
+def playlist_new(request):
+
+    if request.method == 'POST':
+        product_id = request.POST.get('product')
+        create_date = request.POST.get('create_date')
+        clientes_g = request.POST.getlist('clientes_g')
+        spots_g = request.POST.getlist('spots_g')
+        playlist_g = request.POST.getlist('playlist_g')
+        print(clientes_g)
+
+        print(spots_g)
+        print(playlist_g)
+
+        product = Product.objects.get(pk=product_id)
+
+        playlist = Playlist(
+            create_date=create_date,
+            product=product,
+            state=True,
+            user_created=request.user
+        )
+        playlist.save()
+
+        for item in clientes_g:
+            time_total = item.split('|')[0]
+            pauta_loop = item.split('|')[1]
+            second_total = item.split('|')[2]
+            time_contract = item.split('|')[3]
+            time_bonification = item.split('|')[4]
+            order_id = item.split('|')[5]
+            order = Order.objects.get(pk=order_id)
+            print(item.split('|'))
+
+            playlist_client_detail = Playlist_client_detail(
+                time_total=time_total,
+                pauta_loop=pauta_loop,
+                second_total=second_total,
+                time_contract=time_contract,
+                time_bonification=time_bonification,
+                order=order,
+                user_created=request.user,
+                playlist=playlist
+            )
+            playlist_client_detail.save()
+
+        for item in spots_g:
+            repeat_count = item.split('|')[0]
+            time_total = item.split('|')[1]
+            porcentage = item.split('|')[2]
+            video_id = item.split('|')[3]
+            video = Video.objects.get(pk=video_id)
+            playlist_spot_detail = Playlist_spot_detail(
+                repeat_count=repeat_count,
+                time_total=time_total,
+                porcentage=porcentage,
+                video=video,
+                playlist=playlist,
+                user_created=request.user
+            )
+            playlist_spot_detail.save()
+
+        for item in playlist_g:
+            order_list = item.split('|')[0]
+            video_id = item.split('|')[1]
+            video = Video.objects.get(pk=video_id)
+            playlist_document = Playlist_document(
+                order_list=order_list,
+                video=video,
+                playlist=playlist,
+                user_created=request.user
+            )
+            playlist_document.save()
+
+        return HttpResponse('ok')
+
+    return HttpResponse('ok')
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# =============================================================================================
+# funciones que ayudan al ordenamineto de las listas finales
+# TODO: MEJORAR y/o llevar estos metodos a otro archivo de manera que sea accesible para otras vista.
+#
+
+
+def ordenar_lista(listas):
+    aux_listas = listas
+    lista_contada = []
+    aux_agregado = []
+    nueva_lista_ordenada = []
+    for item in listas:
+        if(not item['order_id'] in aux_agregado):
+            aux_agregado.append(item['order_id'])
+            aux_count = contar_apariciones_order_id(
+                aux_listas, item['order_id'])
+            if aux_count >= 1:
+                new_item = {}
+                new_item['order_id'] = item['order_id']
+                new_item['client'] = item['client']
+                new_item['apariciones'] = aux_count
+                lista_contada.append(new_item)
+
+    lista_contada.sort(key=lambda item: item['apariciones'], reverse=True)
+
+    # retorna la lista como esta debido a que ya esta ordenada
+    if lista_contada[0]['apariciones'] == 1:
+        return listas
+
+    # inicializa la nueva lista con los valores mas altos
+    for item4 in listas:
+        if lista_contada[0]['order_id'] == item4['order_id']:
+            nueva_lista_ordenada.append(item4)
+
+    for x in range(1, len(lista_contada)):
+
+        lista_aux = []
+        for item in listas:
+            if lista_contada[x]['order_id'] == item['order_id']:
+
+                lista_aux.append(item)
+                # print(lista_aux)
+
+        nueva_lista_ordenada = intercalar_listas(
+            nueva_lista_ordenada, lista_aux)
+
+    return nueva_lista_ordenada
+
+# intercala los spot realizar mas opciones intercalamiento
+
+
+def intercalar_listas(lista1, lista2):
+    r = round(len(lista1) / len(lista2))
+    aux = []
+    posicion = 0
+    for item in lista2:
+        aux = lista1
+        aux.insert(posicion, item)
+        posicion = posicion + r + 1
+    # print('============================================================')
+    # for item in aux:
+    #     print(item)
+    # print('============================================================')
+    return aux
+
+
+def contar_apariciones_order_id(listas, order_id):
+    sum = 0
+    for item in listas:
+        if item['order_id'] == order_id:
+            sum = sum + 1
+
+    return sum
+
 
 def extract_data_client(listas):
     lista_nueva = []
@@ -206,46 +375,52 @@ def extract_data_client(listas):
     aux = listas
     time_total = 0
     for item in listas:
-        time_total = time_total + convert_to_seconds(item['duration']) 
+        time_total = time_total + convert_to_seconds(item['duration'])
 
-    print(time_total)
+    # print(time_total)
     for item in listas:
-        if(not item['client'] in aux_agregado):
-            aux_agregado.append(item['client'])
-            tiempo_total = count_time_client(aux, item['client'])
-            if tiempo_total >1:
+        if(not item['order_id'] in aux_agregado):
+            aux_agregado.append(item['order_id'])
+            tiempo_total = count_time_client(aux, item['order_id'])
+            if tiempo_total > 1:
                 order_id = item['order_id']
                 order = Order.objects.filter(pk=order_id).get()
-                print(order.pass_contract)
-                loop_pauta = math.floor(int(item['time_operating']) / time_total)
-                print(loop_pauta)
+                # print(order.pass_contract)
+                loop_pauta = math.floor(
+                    int(item['time_operating']) / time_total)
+                # print(loop_pauta)
                 time_contract = int(order.pass_contract) * 30
                 new_item = {}
+                new_item['order_id'] = item['order_id']
                 new_item['client'] = item['client']
                 new_item['time_total_pauta'] = tiempo_total
                 new_item['loop_pauta'] = loop_pauta
                 new_item['time_total_all'] = tiempo_total * loop_pauta
                 new_item['time_contract'] = time_contract
-                new_item['time_bonification'] = (tiempo_total * loop_pauta) - time_contract
+                new_item['time_bonification'] = (
+                    tiempo_total * loop_pauta) - time_contract
                 lista_nueva.append(new_item)
 
     # for  item2 in lista_nueva:
     #     print(item2)
 
-    
     return lista_nueva
 
 # contar el tiempo total de los spot por cliente
+
+
 def count_time_client(listas, client):
     suma = 0
 
     for item in listas:
-        if item['client'] == client:
+        if item['order_id'] == client:
             suma = suma + int(convert_to_seconds(item['duration']))
 
     return suma
 
-# extrae los totales de los spots y devuelve  
+# extrae los totales de los spots y devuelve
+
+
 def extraxt_data_spots(listas):
 
     lista_nueva = []
@@ -253,7 +428,7 @@ def extraxt_data_spots(listas):
 
     # cuenta la cantidad de apariciones en la lista
     for item in listas:
-        if( not item in items_founs):
+        if(not item in items_founs):
             items_founs.append(item)
             count = listas.count(item)
             if count >= 1:
@@ -261,43 +436,43 @@ def extraxt_data_spots(listas):
                 new_item['order_id'] = item['order_id']
                 new_item['client'] = item['client']
                 new_item['count_repeat'] = count
+                new_item['video_id'] = item['video_id']
                 new_item['video_name'] = item['video_name']
-                new_item['duration'] = convert_to_seconds(item['duration']) 
-                new_item['time_total'] = int(convert_to_seconds(item['duration'])) * count
+                new_item['duration'] = convert_to_seconds(item['duration'])
+                new_item['time_total'] = int(
+                    convert_to_seconds(item['duration'])) * count
                 new_item['pass'] = item['pass']
                 new_item['porcentage'] = item['porcentage']
                 new_item['time_operating'] = item['time_operating']
                 lista_nueva.append(new_item)
 
-    
-            
         # objeto['client'] = aux
-        
 
     return lista_nueva
-   
+
 # # cuenta aparicion de clientes
 # def count_client(listas, client):
 #     count = 0
 #     for item in listas:
 #         if item['client'] == client:
 #             count = count + 1
-        
+
 #     return count
 
+
 def complet_pass(listas):
-    
+
     total_segundos = 0
 
     lista_nueva = []
 
     for lista in listas:
-        
+
         order_id = lista['order_id']
         count = cout_spot(listas, order_id)
         lista["num_spot"] = count
 
-    # a este punto se modifico las listas con pases divididos 
+    # a este punto se modifico las listas con pases divididos
     # print(listas)
 
     for item in listas:
@@ -310,7 +485,7 @@ def complet_pass(listas):
 
         item['pass'] = pases
         item['porcentage'] = porcentage
-    
+
     suma_tem = 0
     bandera = True
     lista_nueva = listas
@@ -332,57 +507,53 @@ def complet_pass(listas):
             if porc >= porc_aux:
                 lista_nueva.append(item)
             else:
-                bandera = False    
-
-
+                bandera = False
 
     # for item in lista_nueva:
     #     print(item)
     # print(total_segundos)
 
     # print(listas)
-
-
-    
     return lista_nueva
 
 # devuelve el tiempo de aparacion de un spot
+
+
 def count_spot_time(listas, video_id):
-    suma = 0 
+    suma = 0
     for item in listas:
         if item['video_id'] == video_id:
             duration = convert_to_seconds(item['duration'])
             suma = suma + duration
-    
-    return suma 
+
+    return suma
 
 
-
-# devuelve el tiempo total de la lista 
+# devuelve el tiempo total de la lista
 def time_all(listas):
     suma = 0
 
     for item in listas:
         duration = convert_to_seconds(item['duration'])
         suma = suma + duration
-    
+
     return suma
 
+# cuenta la aparicion de spots
 
 
-
-# cuenta la aparicion de spots 
 def cout_spot(list_clients, order_id):
     num = 0
     for item in list_clients:
         if item['order_id'] == order_id:
-            num=num+1
-    
-        
+            num = num+1
+
     return num
 
-# funcion que convienrte horas de opoeracion en segunsdos 
-# TODO: ver la forma de optener este dato de manera general ya que esta en varias vistas 
+# funcion que convienrte horas de opoeracion en segunsdos
+# TODO: ver la forma de optener este dato de manera general ya que esta en varias vistas
+
+
 def convert_to_seconds(horas):
     horas = str(horas)
     h = horas.split(':')[0]
