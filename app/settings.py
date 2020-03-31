@@ -87,6 +87,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 #         'HOST': 'localhost',
 #         'USER': 'rpk_admin',
 #         'PASSWORD': '12345',
+#         'PASSwORD': 'admin_12345'
 #         'PORT': 5432
 
 #     }
@@ -154,6 +155,7 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') 
 
 # configuraciones para envio de mails
 #___________________________________
