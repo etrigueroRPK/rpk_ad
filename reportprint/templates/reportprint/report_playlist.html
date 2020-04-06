@@ -1,0 +1,276 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Orden de pauta: {{ contract.client}}</title>
+
+    <style type="text/css">
+        @page {
+            size: letter;
+            margin: 1cm;
+
+        }
+
+        @media print {
+            div.saltopagina {
+                display: block;
+                page-break-before: always;
+            }
+        }
+
+        body {
+            /* size: 216mm 279mm; */
+            height: 216mm;
+            width: 279mm;
+            /* 216 x 279 */
+
+        }
+
+        .contenedor-logo {
+            text-align: center;
+        }
+
+
+        .logo {
+            max-width: 250px;
+            max-height: 90px;
+            width: 250px;
+            height: 90px;
+
+        }
+
+        .grafico {
+            /* width: 400px; */
+            /* max-width: auto; */
+            height: 345px;
+            min-height: 345px;
+        }
+
+        #footer {
+            position: fixed;
+            display: block;
+            /* top: 0; */
+            bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div class="container"> -->
+    <div class="col-12 row pr-0">
+        <div class="col-4 mr-3">
+            <img class="logo" src="{% static 'base/img/rpk.svg' %}" alt="">
+
+        </div>
+        <div class="col-7 text-right">
+            <h5> SISTEMA DE ADMINISTRACION PUBLICITARIA</h4>
+                <h6> Reporte de playlist generado</h4>
+                    <p>Fecha de impresión: {{ today|date:"d/m/Y" }}</p>
+        </div>
+    </div>
+
+    <div class="col-12 text-uppercase mb-3 mt-3">
+        <div class="row ml-3">
+            <div class=" font-weight-bold">LOCACION: </div>
+            <div class="desc"> {{playlist.product}} </div>
+        </div>
+        <div class="row ml-3">
+            <div class="font-weight-bold">fecha de creacion: </div>
+            <div class="desc"> {{playlist.create_date}} </div>
+        </div>
+    </div>
+
+
+    <div class="col-12 row m-0 p-0 ">
+        <div class="col-6 m-0 p-0 ">
+
+            <table class="table table-bordered table-sm ">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente, spot</th>
+                        <th>Duracion</th>
+                        <th>loop</th>
+                        <th>Tiempo total(s)</th>
+                        <th>Porcentaje por spot</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for  item in playlist_spot %}
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{item.video.contract.client}}, {{ item.video.name }} </td>
+                        <td>{{ item.video.duration_all }}</td>
+                        <td>{{ item.repeat_count }}</td>
+                        <td>{{ item.time_total }}</td>
+                        <td>{{ item.porcentage|floatformat:'3'}} %</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-6 m-0 p-0 pl-3">
+            <div id="spot" style="width: auto; height: 400px;"></div>
+
+        </div>
+    </div>
+    <div class="col-12 row m-0 p-0">
+        <div class="col-6 m-0 p-0">
+
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>T. total(s)</th>
+                        <th>loop de pauta</th>
+                        <th>T. (s)</th>
+                        <th>T. contra tado</th>
+                        <th>T. de boni ficación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for  item in playlist_client %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.order.contract.client.name }}</td>
+                        <td>{{ item.time_total }}</td>
+                        <td>{{ item.pauta_loop }}</td>
+                        <td>{{ item.second_total }}</td>
+                        <td>{{ item.time_contract }}</td>
+                        <td>{{ item.time_bonification }}</td>
+
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-6 m-0 p-0 pl-3">
+            <div id="clientes" style="width: auto; height: 400px;"></div>
+
+        </div>
+    </div>
+
+
+    <div class="saltopagina"></div>
+    <div class="col-12 row pr-0">
+        <div class="col-4 mr-3">
+            <img class="logo" src="{% static 'base/img/rpk.svg' %}" alt="">
+
+        </div>
+        <div class="col-7 text-right">
+            <h5> SISTEMA DE ADMINISTRACION PUBLICITARIA</h4>
+                <h6> Reporte de playlist generado</h4>
+                    <p>Fecha de impresión: {{ today|date:"d/m/Y" }}</p>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="ml-3 text-uppercase">
+
+            <p class="font-weight-bold ">Lista de reproducción</p>
+        </div>
+        <div>
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Video</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for  item in playlist_document %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.video.contract.client }}, {{item.video}}</td>
+
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="footer">
+        Sistema de Administracion publicitaria - Rpk Srl.
+    </div>
+    <!-- </div> -->
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        var datos_client = [['Cliente', 'tiempo(s)']]
+        {% for item in playlist_client %}
+        var client = ["{{item.order.contract.client.name}}", parseInt('{{item.time_total}}')]
+        datos_client.push(client)
+
+        // console.log(client)
+
+        {% endfor %}
+
+        var datos_spot = [['Cliente', 'tiempo(s)']]
+        {% for item in playlist_spot %}
+        // var porcentage = '{{item.porcentage|floatformat:'3'}}'
+        var spot = ["{{item.video.contract.client}}, {{ item.video.name }}", parseInt('{{item.time_total}}')]
+        datos_spot.push(spot)
+
+        // console.log(porcentage)
+
+        {% endfor %}
+        
+
+        function drawChart() {
+
+            var data = google.visualization.arrayToDataTable(datos_spot);
+
+            var options = {
+                title: 'Grafico de spots '
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('spot'));
+
+            chart.draw(data, options);
+        }
+        google.charts.setOnLoadCallback(drawChart2);
+
+        function drawChart2() {
+
+            var data = google.visualization.arrayToDataTable(datos_client);
+
+            var options = {
+                title: 'Grafico de pauta'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('clientes'));
+
+            chart.draw(data, options);
+        }
+    </script>
+</body>
+
+</html>

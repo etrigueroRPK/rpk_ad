@@ -33,6 +33,7 @@
                 <thead>
                     <tr>
                         <th>Id</th>
+                        <th>Ciudad</th>
                         <th>Nombre</th>
                         <th>Direccion</th>
                         <th>Imagen</th>
@@ -48,6 +49,7 @@
                     {% for item in obj %}
                     <tr>
                         <td>{{ item.id }}</td>
+                        <td>{{ item.city.name}}</td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.address }}</td>
                         <td class="text-center">
