@@ -176,6 +176,24 @@
 
     });
 
+    $('#id_contract').change(function (){
+        contract = $("#id_contract option:selected").text();
+        aux = contract.split("desde el ")
+        name = 'spot ' +aux[0] 
+        date_start = aux[1].split(" al ")[0]
+        date_end = aux[1].split(" al ")[1]
+        // console.log(name);
+        // console.log(date_end);
+
+        $("#id_start_date").val(date_start);
+        $("#id_end_date").val(date_end);
+        $("#id_name").val(name);
+
+
+
+
+    });
+
 
     
 
