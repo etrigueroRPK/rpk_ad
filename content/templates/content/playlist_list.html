@@ -60,12 +60,12 @@
                                 class="btn btn-sm btn-outline-success btn-circle"><i class="far fa-file-excel"></i></a>
                             <a target="blank" href="{% url 'reportprint:report_playlist' item.id %}"
                                 class="btn btn-sm btn-outline-primary btn-circle"><i class="far fa-file-alt"></i></a>
-                            <a href="{% url 'content:playlist_view' item.id %}"
-                                class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
-                                    class="far fa-edit"></i></a>
+                            <!-- <a href="{% url 'content:playlist_view' item.id %}"
+                                class="btn btn-sm btn-outline-warning btn-circle" role="button" ><i
+                                    class="far fa-edit"></i></a> -->
                             <button class="btn btn-sm btn-outline-danger btn-circle"
-                                onclick="return abrir_modal('{% url 'content:video_delete' item.id %}')"><i
-                                    class="far fa-trash-alt"></i></button>
+                                onclick="return abrir_modal('{% url 'content:video_delete' item.id %}')" disabled><i
+                                    class="far fa-trash-alt" ></i></button>
 
                         </td>
                     </tr>

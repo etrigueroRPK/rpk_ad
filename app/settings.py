@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'content',
     'report',
     'reportprint',
-    'app'
+    'app',
+    'reportemision'
+    
 ]
 
 MIDDLEWARE = [

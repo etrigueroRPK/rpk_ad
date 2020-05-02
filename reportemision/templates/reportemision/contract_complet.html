@@ -1,0 +1,143 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data" id="formulario">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12" id="seleccion">
+
+
+
+        <div class="card border-left-primary shadow h-100 py-2">
+
+
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Confirmar fechas de reporte.
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div>Cliente: <strong>{{contract.client.name}}</strong> </div>
+                        <div>Descripción: <strong>{{contract.description}}</strong> </div>
+                        <div>Auspicio: <strong>{{contract.auspice|yesno:'Si,No'}}</strong> </div>
+
+
+                        <div> <strong>LOCACIONES CONTRATADAS LISTA _____</strong> </div>
+
+
+
+
+
+                        <div class="dropdown-divider"> </div>
+
+                        {% if obj %}
+                        <div class="row">
+                            <table class="table table-sm table-bordered table-responsive">
+                                {% for item in obj %}
+                                <tr>
+                                    <td>Locacion</td>
+                                    <td>Horario</td>
+                                    <td>Video</td>
+                                    <td> </td>
+
+
+                                    <!-- <td colspan="2"></td> -->
+                                </tr>
+                                <tr>
+                                    <td>{{item.location}} </td>
+                                    <td>{{ item.location.start_time }} - {{ item.location.end_time }} </td>
+                                    <td>{{ item.video_name}}</td>
+                                    <td>
+                                        mes
+                                        <table>
+                                            <tr>
+                                                <td>dia</td>
+                                            </tr>
+                                            <tr>
+                                                <td>duracion</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Rep</td>
+                                            </tr>
+                                            <tr><td>Contrato</td></tr>
+                                            <tr><td>Bonificacion</td></tr>
+                                        </table>
+                                    </td>
+                                    {% for item2 in item.fechas%}
+                                    <td >
+                                        {{item2.dia|date:"M-Y"}}
+                                        <table class="table-sm">
+                                            <tr>
+                                                <td>{{item2.dia|date:"d"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{item2.video_duration}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{item2.repeticiones}} </td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{item2.time_contract}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{item2.time_bonification}}</td>
+                                            </tr>
+
+                                        </table>
+
+                                    </td>
+
+
+
+                                    {% endfor %}
+
+                                </tr>
+                                <!-- <tr >
+
+
+
+                                </tr> -->
+                                {% endfor %}
+                            </table>
+                        </div>
+                        {% else %}
+                        <h5> Sin registros encontrados</h4>
+                            <p>No se encontraron registros para el contrato, debe crear listas de reproduccion para
+                                encontrar registros que puedan ser validados para el reporte de emision.</p>
+                            {% endif %}
+
+
+
+
+
+
+                            <br />
+
+                            <div class="form-row text-center ">
+
+                                <div class="col-sm-10">
+                                    <a href="{% url 'reportemision:report_client' %}" class="btn btn-danger"><span
+                                            class="fa fa-undo"> Cancelar</span></a>
+                                    <button type="submit" class="btn btn-success" id="btn_guardar"><span
+                                            class="fa fa-save"></span>
+                                        Guardar</button>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+{% endblock %}
+
+{% block js_page %}
+<script>
+
+
+</script>
+{% endblock %}

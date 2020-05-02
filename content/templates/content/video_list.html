@@ -32,6 +32,7 @@
                 <thead>
                     <tr>
                         <th>Id</th>
+                        <th>Contrato</th>
                         <th>Nombre</th>
                         <th>Duracion</th>
                         <th>F. inicio</th>
@@ -48,8 +49,15 @@
                 </thead>
                 <tbody>
                     {% for item in obj %}
+                    {% if item.contract.description %}
+
+                    {% endif%}
+
                     <tr>
                         <td>{{ item.id }}</td>
+                        <td>{{ item.contract.client}}{% if item.contract.description %}
+                                 {{ item.contract.description}}
+                            {% endif%}</td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.duration_all}}</td>
                         <td>{{ item.start_date|date:"d/m/Y" }}</td>

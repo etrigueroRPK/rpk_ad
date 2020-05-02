@@ -95,7 +95,8 @@ def contract_list(request):
         for item in product:
             objeto = {}
             objeto["id"] = item.id
-            objeto["category"] = item.category.name + " " + item.location.city.name 
+            objeto["category"] = item.category.name + \
+                " " + item.location.city.name
             objeto["name"] = item.name
             objeto["location"] = item.location.name
             objeto["time_operation"] = str(item.time_operating_valid())
@@ -144,10 +145,11 @@ def contract_create(request):
         contexto = {'obj': client}
 
     if request.method == 'POST':
-        
+
         contract = Contract
 
         client_id = int(request.POST.get("client"))
+        description = request.POST.get("description")
         start_date = request.POST.get("start_date")
         end_date = request.POST.get("end_date")
         check = request.POST.getlist("check[]")
@@ -172,9 +174,10 @@ def contract_create(request):
             client=client_c,
             start_date=start_date,
             end_date=end_date,
+            description=description,
             state=1,
             user_created=request.user,
-            auspice = aux
+            auspice=aux
         )
         contract.save()
         pases = 0
@@ -204,9 +207,8 @@ def contract_create(request):
             )
 
             order.save()
-        
-        
-        return HttpResponse({'ok':'ok'})
+
+        return HttpResponse({'ok': 'ok'})
 
         # print(check)
 
@@ -234,8 +236,9 @@ def contract_edit(request, id):
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
         estado = request.POST.get('estado')
-
-        print(estado)
+        description = request.POST.get('description_c')
+        print("+++++=")
+        print(description)
 
         if start_date == '':
             start_date = '0001-01-01'
@@ -250,6 +253,7 @@ def contract_edit(request, id):
         contract.start_date = start_date
         contract.end_date = end_date
         contract.state = estado
+        contract.description = description
         contract.user_updated = request.user.id
 
         contract.save()

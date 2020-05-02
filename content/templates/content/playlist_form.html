@@ -288,7 +288,7 @@
                     datos_spot.push(spot)
                     var fila = '<tr class="col-md-12" id="fila">' +
                         '<input type="hidden" name="spots_g" value="' + aux.info_spot[j].count_repeat + '|' + aux.info_spot[j].time_total + '|' +
-                        aux.info_spot[j].porcentage + '|' + aux.info_spot[j].video_id + '"> ' +
+                        aux.info_spot[j].porcentage + '|' + aux.info_spot[j].video_id + '|'+aux.info_spot[j].order_id+'"> ' +
                         '<td> ' + (parseInt(j) + parseInt(1)) + '</td>' +
                         '<td> ' + aux.info_spot[j].client + ', ' + aux.info_spot[j].video_name + '</td>' +
                         '<td> ' + aux.info_spot[j].duration + '</td>' +

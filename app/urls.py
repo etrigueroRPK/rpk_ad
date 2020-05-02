@@ -19,6 +19,9 @@ urlpatterns = [
     # rutas para los reportes que se pueden imprimir
     path('reportprint/',include(('reportprint.urls','reportprint'), namespace='reportprint')),
 
+    # rutas para los reportes de emision de cliente y mensual general
+    path('reportemision/',include(('reportemision.urls','reportemision'), namespace='reportemision')),
+
 
 
     path('admin/', admin.site.urls),

@@ -38,6 +38,7 @@ class Playlist_spot_detail(ClassModel):
     porcentage = models.FloatField(null=False, blank=False)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
 class Playlist_client_detail(ClassModel):
     time_total = models.IntegerField(null=False, blank=False)

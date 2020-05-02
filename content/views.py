@@ -135,8 +135,8 @@ def playlist_generator(request):
 
         id_product = request.POST.get("id_product")
 
-        order = Order.objects.filter(product_id=id_product, state=1).all()
-
+        order = Order.objects.filter(product_id=id_product, state=1).all().order_by('-contract__auspice')
+        # print(order)
         lista_order_json = []
         for item in order:
             # print(item.contract.id)
@@ -266,12 +266,15 @@ def playlist_new(request):
             time_total = item.split('|')[1]
             porcentage = item.split('|')[2]
             video_id = item.split('|')[3]
+            order_id = item.split('|')[4]
             video = Video.objects.get(pk=video_id)
+            order = Order.objects.get(pk=order_id)
             playlist_spot_detail = Playlist_spot_detail(
                 repeat_count=repeat_count,
                 time_total=time_total,
                 porcentage=porcentage,
                 video=video,
+                order=order,
                 playlist=playlist,
                 user_created=request.user
             )
@@ -501,6 +504,7 @@ def complet_pass(listas):
             duracion_seg = count_spot_time(lista_nueva, item['video_id'])
             # print(duracion_seg)
             porc = item['porcentage']
+            # print(item["video_name"])
             # print(porc)
             porc_aux = (duracion_seg * 100) / suma_tem
             # print(porc_aux)
@@ -509,16 +513,33 @@ def complet_pass(listas):
             else:
                 bandera = False
 
-    # for item in lista_nueva:
-    #     print(item)
+    lista_nueva2 = lista_nueva
+    for item in lista_nueva:
+
+        suma_tem = time_all(lista_nueva)
+        bandera = True
+        while bandera:
+            # print(suma_tem)
+            duracion_seg = count_spot_time(lista_nueva2, item['video_id'])
+            # print(duracion_seg)
+            porc = item['porcentage']
+            # print(item["video_name"])
+            # print(porc)
+            porc_aux = (duracion_seg * 100) / suma_tem
+            # print(porc_aux)
+            if porc >= porc_aux:
+                lista_nueva2.append(item)
+            else:
+                bandera = False
+
+    for item in lista_nueva2:
+        print(item)
     # print(total_segundos)
 
     # print(listas)
     return lista_nueva
 
 # devuelve el tiempo de aparacion de un spot
-
-
 def count_spot_time(listas, video_id):
     suma = 0
     for item in listas:
