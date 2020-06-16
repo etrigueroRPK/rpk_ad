@@ -1,2 +1,8 @@
 media/
 app/settings.py
+*.pyc
+*~
+__pycache__
+myvenv
+/static
+.DS_Store
