@@ -12,9 +12,9 @@
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     <div class="alert">
 
-                                        Desactivar: {{ obj.name}} ? <br>
+                                        Eliminar: {{ obj}} ? <br>
                                         
-                                        Si en realidad lo quiere eliminar. Contacte con el Administrador del sistema.
+                                        Se perderan todos los datos. <br> Esta accion no tiene retroceso. <br> Tambien se borraran instancias inferiores.
                                     </div>
                                 </div>
 
@@ -22,7 +22,7 @@
 
                                     <button type="button" id="btn_delete" class="btn btn-danger"><span
                                             class="far fa-cuestion-circle"></span>
-                                        Si, Desactivar</button>
+                                        Si, Eliminar</button>
                                     <button type="button" class="btn btn-success"
                                         onclick="return cerrar_modal()">Cancelar</button>
 

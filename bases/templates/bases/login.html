@@ -88,7 +88,7 @@
     {% for field in form %}
       {% if field.errors %}
         {% for error in field.errors %}
-          mensaje('{{ error | escape }}','red');
+          ('{{ error | escape }}','red');
   
   {% endfor %}
   {% endif %}
@@ -96,7 +96,7 @@
 
   {% if form.non_field_errors %}
   {% for error in form.non_field_errors %}
-  mensaje('{{ error | escape }}','red');
+  ('{{ error | escape }}','red');
 
   {% endfor %}
   {% endif %}

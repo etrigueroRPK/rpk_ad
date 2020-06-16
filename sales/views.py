@@ -267,9 +267,9 @@ def contract_edit(request, id):
     return render(request, template_name, contexto)
 
 
-def contract_delete(request, id):
+def contract_disabled(request, id):
     # TODO: Inabilitar las ordenes que se asocian al contrato para que no lo muestre en los reportes.
-    template_name = 'sales/contract_delete.html'
+    template_name = 'sales/contract_disabled.html'
     contexto = {}
     cat = Contract.objects.filter(pk=id).first()
 
@@ -293,6 +293,36 @@ def contract_delete(request, id):
 
         contexto = {'obj': 'OK'}
         return HttpResponse('orden se desactivo')
+
+    return render(request, template_name, contexto)
+
+
+def contract_delete(request, id):
+    # TODO: Inabilitar las ordenes que se asocian al contrato para que no lo muestre en los reportes.
+    template_name = 'sales/contract_delete.html'
+    contexto = {}
+    cat = Contract.objects.filter(pk=id).first()
+
+    if not cat:
+        return HttpResponse('orden no existe' + str(id))
+
+    if request.method == 'GET':
+        contexto = {'obj': cat}
+
+    if request.method == 'POST':
+        # cat.state = False
+        # cat.user_updated = request.user.id
+        cat.delete()
+
+        # orders = Order.objects.filter(contract_id=id)
+        # for order in orders:
+        #     aux = Order.objects.filter(pk=order.id).first()
+        #     aux.state = False
+        #     aux.user_updated = request.user.id
+        #     aux.save()
+
+        contexto = {'obj': 'OK'}
+        return HttpResponse('orden borrada')
 
     return render(request, template_name, contexto)
 

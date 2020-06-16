@@ -71,9 +71,9 @@ class VideoEdit(SuccessMessageMixin, LoginRequiredMixin, generic.UpdateView):
 
 
 @login_required(login_url='/login/')
-@permission_required('content.delete_video', login_url='bases:sin_privilegios')
-def video_delete(request, id):
-    template_name = 'content/video_delete.html'
+@permission_required('content.disabled_video', login_url='bases:sin_privilegios')
+def video_disabled(request, id):
+    template_name = 'content/video_disabled.html'
     contexto = {}
     cat = Video.objects.filter(pk=id).first()
 
@@ -95,9 +95,61 @@ def video_delete(request, id):
     return render(request, template_name, contexto)
 
 
+
+@login_required(login_url='/login/')
+@permission_required('content.delete_video', login_url='bases:sin_privilegios')
+def video_delete(request, id):
+    template_name = 'content/video_delete.html'
+    contexto = {}
+    cat = Video.objects.filter(pk=id).first()
+
+    if not cat:
+        return HttpResponse('Video no existe' + str(id))
+
+    if request.method == 'GET':
+        contexto = {'obj': cat}
+
+    if request.method == 'POST':
+        # cat.state = False
+        cat.delete()
+        # mensaje par que la vista lo muestre sin coloca en comentarios pues al momento de los esta haciendo con ajax
+        # messages.success(request, 'Se inactivo correctamente')
+
+        contexto = {'obj': 'OK'}
+        return HttpResponse('Video  borrado')
+
+    return render(request, template_name, contexto)
+
+
 # ==========================================================
 # para manejar listas de reproduccion
 # ==========================================================
+
+@login_required(login_url='/login/')
+@permission_required('content.delete_playlist', login_url='bases:sin_privilegios')
+def playlist_delete(request, id):
+    template_name = 'content/playlist_delete.html'
+    contexto = {}
+    cat = Playlist.objects.filter(pk=id).first()
+
+    if not cat:
+        return HttpResponse('Playlist no existe' + str(id))
+
+    if request.method == 'GET':
+        contexto = {'obj': cat}
+
+    if request.method == 'POST':
+        # cat.state = False
+        cat.delete()
+        # mensaje par que la vista lo muestre sin coloca en comentarios pues al momento de los esta haciendo con ajax
+        # messages.success(request, 'Se inactivo correctamente')
+
+        contexto = {'obj': 'OK'}
+        return HttpResponse('Playlist  borrado')
+
+    return render(request, template_name, contexto)
+
+
 
 def playlist_list(request):
     contexto = {}

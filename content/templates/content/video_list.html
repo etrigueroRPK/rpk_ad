@@ -56,7 +56,7 @@
                     <tr>
                         <td>{{ item.id }}</td>
                         <td>{{ item.contract.client}}{% if item.contract.description %}
-                                 {{ item.contract.description}}
+                            {{ item.contract.description}}
                             {% endif%}</td>
                         <td>{{ item.name }}</td>
                         <td>{{ item.duration_all}}</td>
@@ -78,8 +78,11 @@
 
                         <td>
                             <a href="{% url 'content:video_edit' item.id %}"
-                                class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
+                                class="btn btn-sm btn-outline-info btn-circle" role="button"><i
                                     class="far fa-edit"></i></a>
+                            <button class="btn btn-sm btn-outline-warning btn-circle"
+                                onclick="return abrir_modal('{% url 'content:video_disabled' item.id %}')"><i
+                                    class="fas fa-ban"></i></button>
                             <button class="btn btn-sm btn-outline-danger btn-circle"
                                 onclick="return abrir_modal('{% url 'content:video_delete' item.id %}')"><i
                                     class="far fa-trash-alt"></i></button>

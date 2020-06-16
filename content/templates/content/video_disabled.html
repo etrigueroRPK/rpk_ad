@@ -12,9 +12,9 @@
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     <div class="alert">
 
-                                        Eliminar: {{ obj.name}} ? <br>
-                                        Esta accion elimina el video. Los datos no son recuperables. <br>
-                                        Verifique que no tenga instancias declaradas. caos contrario lanzara un error. 
+                                        Desactivar: {{ obj.name}} ? <br>
+                                        Esta accion en realidad no elimina el producto solo desactiva... <br>
+                                    
                                     </div>
                                 </div>
 
@@ -22,7 +22,7 @@
 
                                     <button type="button" id="btn_delete" class="btn btn-danger"><span
                                             class="far fa-cuestion-circle"></span>
-                                        Si, Eliminar</button>
+                                        Si, Desactivar</button>
                                     <button type="button" class="btn btn-success"
                                         onclick="return cerrar_modal()">Cancelar</button>
 
@@ -55,7 +55,7 @@ $(document).ready(function(){
 
         var id = {{ obj.id }};
         
-        var template = "{% url 'content:video_delete' obj.id %}";
+        var template = "{% url 'content:video_disabled' obj.id %}";
         // template += id;
         var data = {"id":id};
         data = JSON.stringify(data);
@@ -71,10 +71,8 @@ $(document).ready(function(){
                 console.log(response);
                 cerrar_modal();
                 // alert(response);
-                var tipo=(response.startsWith('Video no existe') ? 'red':'green');
+                var tipo=(response.startsWith('Categoria no existe') ? 'red':'green');
                 mensaje(response,tipo);
-                window.location.reload();
-                
 
             },
             error: function(jqXHR, textStatus, errorThrow){

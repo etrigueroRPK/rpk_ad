@@ -24,7 +24,7 @@ class Contract(ClassModel):
 
     def __str__(self):
         
-        return '{} desde el {} al {}'.format(self.client.name, self.start_date   ,self.end_date)
+        return '{}, {} desde el {} al {}'.format(self.client.name, self.description, self.start_date   ,self.end_date)
 
     
 
