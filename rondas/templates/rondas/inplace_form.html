@@ -1,0 +1,191 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12">
+
+        {% if obj %}
+        <div class="card border-left-warning shadow h-100 py-2">
+            {% else %}
+
+            <div class="card border-left-primary shadow h-100 py-2">
+                {% endif %}
+
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                {% if obj %} Editar {% else %} Nuevo {% endif %} Video
+                            </div>
+                            <small class="text-danger">
+                                {% if form.errors %}
+                                {% for field in form %}
+                                {% if field.errors %}
+                                {% for error in field.errors %}
+                                {{ error|escape }}
+                                {% endfor %}
+                                {% endif %}
+                                {% endfor %}
+
+                                {% if form.non_field_errors%}
+                                {% for error in form.non_field_errors %}
+                                {{ error|escape }}
+                                {% endfor %}
+                                {% endif %}
+                                {% endif %}
+                            </small>
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group row">
+                                <label for="id_latitude" class="col-sm-1 col-form-label">Latitud</label>
+                                <div class="col-sm-3 ">
+                                    <input type="text" name="latitude" maxlength="50" class="form-control" required
+                                        autocomplete="off" id="id_latitude" value="{% if obj %} {{obj.latitude}} {% endif %}">
+                                </div>
+                                <label for="id_longitude" class="col-sm-1 col-form-label">Longitud</label>
+                                <div class="col-sm-3 ">
+                                    <input type="text" name="longitude" maxlength="50" class="form-control" required
+                                        autocomplete="off" id="id_longitude" value="{% if obj %} {{obj.longitude}} {% endif %}">
+                                </div>
+                                <label for="id_datetime_insitu" class="col-sm-1 col-form-label">Fecha de registro</label>
+                                <div class="col-sm-3 ">
+                                    <input type="datetime" name="datetime_insitu" class="form-control" id="id_datetime_insitu"
+                                        value="{% if obj %}{{obj.datetime_insitu|date:'Y-m-d'}}{% endif %}">
+                                </div>
+                               
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label for="id_contract" class="col-sm-2 col-form-label">Producto</label>
+                                <div class="col-sm-10">
+                                    <!-- <select name="category" id="id_category" required class="form-control">
+                                        <option value="" selected>---------</option>
+                                        
+                                    </select> -->
+                                    {{ form.product}}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="id_img" class="col-sm-2 col-form-label">Imagen</label>
+                                <div class="col-sm-10">
+                                    <input type="file" name="img" maxlength="300" class="form-control-file"
+                                        accept="image/*" id="id_img" value="{% if obj %} {{obj.img}} {% endif %}">
+                                </div>
+                            </div>
+                            
+                            <!-- para mostrar video -->
+                            <!-- <div class="form-group row ">
+                                <div class="embed-responsive embed-responsive-21by9">
+
+                                    <video width="320" height="240" controls class="embed-responsive-item" id="video_rep">
+                                        <source type="video/mp4" src="" id="video_local">
+                                    </video>
+                                </div>
+                            </div> -->
+
+
+
+
+                            
+                            <!-- <div class="form-group row">
+                                <label for="id_video" class="col-sm-2 col-form-label">Video</label>
+                                <div class="col-sm-10">
+                                    <input type="file" name="video" maxlength="300" class="form-control-file"
+                                        accept="video/*" id="id_video" value="{% if obj %} {{obj.video}} {% endif %}">
+                                </div>
+                            </div> -->
+                            <div class="form-group row">
+                                <div class="col-sm-2">Estado</div>
+                                <div class="col-sm-10">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="state" class="form-check-input" {% if obj.state == True %}
+                                            checked {% endif %} id="id_state">
+                                        <label class="form-check-label" for="id_state">
+                                            Marcar estado.
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+
+
+                            <!-- {{form.as_p}} -->
+
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group row text-center">
+                                <div class="col-sm-12">
+                                    <a href="{% url 'rondas:rondas_list' %}" class="btn btn-danger"><span
+                                            class="fa fa-undo"> Cancelar</span></a>
+                                    <button type="submit" class="btn btn-success"><span class="fa fa-save"></span>
+                                        Guardar</button>
+                                </div>
+                            </div>
+                            <!-- <button type="button" id="sacar_tiempo">sacr</button> -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>
+
+{% endblock %}
+{% block js_page %}
+<script>
+    $(document).ready(function () {
+        $('#id_product').select2({ placeholder: "Seleccione", allowClear: true });
+
+        $('#id_state').prop("checked", true);
+
+        // ==============================================
+        // var output = document.getElementById('map');
+
+			// Verificar si soporta geolocalizacion
+			if (navigator.geolocation) {
+				mensaje('Tu dispositivo soporta Geolocalizacion','green');
+			} else {
+				// output.innerHTML = "<p></p>";
+                mensaje('Tu dispositivo no soporta Geolocalizacion','red');
+			}
+
+			//Obtenemos latitud y longitud
+			function localizacion(posicion) {
+
+				var latitude = posicion.coords.latitude;
+				var longitude = posicion.coords.longitude;
+
+                $('#id_latitude').val(latitude);
+                $('#id_longitude').val(longitude);
+
+
+				console.log(latitude + ' - ' + longitude)
+
+			}
+
+			function error() {
+				mensaje('No se pudo obtener tu ubicacion','red');
+
+			}
+
+			navigator.geolocation.getCurrentPosition(localizacion, error);
+
+        var hoy = new Date();
+        var fecha = hoy.getDate() + '/' + (hoy.getMonth() + 1) + '/'+ hoy.getFullYear();
+        var hora = hoy.getHours() + ':' + hoy.getMinutes() +':'+ hoy.getSeconds();
+        var datetime_insitu = fecha + ' ' + hora;
+        $('#id_datetime_insitu').val(datetime_insitu);
+
+
+
+    })
+
+
+</script>
+
+{% endblock %}

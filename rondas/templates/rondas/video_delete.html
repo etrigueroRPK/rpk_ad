@@ -1,0 +1,90 @@
+<div class="modal-dialog ">
+    <div class="modal-content">
+
+        <form method="POST" class="form-group">
+            {% csrf_token %}
+
+            <div class="col-xl-12 col-md-12 mb-12">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    <div class="alert">
+
+                                        Eliminar: {{ obj.name}} ? <br>
+                                        Esta accion elimina el video. Los datos no son recuperables. <br>
+                                        Verifique que no tenga instancias declaradas. caos contrario lanzara un error. 
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+
+                                    <button type="button" id="btn_delete" class="btn btn-danger"><span
+                                            class="far fa-cuestion-circle"></span>
+                                        Si, Eliminar</button>
+                                    <button type="button" class="btn btn-success"
+                                        onclick="return cerrar_modal()">Cancelar</button>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+$(document).ready(function(){
+
+    var token = $('input[name=csrfmiddlewaretoken]').val();
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings){
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                xhr.setRequestHeader("X-CSRFToken", token);
+            }
+        }
+    });
+    $('#btn_delete').click(function(e){
+        e.preventDefault();
+        // alert("provando");
+
+        var id = {{ obj.id }};
+        
+        var template = "{% url 'content:video_delete' obj.id %}";
+        // template += id;
+        var data = {"id":id};
+        data = JSON.stringify(data);
+
+        $.ajax({
+            type: "POST",
+            url: template,
+            data: data,
+            beforeSend: function(xhr, settings){
+                $.ajaxSettings.beforeSend(xhr,settings);
+            },
+            success: function(response){
+                console.log(response);
+                cerrar_modal();
+                // alert(response);
+                var tipo=(response.startsWith('Video no existe') ? 'red':'green');
+                mensaje(response,tipo);
+                window.location.reload();
+                
+
+            },
+            error: function(jqXHR, textStatus, errorThrow){
+                console.log(textStatus, errorThrow)
+                cerrar_modal();
+                mensaje(errorThrow, 'red' );
+
+            }
+        })
+    })
+});
+
+</script>

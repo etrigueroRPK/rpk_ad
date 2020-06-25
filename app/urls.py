@@ -22,6 +22,10 @@ urlpatterns = [
     # rutas para los reportes de emision de cliente y mensual general
     path('reportemision/',include(('reportemision.urls','reportemision'), namespace='reportemision')),
 
+    # rutas para rondas de personal en las locaciones 
+    path('rondas/',include(('rondas.urls','rondas'), namespace='rondas')),
+
+
 
 
     path('admin/', admin.site.urls),
