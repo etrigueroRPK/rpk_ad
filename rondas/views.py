@@ -35,7 +35,7 @@ import datetime
 class RondasView(SinPrivilegios,
                 generic.ListView):
     # este permision_required es nesesario para ver el tema de permisos a nivel de vista
-    permission_required = 'rondas.view_video'
+    permission_required = 'rondas.view_inplace'
     model = Inplace
     template_name = 'rondas/rondas_view.html'
     context_object_name = 'obj'
