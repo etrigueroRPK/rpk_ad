@@ -41,17 +41,17 @@
                             <div class="form-group row">
                                 <label for="id_latitude" class="col-sm-1 col-form-label">Latitud</label>
                                 <div class="col-sm-3 ">
-                                    <input type="text" name="latitude" maxlength="50" class="form-control" required
+                                    <input type="text" name="latitude" maxlength="50" class="form-control"  readonly
                                         autocomplete="off" id="id_latitude" value="{% if obj %} {{obj.latitude}} {% endif %}">
                                 </div>
                                 <label for="id_longitude" class="col-sm-1 col-form-label">Longitud</label>
                                 <div class="col-sm-3 ">
-                                    <input type="text" name="longitude" maxlength="50" class="form-control" required
+                                    <input type="text" name="longitude" maxlength="50" class="form-control" readonly
                                         autocomplete="off" id="id_longitude" value="{% if obj %} {{obj.longitude}} {% endif %}">
                                 </div>
                                 <label for="id_datetime_insitu" class="col-sm-1 col-form-label">Fecha de registro</label>
                                 <div class="col-sm-3 ">
-                                    <input type="datetime" name="datetime_insitu" class="form-control" id="id_datetime_insitu"
+                                    <input type="datetime" name="datetime_insitu" class="form-control" id="id_datetime_insitu" readonly
                                         value="{% if obj %}{{obj.datetime_insitu|date:'Y-m-d'}}{% endif %}">
                                 </div>
                                

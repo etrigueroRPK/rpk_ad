@@ -12,9 +12,8 @@
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     <div class="alert">
 
-                                        Eliminar: {{ obj.name}} ? <br>
-                                        Esta accion elimina el video. Los datos no son recuperables. <br>
-                                        Verifique que no tenga instancias declaradas. caos contrario lanzara un error. 
+                                        Eliminar visita: {{ obj.product}} ? <br>
+                                       Esta accion no tiene retroceso.  
                                     </div>
                                 </div>
 
@@ -55,7 +54,7 @@ $(document).ready(function(){
 
         var id = {{ obj.id }};
         
-        var template = "{% url 'content:video_delete' obj.id %}";
+        var template = "{% url 'rondas:ronda_delete' obj.id %}";
         // template += id;
         var data = {"id":id};
         data = JSON.stringify(data);
@@ -71,7 +70,7 @@ $(document).ready(function(){
                 console.log(response);
                 cerrar_modal();
                 // alert(response);
-                var tipo=(response.startsWith('Video no existe') ? 'red':'green');
+                var tipo=(response.startsWith('Visita no existe') ? 'red':'green');
                 mensaje(response,tipo);
                 window.location.reload();
                 

@@ -49,11 +49,11 @@
                 </thead>
                 <tbody>
                     {% for item in obj %}
-                    
+
 
                     <tr>
                         <td>{{ item.id }}</td>
-                       
+
                         <td>{{ item.user_created }}</td>
                         <td>{{ item.datetime_insitu}}</td>
                         <td>{{ item.product}}</td>
@@ -65,18 +65,18 @@
                         </td>
                         <td>{{ item.latitude }}</td>
                         <td>{{ item.longitude }}</td>
-                       
-                        
+
+
 
                         <td>
-                            <a href="{% url 'content:video_edit' item.id %}"
+                            <!-- <a href="{% url 'content:video_edit' item.id %}"
                                 class="btn btn-sm btn-outline-info btn-circle" role="button"><i
-                                    class="far fa-edit"></i></a>
-                            <button class="btn btn-sm btn-outline-warning btn-circle"
-                                onclick="return abrir_modal('{% url 'content:video_disabled' item.id %}')"><i
-                                    class="fas fa-ban"></i></button>
+                                    class="far fa-edit"></i></a> -->
+                            <button class="btn btn-sm btn-outline-primary btn-circle"
+                                onclick="return abrir_modal('{% url 'rondas:ronda_view' item.id %}')"><i
+                                    class="fas fa-map-marked-alt"></i></button>
                             <button class="btn btn-sm btn-outline-danger btn-circle"
-                                onclick="return abrir_modal('{% url 'content:video_delete' item.id %}')"><i
+                                onclick="return abrir_modal('{% url 'rondas:ronda_delete' item.id %}')"><i
                                     class="far fa-trash-alt"></i></button>
 
                         </td>

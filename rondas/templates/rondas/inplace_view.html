@@ -1,0 +1,54 @@
+<div class="modal-dialog ">
+    <div class="modal-content">
+
+        <form method="POST" class="form-group">
+            {% csrf_token %}
+
+            <div class="col-xl-12 col-md-12 mb-12">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    <div class="alert">
+
+                                        Usuario: {{ obj.user_created}}. <br>
+                                        Fecha y hora de visita: {{obj.datetime_insitu}}<br>
+                                        Producto: {{obj.product}}
+                                         <br>
+                                        
+
+                                        <div id="map">
+                                        <iframe width="100%" height="600" frameborder="0" scrolling="yes"
+                                            marginheight="0" marginwidth="0"
+                                            src="https://maps.google.com/maps?q={{obj.latitude}}%20{{obj.longitude}}&amp;t=m&amp;z=15&amp;output=embed&amp;iwloc=near"
+                                            aria-label=""></iframe></div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+
+                                    
+                                    <button type="button" class="btn btn-success"
+                                        onclick="return cerrar_modal()">Aceptar</button>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+    
+
+});
+
+</script>
