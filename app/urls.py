@@ -25,6 +25,9 @@ urlpatterns = [
     # rutas para rondas de personal en las locaciones 
     path('rondas/',include(('rondas.urls','rondas'), namespace='rondas')),
 
+    # rutas para mostrar vistas de reportes rapidos como clinetes por locaion spots por clientes
+    path('display/',include(('display.urls','display'), namespace='display')),
+
 
 
 

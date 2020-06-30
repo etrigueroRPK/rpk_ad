@@ -67,6 +67,29 @@
           <span>Rondas</span></a>
       </li>
 
+      <hr class="sidebar-divider">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseView" aria-expanded="true"
+          aria-controls="collapseView">
+          <i class="fas fa-fighter-jet"></i>
+          <span>Vistas Rapidas</span>
+        </a>
+        <div id="collapseView" class="collapse" aria-labelledby="headingView" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Vistas:</h6>
+            <a class="collapse-item" href="{% url 'display:products_list' %}">Productos</a>
+            <!-- tag par apermisos -->
+            {% if perms.component.view_category %}
+
+            <a class="collapse-item" href="{% url 'component:categories_list' %}">Clientes</a>
+            {% endif %}
+            <!-- <a class="collapse-item" href="{% url 'component:locations_list' %}">Locaciones</a> -->
+            <!-- <a class="collapse-item" href="{% url 'component:product_list' %}">Productos</a> -->
+          </div>
+        </div>
+      </li>
+
       <!-- Divider -->
       <hr class="sidebar-divider">
       <li class="nav-item">
