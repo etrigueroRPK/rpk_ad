@@ -42,7 +42,7 @@ class Playlist_spot_detail(ClassModel):
 
 class Playlist_client_detail(ClassModel):
     time_total = models.IntegerField(null=False, blank=False)
-    pauta_loop = models.IntegerField(null=False, blank=False)
+    pauta_loop = models.FloatField(null=False, blank=False)
     second_total = models.IntegerField(null=False, blank=False)
     time_contract = models.IntegerField(null=False, blank=False)
     time_bonification = models.IntegerField(null=False, blank=False)
