@@ -61,16 +61,26 @@ class Subproduct(ClassModel):
     img = models.ImageField(upload_to='sub product', null=True, blank=True)
     place = models.CharField(max_length=50, null=True, blank=True)
     measure = models.CharField(max_length=50, unique=False)
+    pixel_size = models.CharField(max_length=50, unique=False, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
 
-class item(ClassModel):
+class Electronic(ClassModel):
     name = models.CharField(max_length=50, unique=False, null=True, blank=True)
     serie = models.CharField(max_length=50, unique=True)
+    brand = models.CharField(max_length=50, unique=False, blank=True, null=True)
+    pixel_size = models.CharField(max_length=50, unique=False, blank=True, null=True)
+    measure = models.CharField(max_length=50, unique=False, blank=True, null=True)
     description = models.CharField(max_length=100, blank=True, null=True)
     sub_product = models.ForeignKey(Subproduct, on_delete=models.CASCADE)
 
-    
+
+class Electronic_detaill(ClassModel):
+
+    name = models.CharField(max_length=50, unique=False, blank=True, null=True)
+    detaill = models.CharField(max_length=300, unique=False, blank=True, null=True)
+
+
 
 
 

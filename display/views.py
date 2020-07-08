@@ -46,8 +46,6 @@ def products_list(request):
     if request.method == 'GET':
         contexto = {'obj': products}
 
-    
-
     return render(request, template_name, contexto)
 
 
@@ -88,6 +86,47 @@ def video_list(request, id):
 
     if request.method == 'GET':
         contexto = {'obj':video, 'order':order }
+
+    
+
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='/login/')
+@permission_required('display.view_display', login_url='bases:sin_privilegios')
+def clients_list(request):
+    template_name = 'display/clients_list.html'
+    contexto = {}
+    contract = Contract.objects.filter(state=True).all()
+
+    if not contract:
+        contexto = {'obj':''}
+
+    if request.method == 'GET':
+        contexto = {'obj':contract}
+
+    
+
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='/login/')
+@permission_required('display.view_display', login_url='bases:sin_privilegios')
+def client_order(request, id):
+    template_name = 'display/client_order.html'
+    contexto = {}
+    contract = Contract.objects.get(pk=id)
+    order = Order.objects.filter(state=True, contract=id).all()
+
+    # product_id = product.id
+    # playlist = Playlist.objects.filter(product=product_id).last()
+    
+
+    if not order:
+        contexto = {'obj':'' }
+
+    if request.method == 'GET':
+        contexto = {'obj': order, 'contract':contract}
 
     
 

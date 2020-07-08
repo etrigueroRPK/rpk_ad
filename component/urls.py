@@ -3,7 +3,8 @@ from .views import CategoryView, CategoryNew, CategoryEdit, category_delete, \
     LocationView, LocationNew, LocationEdit, location_delete, \
     ProductView, ProductNew, ProductEdit, product_delete, \
     sub_product_view, sub_product_new, sub_product_view_id, sub_product_delete, \
-    CityView, CityNew, CityEdit, city_delete
+    CityView, CityNew, CityEdit, city_delete, \
+    electronic_view, electronic_new, electronic_view_id, electronic_delete
 
 urlpatterns = [
     # vistas para categorias
@@ -41,5 +42,14 @@ urlpatterns = [
     path('city/edit/<int:pk>',
          CityEdit.as_view(), name='city_edit'),
     path('city/delete/<int:id>', city_delete, name='city_delete'),
+
+
+
+    # vistas para asignar electronicos a subproductos
+    path('electronic/view/<int:id>', electronic_view, name='electronic'),
+    path('electronic/new/<int:id>', electronic_new, name='electronic_new'),
+    path('electronic_id/view/<int:id>', electronic_view_id, name='electronic_id'), 
+    path('electronic/delete/<int:id>', electronic_delete, name='electronic_delete'),
+
 
 ]

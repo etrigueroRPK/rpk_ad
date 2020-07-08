@@ -61,6 +61,13 @@
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
       </li>
+
+      <hr class="sidebar-divider">
+      <!-- Heading -->
+      <div class="sidebar-heading">
+        Operaciones
+      </div>
+
       <li class="nav-item">
         <a class="nav-link" href="{% url 'rondas:rondas_list'%}">
           <i class="fas fa-globe-americas"></i>
@@ -82,7 +89,7 @@
             <!-- tag par apermisos -->
             {% if perms.component.view_category %}
 
-            <a class="collapse-item" href="{% url 'component:categories_list' %}">Clientes</a>
+            <a class="collapse-item" href="{% url 'display:clients_list' %}">Clientes</a>
             {% endif %}
             <!-- <a class="collapse-item" href="{% url 'component:locations_list' %}">Locaciones</a> -->
             <!-- <a class="collapse-item" href="{% url 'component:product_list' %}">Productos</a> -->
@@ -91,12 +98,12 @@
       </li>
 
       <!-- Divider -->
-      <hr class="sidebar-divider">
+      <!-- <hr class="sidebar-divider">
       <li class="nav-item">
         <a class="nav-link" href="#">
           <i class="fas fa-file-video"></i>
           <span>Generar orden de pauta</span></a>
-      </li>
+      </li> -->
       <!-- Divider -->
       <hr class="sidebar-divider">
       <!-- Heading -->
@@ -148,7 +155,7 @@
 
       <!-- Heading -->
       <div class="sidebar-heading">
-        Acciones
+        PAUTAS
       </div>
 
       <!-- Nav Item - Pages Collapse Menu -->

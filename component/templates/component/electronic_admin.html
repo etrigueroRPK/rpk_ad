@@ -8,27 +8,27 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Datos de Producto:</div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Datos de Sub producto:
+                        </div>
                         <div class="dropdown-divider"></div>
                         <!--  -->
-                        <input type="hidden" name="id_product" id="id_product" value="{{product.id}}">
+                        <input type="hidden" name="id_sub_product" id="id_sub_product" value="{{sub_product.id}}">
                         <div class="row ml-3">
-                            <p>Producto: <strong>{{product.category}} : {{product.location}} : {{product.name}}
+                            <p>Producto: <strong>{{sub_product.product.category}} {{sub_product.product.location}}
+                                    {{sub_product.product.name}}
                                 </strong></p> <br>
                         </div>
                         <div class="row ml-3">
-                            <p>Ubicacion: <strong> {{product.place}} </strong></p>
+                            <p>Sub producto: <strong>{{sub_product.name}}
+                                </strong></p> <br>
                         </div>
                         <div class="row ml-3">
-                            <p>Fecha inicio: <strong class="mr-5">{{product.start_date|date:'d/m/Y'}}</strong> Fecha
-                                final:
-                                <strong>{{product.end_date|date:'d/m/Y'}}</strong> </p>
+                            <p>Medidas: <strong> {{sub_product.measure}} </strong></p>
                         </div>
                         <div class="row ml-3">
-                            <p>Hora inicio: <strong class="mr-5">{{product.start_time}}</strong> Hora final: <strong
-                                    class="mr-5">{{product.end_time}}</strong> Tiempo de funcionamiento:
-                                <strong>{{product.time_operating}}</strong> </p>
+                            <p>Pixeles: <strong> {{sub_product.description}} </strong></p>
                         </div>
+
                         <div class="row ml-3">
                             <p>Estado: <strong>{{product.state|yesno:'Activo, Desactivo'}}</strong> </p>
                         </div>
@@ -37,8 +37,8 @@
                     </div>
                     <div class="col-auto">
 
-                        {% if product.img %}
-                        <img src="{{product.img.url}}" class="img-fluid" alt="{{product.img}}">
+                        {% if sub_product.img %}
+                        <img src="{{sub_product.img.url}}" class="img-fluid" alt="{{sub_product.img}}">
                         {% endif %}
 
                     </div>
@@ -52,7 +52,7 @@
             <div class="card-body pb-0 ">
                 <div class="row no-gutters align-items-center ">
                     <div class="col mr-2 ">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Nuevo Sub producto:</div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Nuevo electronico:</div>
                         <div class="dropdown-divider"></div>
                         <!--  -->
                         <form method="POST" class="form-group mb-0" enctype="multipart/form-data" id="formulario"
@@ -68,10 +68,17 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="id_place" class="col-sm-2 col-form-label">Ubicacion</label>
+                                <label for="id_serie" class="col-sm-2 col-form-label">Serie</label>
                                 <div class="col-sm-10">
-                                    <input type="" name="place" maxlength="100" class="form-control" id="id_place"
-                                        value="{% if obj %} {{obj.place}} {% endif %}" autocomplete="off">
+                                    <input type="" name="serie" maxlength="100" class="form-control" id="id_serie"
+                                        value="{% if obj %} {{obj.serie}} {% endif %}" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="id_brand" class="col-sm-2 col-form-label">Marca</label>
+                                <div class="col-sm-10">
+                                    <input type="" name="brand" maxlength="100" class="form-control" id="id_brand"
+                                        value="{% if obj %} {{obj.brand}} {% endif %}" autocomplete="off">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -84,22 +91,21 @@
                             <div class="form-group row">
                                 <label for="id_pixel_size" class="col-sm-2 col-form-label">Pixeles</label>
                                 <div class="col-sm-10">
-                                    <input type="" name="pixel_size" maxlength="50" class="form-control" id="id_pixel_size"
-                                        value="{% if obj %} {{obj.pixel_size}} {% endif %}" autocomplete="off">
+                                    <input type="" name="pixel_size" maxlength="50" class="form-control"
+                                        id="id_pixel_size" value="{% if obj %} {{obj.pixel_size}} {% endif %}"
+                                        autocomplete="off">
                                 </div>
                             </div>
 
                             <div class="form-group row">
-                                {% if obj.img %}
-
-                                <img src="{{obj.img.url}}" alt="">
-                                {% endif %}
-                                <label for="id_img" class="col-sm-2 col-form-label">Imagen</label>
+                                <label for="id_description" class="col-sm-2 col-form-label">Info</label>
                                 <div class="col-sm-10">
-                                    <input type="file" name="img" maxlength="300" class="form-control-file" id="id_img"
-                                        value="{% if obj.img %} {{obj.img}} {% endif %}">
+                                    <input type="" name="description" maxlength="50" class="form-control"
+                                        id="id_description" value="{% if obj %} {{obj.description}} {% endif %}"
+                                        autocomplete="off">
                                 </div>
                             </div>
+
                             <div class="form-group row  ">
                                 <div class="col-sm-2">Estado</div>
                                 <div class="col-sm-10">
@@ -114,7 +120,7 @@
                                 </div>
                             </div>
                             <!-- bandera que determina si es actualizacion de sub producto -->
-                            <input type="hidden" name="sub_product" id="id_sub_product" value="">
+                            <input type="hidden" name="electronic" id="id_electronic" value="">
 
 
                             <!--  -->
@@ -127,7 +133,7 @@
                                     <a href="{% url 'component:product_list' %}" class="btn btn-danger "><span
                                             class="fa fa-undo"> Cancelar</span></a>
                                     <button type="submit" class="btn btn-success "><span class="fa fa-save "></span>
-                                        Guardar</button>
+                                        Agregar</button>
                                 </div>
                             </div>
 
@@ -137,13 +143,16 @@
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
 </div>
 
+
 <div class="card-body">
     {% if not obj %}
-    <div class="alert alert-info">No hay sub productos asignados </div>
+    <div class="alert alert-info">No hay electronicos asignados </div>
 
     {% else %}
     <div class="table-responsive">
@@ -153,10 +162,11 @@
                 <tr>
                     <th>Id</th>
                     <th>Nombre</th>
-                    <th>Lugar</th>
-                    <th>Imagen</th>
+                    <th>Serie</th>
+                    <th>Marca</th>
                     <th>Medidas</th>
                     <th>Pixeles</th>
+                    <th>Info</th>
                     <th>Estado</th>
                     <!-- <th>F. Creacion</th>
                     <th>F. Modificacion</th> -->
@@ -168,16 +178,12 @@
                 {% for item in obj %}
                 <tr>
                     <td>{{ item.id }}</td>
-                    <td> {{item.name}}</td>
-                    <td>{{ item.place }}</td>
-                    <td class="text-center">
-                        {% if item.img %}
-                        <img src="{{ item.img.url }}" class="img-thumbnail" alt="IMG" width="60" height="60">
-
-                        {% endif %}
-                    </td>
-                    <td>{{ item.measure}}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.serie }}</td>
+                    <td>{{ item.brand }}</td>
+                    <td>{{ item.measure }}</td>
                     <td>{{ item.pixel_size }}</td>
+                    <td>{{ item.description }}</td>
                     <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
                     <!-- <td>{{ item.created_at}}</td>
                     <td>{{ item.updated_at}}</td> -->
@@ -186,15 +192,13 @@
 
                     <td>
 
-                        <a href="{% url 'component:electronic' item.id %}"
-                                class="btn btn-sm btn-outline-info btn-circle" role="button"><i class="fas fa-puzzle-piece"></i></a>
+                        
                         <button class="btn btn-sm btn-outline-warning btn-circle"
-                            onclick="edit_sub_product({{item.id}})"><i class="far fa-edit"></i></button>
+                            onclick="edit_electronic({{item.id}})"><i class="far fa-edit"></i></button>
 
                         <button class="btn btn-sm btn-outline-danger btn-circle"
-                            onclick="return abrir_modal('{% url 'component:sub_product_delete' item.id %}')"><i
+                            onclick="return abrir_modal('{% url 'component:electronic_delete' item.id %}')"><i
                                 class="far fa-trash-alt"></i></button>
-
 
                     </td>
                 </tr>
@@ -224,15 +228,15 @@
 
         e.preventDefault();
         var data = new FormData($("#formulario").get(0));
-        var id_product = $("#id_product").val();
+        var id_sub_product = $("#id_sub_product").val();
         var token = '{{csrf_token}}';
 
-        console.log(id_product);
+        console.log(id_sub_product);
 
         $.ajax({
             headers: { "X-CSRFToken": token },
             type: "POST",
-            url: "/component/sub_product/new/" + id_product,
+            url: "/component/electronic/new/" + id_sub_product,
             data: data,
             processData: false,
             contentType: false,
@@ -252,23 +256,26 @@
 
     });
 
-    function edit_sub_product(id) {
+    function edit_electronic(id) {
 
-        var id_sub_product = id;
+        var id_electronic = id;
         var token = '{{csrf_token}}';
         $.ajax({
             headers: { "X-CSRFToken": token },
             type: "GET",
-            url: "/component/sub_product_id/view/" + id_sub_product,
+            url: "/component/electronic_id/view/" + id_electronic,
 
             success: function (response) {
 
-                console.log(response.sub_product[0].state)
-                $("#id_sub_product").val(response.sub_product[0].id)
-                $("#id_name").val(response.sub_product[0].name)
-                $("#id_place").val(response.sub_product[0].place)
-                $("#id_measure").val(response.sub_product[0].measure)
-                $("#id_pixel_size").val(response.sub_product[0].pixel_size)
+                console.log(response.electronic[0].state)
+                $("#id_electronic").val(response.electronic[0].id)
+                $("#id_name").val(response.electronic[0].name)
+                $("#id_serie").val(response.electronic[0].serie)
+                $("#id_brand").val(response.electronic[0].brand)
+                $("#id_measure").val(response.electronic[0].measure)
+                $("#id_pixel_size").val(response.electronic[0].pixel_size)
+                $("#id_description").val(response.electronic[0].description)
+
 
 
             },

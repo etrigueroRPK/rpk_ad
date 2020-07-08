@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import products_list, products_client, video_list
+from .views import products_list, products_client, video_list, \
+    clients_list, client_order
 
 urlpatterns = [
    
@@ -7,6 +8,15 @@ urlpatterns = [
     path('display/products_client/<int:id>', products_client, name='products_client'),
 
     path('display/video_list/<int:id>', video_list, name='video_list'),
+
+    path('display/clients', clients_list, name='clients_list'),
+    path('display/client_order/<int:id>', client_order, name='client_order'),
+
+
+
+
+
+
     # path('videos/edit/<int:pk>',
     #      VideoEdit.as_view(), name='video_edit'),
     # path('videos/disabled/<int:id>', video_disabled, name='video_disabled'),
