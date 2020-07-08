@@ -5,96 +5,84 @@
             {% csrf_token %}
 
             <div class="col-xl-12 col-md-12 mb-12">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-6">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    <div class="alert">
 
-                                        Lista de videos: {{ obj.name}} ? <br>
+                <div class="card-body p-0">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-12">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1 mt-1 text-center h3">
+                                <h3 class="alert">
 
+                                    videos de {{order.contract.client}}<br>
+
+                                </h3>
+                            </div>
+                            <div>
+                                <div class="card-body">
+                                    {% if not obj %}
+                                    <div class="alert alert-info">No hay videos que mostrar.</div>
+
+                                    {% else %}
+                                    <div class="table-responsive">
+
+                                        <table
+                                            class="table table-modal table-striped table-hover table-bordered table-sm"
+                                            data-page-length='25' id="producto">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Info</th>
+
+                                                    <th>Fecha Inicio</th>
+                                                    <th>Fecha Final</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for item in obj %}
+                                                <tr>
+                                                    <td>{{item.name}}</td>
+                                                    <td>{{ item.description }}</td>
+                                                    <td>{{ item.start_date|date:"d/m/Y" }}</td>
+                                                    <td>{{ item.end_date|date:"d/m/Y" }}</td>
+                                                    <!-- <td>{{ item.pass_contract}}</td> -->
+                                                    <!-- <td>{{ item.porcentage_contract}}</td> -->
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </div>
-                                <div>
-                                    <div class="card-body">
-                                        {% if not obj %}
-                                        <div class="alert alert-info">No hay clientes que contraron. </div>
-
-                                        {% else %}
-                                        <div class="table-responsive">
-
-                                            <table class="table table-modal table-striped table-hover table-bordered table-sm"
-                                                data-page-length='25' id="producto">
-                                                <thead>
-                                                    <tr>
-                                                        <!-- <th>Id</th> -->
-                                                        <th>Cliente</th>
-                                                        <th>Info</th>
-                                                        <th>Auspicio</th>
-                                                        <th>Fecha Inicio</th>
-                                                        <th>Fecha Final</th>
-                                                        <th>Pases</th>
-                                                        <th>Porcentaje</th>
-
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for item in obj %}
-
-
-                                                    <tr>
-                                                        <!-- <td>{{ item.id }}</td> -->
-                                                        <td> <a class="text-decoration-none" href="">
-                                                                {{item.contract.client}} </a></td>
-                                                        <td>{{ item.contract.description }}</td>
-                                                        <td>{{ item.contract.auspice|yesno:"Si,No" }}</td>
-                                                        <td>{{ item.contract.start_date }}</td>
-                                                        <td>{{ item.contract.end_date }}</td>
-                                                        <td>{{ item.pass_contract}}</td>
-                                                        <td>{{ item.porcentage_contract}}</td>
-
-
-
-                                                    </tr>
-                                                    {% endfor %}
-                                                </tbody>
-
-                                            </table>
-                                        </div>
-                                        {% endif %}
-                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
+                        </div>
 
-
-                            <div class="modal-footer">
+                        <div class="modal-footer">
+                            <div class="text-center">
 
 
                                 <button type="button" class="btn btn-success"
-                                    onclick="return cerrar_modal()">Cancelar</button>
-
+                                    onclick="return cerrar_modal()">Aceptar</button>
                             </div>
 
-
                         </div>
+
+
                     </div>
                 </div>
             </div>
+
     </div>
     </form>
 </div>
 </div>
 
 <script>
-    $(document).ready(function () {
-        $('.table-modal').DataTable({
-            show: 20,
+    // $(document).ready(function () {
+    //     $('.table-modal').DataTable({
+    //         show: 20,
 
 
 
-        });
-    })
+    //     });
+    // })
 
 </script>

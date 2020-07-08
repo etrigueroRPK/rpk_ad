@@ -8,6 +8,14 @@
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h4 class="m-0 font-weight-bold text-primary">Clientes actuales: {{product}}</h4>
 
+        {% if playlist %}
+
+        <a target="blank" href="{% url 'reportprint:report_playlist' playlist.id %}" class="btn btn-outline-success "><i
+                class="far fa-file-alt"></i> Ver pauta actual </a>
+        {% else %}
+        <a href="#" class="btn btn-outline-danger "><i class="far fa-file-alt"></i> No tiene pauta...
+        </a>
+        {% endif %}
     </div>
     <!-- Card Body -->
     <div class="card-body">
@@ -22,31 +30,30 @@
                     <tr>
                         <!-- <th>Id</th> -->
                         <th>Cliente</th>
-                        <th>Info</th>
+
                         <th>Auspicio</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Final</th>
                         <th>Pases</th>
                         <th>Porcentaje</th>
-                        
+
 
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in obj %}
 
-
                     <tr>
                         <!-- <td>{{ item.id }}</td> -->
-                        <td> <a class="text-decoration-none" href=""  onclick="return abrir_modal('{% url 'display:video_list' item.id %}')"> {{item.contract.client}}  </a></td>
-                        <td>{{ item.contract.description }}</td>
-                       <td>{{ item.contract.auspice|yesno:"Si,No" }}</td>
+                        <td> <a class="text-decoration-none" href=""
+                                onclick="return abrir_modal('{% url 'display:video_list' item.id %}')">
+                                {{item.contract.client}} </a></td>
+                        <!-- <td>{{ item.contract.description }}</td> -->
+                        <td>{{ item.contract.auspice|yesno:"Si,No" }}</td>
                         <td>{{ item.contract.start_date }}</td>
                         <td>{{ item.contract.end_date }}</td>
                         <td>{{ item.pass_contract}}</td>
                         <td>{{ item.porcentage_contract}}</td>
-                        
-
 
                     </tr>
                     {% endfor %}
@@ -71,9 +78,6 @@
 
         });
     })
-
-    
-
 
 </script>
 

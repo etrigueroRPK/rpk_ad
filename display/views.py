@@ -21,7 +21,8 @@ from bases.views import SinPrivilegios
 
 from component.models import Product
 from sales.models import Contract, Order
-from content.models import Video
+from content.models import Video, Playlist
+
 
 import math
 
@@ -58,11 +59,15 @@ def products_client(request, id):
     product = Product.objects.filter(pk=id).first()
     order = Order.objects.filter(state=True, product=id).all()
 
+    product_id = product.id
+    playlist = Playlist.objects.filter(product=product_id).last()
+    
+
     if not order:
         return HttpResponse('No se encontraron registros')
 
     if request.method == 'GET':
-        contexto = {'obj': order, 'product':product}
+        contexto = {'obj': order, 'product':product, 'playlist':playlist}
 
     
 
@@ -74,14 +79,15 @@ def products_client(request, id):
 def video_list(request, id):
     template_name = 'display/video_list.html'
     contexto = {}
+    
     order = Order.objects.get(id=id)
     video = Video.objects.filter(contract=order.contract.id).all()
 
     if not video:
-        return HttpResponse('No se encontraron registros')
+        contexto = {'obj':''}
 
     if request.method == 'GET':
-        contexto = {'obj': video}
+        contexto = {'obj':video, 'order':order }
 
     
 
