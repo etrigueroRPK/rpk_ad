@@ -52,30 +52,7 @@
 
       </a>
 
-      <!-- Divider -->
-      <hr class="sidebar-divider my-0">
-
-      <!-- Nav Item - Dashboard -->
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span></a>
-      </li>
-
       <hr class="sidebar-divider">
-      <!-- Heading -->
-      <div class="sidebar-heading">
-        Operaciones
-      </div>
-
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'rondas:rondas_list'%}">
-          <i class="fas fa-globe-americas"></i>
-          <span>Rondas</span></a>
-      </li>
-
-      <hr class="sidebar-divider">
-
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseView" aria-expanded="true"
           aria-controls="collapseView">
@@ -96,6 +73,37 @@
           </div>
         </div>
       </li>
+      <hr class="sidebar-divider">
+      <!-- Divider -->
+      <!-- <hr class="sidebar-divider my-0"> -->
+
+      <!-- Nav Item - Dashboard -->
+      <!-- <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Dashboard</span></a>
+      </li> -->
+
+      <!-- <hr class="sidebar-divider"> -->
+      <!-- Heading -->
+      <div class="sidebar-heading">
+        Operaciones
+      </div>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'rondas:rondas_list'%}">
+          <i class="fas fa-globe-americas"></i>
+          <span>Rondas</span></a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'maintenance:maintenance_list'%}">
+          <i class="fas fa-tools"></i>
+          <span>Mantenimiento</span></a>
+      </li>
+      
+
+      
 
       <!-- Divider -->
       <!-- <hr class="sidebar-divider">

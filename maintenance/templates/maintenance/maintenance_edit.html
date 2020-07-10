@@ -1,0 +1,148 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12">
+
+
+
+        <div class="card border-left-primary shadow h-100 py-2">
+
+
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1 text-center">
+                            <h4>formulario de
+                                mantenimiento  RPK-000{{obj.id}}  </h4>
+                        </div>
+                        <small class="text-danger">
+                            {% if form.errors %}
+                            {% for field in form %}
+                            {% if field.errors %}
+                            {% for error in field.errors %}
+                            {{ error|escape }}
+                            {% endfor %}
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if form.non_field_errors%}
+                            {% for error in form.non_field_errors %}
+                            {{ error|escape }}
+                            {% endfor %}
+                            {% endif %}
+                            {% endif %}
+                        </small>
+                        <div class="dropdown-divider"></div>
+                       
+                        <div class="form-group row ">
+                            <label for="id_name" class="col-sm-2 col-form-label">Nombre</label>
+                            <div class="col-sm-5 ">
+                                <input type="text" name="name" maxlength="50" class="form-control" required readonly
+                                    autocomplete="off" id="id_name"
+                                    value=" {{ obj.user_created.first_name}} {{ obj.user.last_name}} ">
+                            </div>
+                            <label for="id_created_date" class="col-sm-2 col-form-label">Fecha</label>
+                            <div class="col-sm-3 ">
+                                <input type="datetime" name="created_date" class="form-control" id="id_created_date"
+                                    value="{{obj.created_date}}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="id_product" class="col-sm-2 col-form-label">Producto</label>
+                            <div class="col-sm-10">
+
+                                <input type="text" name="" class="form-control" autocomplete="off" id=""
+                                    value="{{product}}" readonly>
+
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id_subproduct" class="col-sm-2 col-form-label">Sub producto</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="" class="form-control" autocomplete="off" id=""
+                                    value="{{subproduct.name}} {{subproduct.place}} {{subproduct.measure}}" readonly>
+
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id_electronic" class="col-sm-2 col-form-label">Electronico</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="" class="form-control" autocomplete="off" id=""
+                                    value="{{electronic.name}} serie: {{electronic.serie}} {{electronic.measure}} {{electronic.info}}"
+                                    readonly>
+
+
+                            </div>
+                        </div>
+                        <div class="form-group row ">
+                            <label for="id_collaboration" class="col-sm-2 col-form-label">Colaboradores</label>
+                            <div class="col-sm-10 ">
+                                <input type="text" name="collaboration" maxlength="50" class="form-control"
+                                    autocomplete="off" id="id_collaboration" value="{{obj.collaboration}}">
+                            </div>
+
+                        </div>
+
+                        <div class="form-group row ">
+                            <div class="col-sm-2"></div>
+
+                            <div class="col-sm-10">
+
+                                <label class="" for="id_work_done">
+                                    Trabajo realizado
+                                </label>
+                                <textarea class="form-control" name="work_done" id="id_work_done"
+                                    rows="6">{{obj.work_done}}</textarea>
+
+
+                            </div>
+                        </div>
+                        <div class="form-group row ">
+                            <div class="col-sm-2"></div>
+
+                            <div class="col-sm-10">
+
+                                <label class="" for="id_conclusions">
+                                    Conclusion
+                                </label>
+                                <textarea class="form-control" name="conclusions" id="id_conclusions"
+                                    rows="3">{{obj.conclusions}}</textarea>
+
+
+                            </div>
+                        </div>
+
+                        <div class="dropdown-divider"></div>
+                        <div class="form-group row text-center">
+                            <div class="col-sm-10">
+                                <a href="{% url 'maintenance:maintenance_list' %}" class="btn btn-danger"><span
+                                        class="fa fa-undo"> Cancelar</span></a>
+                                <button type="submit" class="btn btn-success"><span class="fa fa-save"></span>
+                                    Guardar</button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+{% block js_page %}
+<script>
+    
+
+</script>
+
+
+{% endblock %}

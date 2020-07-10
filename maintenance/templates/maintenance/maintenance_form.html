@@ -1,0 +1,236 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12">
+
+
+
+        <div class="card border-left-primary shadow h-100 py-2">
+
+
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1 text-center">
+                            <h4>Registro: formulario de
+                                mantenimiento</h4>
+                        </div>
+                        <small class="text-danger">
+                            {% if form.errors %}
+                            {% for field in form %}
+                            {% if field.errors %}
+                            {% for error in field.errors %}
+                            {{ error|escape }}
+                            {% endfor %}
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if form.non_field_errors%}
+                            {% for error in form.non_field_errors %}
+                            {{ error|escape }}
+                            {% endfor %}
+                            {% endif %}
+                            {% endif %}
+                        </small>
+                        <div class="dropdown-divider"></div>
+                        <!--  -->
+                        <div class="form-group row ">
+                            <label for="id_name" class="col-sm-2 col-form-label">Nombre</label>
+                            <div class="col-sm-5 ">
+                                <input type="text" name="name" maxlength="50" class="form-control" required readonly
+                                    autocomplete="off" id="id_name"
+                                    value=" {{ user.first_name}} {{ user.last_name}} ">
+                            </div>
+                            <label for="id_created_date" class="col-sm-2 col-form-label">Fecha</label>
+                            <div class="col-sm-3 ">
+                                <input type="datetime" name="created_date" class="form-control" id="id_created_date"
+                                    value="" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="id_product" class="col-sm-2 col-form-label">Producto</label>
+                            <div class="col-sm-10">
+                                <select name="product" id="id_product" required class="form-control">
+                                    <option value="" selected>Seleccione...</option>
+                                    {% for prod in products %}
+                                    <option value="{{prod.id}}">{{prod}}</option>
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id_subproduct" class="col-sm-2 col-form-label">Sub producto</label>
+                            <div class="col-sm-10">
+                                <select name="subproduct" id="id_subproduct" class="form-control">
+                                    <option value="" selected>Seleccione...</option>
+
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id_electronic" class="col-sm-2 col-form-label">Electronico</label>
+                            <div class="col-sm-10">
+                                <select name="electronic" id="id_electronic" class="form-control">
+                                    <option value="" selected>Seleccione...</option>
+
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group row ">
+                            <label for="id_collaboration" class="col-sm-2 col-form-label">Colaboradores</label>
+                            <div class="col-sm-10 ">
+                                <input type="text" name="collaboration" maxlength="50" class="form-control"
+                                    autocomplete="off" id="id_collaboration"
+                                    value="  ">
+                            </div>
+                           
+                        </div>
+
+                        <div class="form-group row ">
+                            <div class="col-sm-2"></div>
+
+                            <div class="col-sm-10">
+
+                                <label class="" for="id_work_done">
+                                    Trabajo realizado
+                                </label>
+                                <textarea class="form-control" name="work_done" id="id_work_done" rows="6"></textarea>
+
+
+                            </div>
+                        </div>
+                        <div class="form-group row ">
+                            <div class="col-sm-2"></div>
+
+                            <div class="col-sm-10">
+
+                                <label class="" for="id_conclusions">
+                                    Conclusion
+                                </label>
+                                <textarea class="form-control" name="conclusions" id="id_conclusions"
+                                    rows="3"></textarea>
+
+
+                            </div>
+                        </div>
+
+                        <div class="dropdown-divider"></div>
+                        <div class="form-group row text-center">
+                            <div class="col-sm-10">
+                                <a href="{% url 'maintenance:maintenance_list' %}" class="btn btn-danger"><span
+                                        class="fa fa-undo"> Cancelar</span></a>
+                                <button type="submit" class="btn btn-success"><span class="fa fa-save"></span>
+                                    Guardar</button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+{% block js_page %}
+<script>
+    $(document).ready(function () {
+        $('#id_product').select2({ placeholder: "Seleccione", allowClear: true });
+        $('#id_subproduct').select2({ placeholder: "Seleccione", allowClear: true });
+        $('#id_electronic').select2({ placeholder: "Seleccione", allowClear: true });
+
+        var hoy = new Date();
+        var fecha = hoy.getDate() + '/' + (hoy.getMonth() + 1) + '/' + hoy.getFullYear();
+        // var fecha =  hoy.getFullYear() + '/' + (hoy.getMonth() + 1) + '/' + hoy.getDate()
+        var hora = hoy.getHours() + ':' + hoy.getMinutes() + ':' + hoy.getSeconds();
+        var datetime_insitu = fecha + ' ' + hora;
+        $('#id_created_date').val(datetime_insitu);
+    })
+
+
+    $("#id_product").change(function () {
+        product_id = $("#id_product").val();
+        product_name = $("#id_product option:selected").text();
+
+
+        console.log(product_id);
+        if (product_id == '') {
+
+            mensaje("escoger un producto con valor", "red");
+            return;
+        }
+        $("#id_subproduct").empty();
+        var id_product = product_id;
+        var token = '{{csrf_token}}';
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "GET",
+            url: "/maintenance/subproduct_get/" + id_product,
+
+            success: function (response) {
+                aux = response
+
+                for (let index = 0; index < aux.subproduct.length; index++) {
+
+                    $("#id_subproduct").append('<option value="' + aux.subproduct[index].id + '">' + aux.subproduct[index].name + '</option>');
+                    console.log(aux.subproduct[index].id)
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    });
+
+
+    $("#id_subproduct").change(function () {
+        id = $("#id_subproduct").val();
+
+        if (id == '') {
+
+            mensaje("escoger un sub producto con valor", "red");
+            return;
+        }
+        $("#id_electronic").empty();
+        var token = '{{csrf_token}}';
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "GET",
+            url: "/maintenance/electronic_get/" + id,
+
+            success: function (response) {
+                aux = response
+
+                for (let index = 0; index < aux.electronic.length; index++) {
+
+                    $("#id_electronic").append('<option value="' + aux.electronic[index].id + '">' + aux.electronic[index].name + '</option>');
+                    console.log(aux.electronic[index].id)
+                }
+
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+
+    });
+
+</script>
+
+
+{% endblock %}
