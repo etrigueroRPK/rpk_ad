@@ -21,12 +21,17 @@ from .forms import InplaceForm
 
 from bases.views import SinPrivilegios
 
+from django.db.models import Count
+from django.contrib.auth.models import User
+
+
+
 
 
 
 import math
 
-import datetime
+from datetime import datetime
 
 # vistas para Categorias
 # TODO: completar los privilegios de los usuarios para cada vista
@@ -101,5 +106,59 @@ def inplace_delete(request, id):
 
         contexto = {'obj': 'OK'}
         return HttpResponse('Registro  eliminado')
+
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='/login/')
+@permission_required('rondas.view_inplace', login_url='bases:sin_privilegios')
+def routes_view(request):
+    template_name = 'rondas/routes_view.html'
+    contexto = {}
+    obj = Inplace.objects.values('user_created').annotate(dcount=Count('user_created'))
+    users = User.objects.all()
+    
+   
+       
+    if not obj:
+        return HttpResponse('Registro no encontrado' + str(id))
+
+    if request.method == 'GET':
+        contexto = {'obj': obj, 'users':users}
+
+    if request.method == 'POST':
+        
+        cdate = request.POST.get('created_date') 
+        user_id = request.POST.get('user') 
+        # print(cdate)
+        # print(user_id)
+
+        route = Inplace.objects.filter(datetime_insitu__startswith=cdate, user_created=user_id).all().order_by('datetime_insitu')
+        table_origin = []
+        table_destination = []
+        table_route = []
+        # print(route)
+        for x in range(len(route) - 1):
+            table_origin.append(route[x])
+            
+        for x in range(1, len(route) ):
+            table_destination.append(route[x])
+        
+        for y in range(len(table_origin)):
+            objeto = {}
+            objeto['origin'] = table_origin[y].product
+            objeto['origin_date'] = table_origin[y].datetime_insitu
+            objeto['destination'] = table_destination[y].product
+            objeto['destination_date'] = table_destination[y].datetime_insitu
+
+            objeto['diferencia'] = table_destination[y].datetime_insitu - table_origin[y].datetime_insitu
+            # print(table_destination[y].datetime_insitu - table_origin[y].datetime_insitu)
+            table_route.append(objeto)
+
+        user = User.objects.get(pk=user_id)
+        cdate_date = datetime.strptime(cdate, "%Y-%m-%d")
+
+        contexto = {'obj': obj, 'users':users, 'table_route':table_route, 'user':user, 'cdate':cdate_date}
+        # return HttpResponse('Registro  visto')
 
     return render(request, template_name, contexto)

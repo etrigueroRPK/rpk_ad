@@ -91,7 +91,7 @@ def contract_list(request):
     # usado por AJAX, cambiar a nombre de productos e incluso cambiar esta solicitud a component
     if request.method == 'GET':
         product = Product.objects.filter(state=True).all().order_by("category")
-        lista_order_json = []
+        lista_order_json = [] 
         for item in product:
             objeto = {}
             objeto["id"] = item.id

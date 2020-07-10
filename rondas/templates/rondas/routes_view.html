@@ -1,0 +1,150 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12">
+
+
+        <div class="card shadow h-100 py-2">
+
+
+
+
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text font-weight-bold text-primary text-uppercase mb-1">
+                            Ver rutas realizadas
+                        </div>
+                        <small class="text-danger">
+                            {% if form.errors %}
+                            {% for field in form %}
+                            {% if field.errors %}
+                            {% for error in field.errors %}
+                            {{ error|escape }}
+                            {% endfor %}
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if form.non_field_errors%}
+                            {% for error in form.non_field_errors %}
+                            {{ error|escape }}
+                            {% endfor %}
+                            {% endif %}
+                            {% endif %}
+                        </small>
+                        <div class="dropdown-divider"></div>
+
+                        <div class="form-group row">
+                            <label for="id_user" class="col-sm-2 col-form-label">Usuario</label>
+                            <div class="col-sm-5">
+                                <select name="user" id="id_user" required class="form-control">
+                                    {% for item in obj %}
+                                    {% for user in users%}
+                                    {% if item.user_created == user.id%}
+                                    <option value="{{item.user_created}}" selected>{{user.first_name}}
+                                        {{user.last_name}}</option>
+
+                                    {% endif %}
+
+                                    {% endfor %}
+
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+                            <label for="id_created_date" class="col-sm-2 col-form-label">Fecha</label>
+                            <div class="col-sm-3">
+                                <input type="date" name="created_date">
+                            </div>
+                        </div>
+
+
+                        <div class="dropdown-divider"></div>
+                        <div class="form-group row text-center">
+                            <div class="col-sm-12">
+                                <a href="{% url 'rondas:rondas_list' %}" class="btn btn-danger"><span
+                                        class="fa fa-undo"> Volver</span></a>
+                                <button type="submit" class="btn btn-success"><span class="fa fa-save"></span>
+                                    Enviar</button>
+                            </div>
+                        </div>
+                        <!-- <button type="button" id="sacar_tiempo">sacr</button> -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="col-xl-12 col-md-12 mb-12">
+    <div class="card shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text font-weight-bold text-primary text-uppercase mb-1 text-center">
+                        {% if not table_route %} No hay registros en esa fecha {% else %} Calculo de rutas
+                    </div>
+
+                    <div class="dropdown-divider"></div>
+                    <div class="text font-weight-bold text-uppercase mb-1 text-rigth">
+                        Usuario: {{user.first_name}} {{user_last_name}}  <br/> Fecha: {{cdate|date:'d/m/Y'}}
+                    </div>
+                    
+                    <div class="table-responsive">
+
+                        <table class="table table-striped table-hover table-bordered table-sm">
+                            <thead>
+                                <tr>
+                                    <!-- <th>Id</th> -->
+                                    <th>Origen</th>
+                                    <th>Fecha</th>
+                                    <th>Destino</th>
+                                    <th>Fecha</th>
+                                    <th>Diferencia</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                {% for item in table_route %}
+
+
+                                <tr>
+                                    <td>{{ item.origin }}</td>
+                                    <td>{{ item.origin_date}}</td>
+                                    <td>{{ item.destination }}</td>
+                                    <td>{{ item.destination_date }}</td>
+                                    <td>{{ item.diferencia }}</td>
+
+
+
+
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js_page %}
+<script>
+    
+        
+
+
+</script>
+
+{% endblock %}
