@@ -51,7 +51,7 @@ class Product(ClassModel):
          
         hora = time(0,0,0)
         if self.time_operating == hora:
-            return '24:00'
+            return '24:00:00'
 
         return self.time_operating
     # TODO: buscar la forma de continuar la tabla de inventarios 

@@ -279,6 +279,8 @@ def playlist_order_2(request):
 
         product = Product.objects.filter(pk=product_id).get()
         time_operating = product.time_operating_valid()
+        print('Time operation')
+        print(time_operating)
         time_operating_second = convert_to_seconds(time_operating)
         lista_clientes_spot = []
         # se vuelve a generar la lista de clientes y spots con los que selecciono el cliente
