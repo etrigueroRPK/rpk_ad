@@ -27,6 +27,7 @@ class Contract(ClassModel):
         return '{}, {} desde el {} al {}'.format(self.client.name, self.description, self.start_date   ,self.end_date)
 
     
+        
 
     
 
