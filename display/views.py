@@ -79,7 +79,7 @@ def video_list(request, id):
     contexto = {}
     
     order = Order.objects.get(id=id)
-    video = Video.objects.filter(contract=order.contract.id).all()
+    video = Video.objects.filter(contract=order.contract.id, state=True).all()
 
     if not video:
         contexto = {'obj':''}
