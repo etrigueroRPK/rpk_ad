@@ -58,14 +58,16 @@
                         <!-- para fecha formateada |date: "d/m/Y H:i:s" -->
 
                         <td>
+                            {% if perms.maintenance.change_maintenance %}
                             <a href="{% url 'maintenance:maintenance_edit' item.id %}"
                                 class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
                                     class="far fa-edit"></i></a>
-                          
+                            {% endif %}
+                            {% if perms.maintenance.delete_maintenance %}
                             <button class="btn btn-sm btn-outline-danger btn-circle"
                                 onclick="return abrir_modal('{% url 'maintenance:maintenance_delete' item.id %}')"><i
                                     class="far fa-trash-alt"></i></button>
-
+                            {% endif %}
 
                         </td>
                     </tr>

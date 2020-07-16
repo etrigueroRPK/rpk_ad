@@ -34,7 +34,7 @@ import datetime
 
 
 @login_required(login_url='/login/')
-@permission_required('display.view_display', login_url='bases:sin_privilegios')
+# @permission_required('display.view_display', login_url='bases:sin_privilegios')
 def products_list(request):
     template_name = 'display/products_list.html'
     contexto = {}
@@ -50,7 +50,7 @@ def products_list(request):
 
 
 @login_required(login_url='/login/')
-@permission_required('display.view_display', login_url='bases:sin_privilegios')
+# @permission_required('display.view_display', login_url='bases:sin_privilegios')
 def products_client(request, id):
     template_name = 'display/products_clients.html'
     contexto = {}
@@ -73,7 +73,7 @@ def products_client(request, id):
 
 
 @login_required(login_url='/login/')
-@permission_required('display.view_display', login_url='bases:sin_privilegios')
+# @permission_required('display.view_display', login_url='bases:sin_privilegios')
 def video_list(request, id):
     template_name = 'display/video_list.html'
     contexto = {}
@@ -93,7 +93,7 @@ def video_list(request, id):
 
 
 @login_required(login_url='/login/')
-@permission_required('display.view_display', login_url='bases:sin_privilegios')
+# @permission_required('display.view_display', login_url='bases:sin_privilegios')
 def clients_list(request):
     template_name = 'display/clients_list.html'
     contexto = {}
@@ -111,7 +111,7 @@ def clients_list(request):
 
 
 @login_required(login_url='/login/')
-@permission_required('display.view_display', login_url='bases:sin_privilegios')
+# @permission_required('display.view_display', login_url='bases:sin_privilegios')
 def client_order(request, id):
     template_name = 'display/client_order.html'
     contexto = {}

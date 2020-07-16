@@ -7,7 +7,9 @@
     <!-- Card Header - Dropdown -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">Listado de registros de visitas a locaciones</h6>
+        {% if perms.rondas.delete_inplace %}  
         <a class="btn btn-sm btn-outline-primary" href="{% url 'rondas:routes_view' %}">Revision de rutas</a>  
+        {% endif %}
         <div class="dropdown no-arrow">
             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -72,10 +74,11 @@
                             <button class="btn btn-sm btn-outline-primary btn-circle"
                                 onclick="return abrir_modal('{% url 'rondas:ronda_view' item.id %}')"><i
                                     class="fas fa-map-marked-alt"></i></button>
+                            {% if perms.rondas.delete_inplace %}        
                             <button class="btn btn-sm btn-outline-danger btn-circle"
                                 onclick="return abrir_modal('{% url 'rondas:ronda_delete' item.id %}')"><i
                                     class="far fa-trash-alt"></i></button>
-
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
