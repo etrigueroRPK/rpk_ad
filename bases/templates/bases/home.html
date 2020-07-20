@@ -4,37 +4,56 @@
 
 <div class="container-fluid">
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <!-- Page Heading -->
+  <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
         <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
-    </div>
+    </div> -->
 
-    <!-- Content Row -->
-    <div class="row">
-
-        <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Clientes en pantallas
-                                General</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{obj}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <!-- Content Row -->
+  <div class="row">
 
     <!-- Earnings (Monthly) Card Example -->
-    <!-- <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1 text-center">Clientes</div>
+          <div class="row no-gutters align-items-center text-center">
+
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-uppercase mb-1">Contrato</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{contract_money}}</div>
+            </div>
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-uppercase mb-1">Auspicio</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800 ">{{contract_auspice}}</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="text-xs font-weight-bold text-primary text-uppercase mb-1 text-center">Mantenimientos</div>
+          <div class="row no-gutters align-items-center text-center">
+            {%for item in count_maintenance %}
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-uppercase mb-1">{{item.product}}</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{item.total}}</div>
+            </div>
+            {% endfor %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Earnings (Monthly) Card Example -->
+  <!-- <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-success shadow h-100 py-2">
           <div class="card-body">
             <div class="row no-gutters align-items-center">
@@ -50,8 +69,8 @@
         </div>
       </div> -->
 
-    <!-- Earnings (Monthly) Card Example -->
-    <!-- <div class="col-xl-3 col-md-6 mb-4">
+  <!-- Earnings (Monthly) Card Example -->
+  <!-- <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-info shadow h-100 py-2">
           <div class="card-body">
             <div class="row no-gutters align-items-center">
@@ -76,8 +95,8 @@
         </div>
       </div> -->
 
-    <!-- Pending Requests Card Example -->
-    <!-- <div class="col-xl-3 col-md-6 mb-4">
+  <!-- Pending Requests Card Example -->
+  <!-- <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-warning shadow h-100 py-2">
           <div class="card-body">
             <div class="row no-gutters align-items-center">
@@ -94,15 +113,15 @@
       </div>
     </div> -->
 
-    <!-- Content Row -->
+  <!-- Content Row -->
 
-    <!-- <div class="row"> -->
+  <!-- <div class="row"> -->
 
-    <!-- Area Chart -->
-    <!-- <div class="col-xl-8 col-lg-7"> -->
-    <!-- <div class="card shadow mb-4"> -->
-    <!-- Card Header - Dropdown -->
-    <!-- <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+  <!-- Area Chart -->
+  <!-- <div class="col-xl-8 col-lg-7"> -->
+  <!-- <div class="card shadow mb-4"> -->
+  <!-- Card Header - Dropdown -->
+  <!-- <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
             <div class="dropdown no-arrow">
               <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -117,8 +136,8 @@
               </div>
             </div>
           </div> -->
-    <!-- Card Body -->
-    <!-- <div class="card-body">
+  <!-- Card Body -->
+  <!-- <div class="card-body">
             <div class="chart-area"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
               <canvas id="myAreaChart" style="display: block; width: 249px; height: 160px;" width="249" height="160" class="chartjs-render-monitor"></canvas>
             </div>
@@ -126,11 +145,11 @@
         </div>
       </div> -->
 
-    <!-- Pie Chart -->
-    <!-- <div class="col-xl-4 col-lg-5"> -->
-    <!-- <div class="card shadow mb-4"> -->
-    <!-- Card Header - Dropdown -->
-    <!-- <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+  <!-- Pie Chart -->
+  <!-- <div class="col-xl-4 col-lg-5"> -->
+  <!-- <div class="card shadow mb-4"> -->
+  <!-- Card Header - Dropdown -->
+  <!-- <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
             <div class="dropdown no-arrow">
               <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -145,8 +164,8 @@
               </div>
             </div>
           </div> -->
-    <!-- Card Body -->
-    <!-- <div class="card-body">
+  <!-- Card Body -->
+  <!-- <div class="card-body">
             <div class="chart-pie pt-4 pb-2"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
               <canvas id="myPieChart" width="249" height="208" class="chartjs-render-monitor" style="display: block; width: 249px; height: 208px;"></canvas>
             </div>
@@ -166,49 +185,42 @@
       </div>
     </div> -->
 
-    <!-- Content Row -->
-    <!-- <div class="row"> -->
+  <!-- Content Row -->
+  <!-- <div class="row"> -->
 
-    <!-- Content Column -->
+  <!-- Content Column -->
 
-    <div class="col-lg-6 mb-4">
+  <div class="col-lg-6 mb-4">
 
-        <!-- Project Card Example -->
+    <!-- Project Card Example -->
 
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Poecentaje de Uso</h6>
-            </div>
-            <div class="card-body">
-                <!-- TODO: solucionar la forma de imprimir el punto flotante. Porque cuando se imprime float directo imprime con coma -->
-                {% for item in obj2 %}
-
-                <h4 class="small font-weight-bold">
-                  {% for prd in obj3 %}
-                  <!-- {{prd.id}}:{{item.product}} -->
-                    {% if prd.id|stringformat:'s' == item.product|stringformat:'s' %}
-                    {{prd.location.name}} : {{prd.category.name}}  : {{prd.name}}  
-                    
-                    {% endif %}
-                    
-                   
-                      
-                      
-                    {% endfor %}
-                    <span class="float-right">{{item.total|floatformat:-3}}%</span>
-                </h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{item.total}}%" aria-valuenow="15"
-                        aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-               
-                {% endfor %}
-            </div>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Poecentaje de Uso</h6>
+      </div>
+      <div class="card-body">
+        <!-- TODO: solucionar la forma de imprimir el punto flotante. Porque cuando se imprime float directo imprime con coma -->
+        {% for item in obj2 %}
+        <h4 class="small font-weight-bold">
+          {% for prd in obj3 %}
+          <!-- {{prd.id}}:{{item.product}} -->
+          {% if prd.id|stringformat:'s' == item.product|stringformat:'s' %}
+          {{prd.location.city.name}} {{prd.category.name}} {{prd.location.name}} {{prd.name}}
+          {% endif %}
+          {% endfor %}
+          <span class="float-right">{{item.total|floatformat:-3}}%</span>
+        </h4>
+        <div class="progress mb-4">
+          <div class="progress-bar bg-primary" role="progressbar" style="width: {{item.total}}%" aria-valuenow="15"
+            aria-valuemin="0" aria-valuemax="100"></div>
         </div>
+        {% endfor %}
+      </div>
     </div>
+  </div>
 
-        <!-- Color System -->
-        <!-- <div class="row">
+  <!-- Color System -->
+  <!-- <div class="row">
           <div class="col-lg-6 mb-4">
             <div class="card bg-primary text-white shadow">
               <div class="card-body">
@@ -259,12 +271,12 @@
           </div>
         </div>-->
 
-   
 
-    <!-- <div class="col-lg-6 mb-4"> -->
 
-    <!-- Illustrations -->
-    <!-- <div class="card shadow mb-4">
+  <!-- <div class="col-lg-6 mb-4"> -->
+
+  <!-- Illustrations -->
+  <!-- <div class="card shadow mb-4">
           <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
           </div>
@@ -277,8 +289,8 @@
           </div>
         </div> -->
 
-    <!-- Approach -->
-    <!-- <div class="card shadow mb-4">
+  <!-- Approach -->
+  <!-- <div class="card shadow mb-4">
           <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
           </div>

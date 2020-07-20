@@ -11,8 +11,9 @@ from django.views import generic
 
 from sales.models import Contract, Order
 from component.models import Product
+from maintenance.models import Maintenance
 
-from django.db.models import Sum
+from django.db.models import Sum, Count
 
 # Create your views here.
 
@@ -34,9 +35,26 @@ def home(request):
     contexto= {}
 
     products = Product.objects.filter(state=True).all()
-    contracts_count = Contract.objects.filter(state=True).count()
+    contracts_money = Contract.objects.filter(state=True, auspice=False).count()
+    contract_auspice = Contract.objects.filter(state=True, auspice=True).count()
     general_porcentaje = Order.objects.values('product').annotate(total=Sum('porcentage_contract')).order_by('total').filter(state=True)
-    print(general_porcentaje)
+    count_maintenance = Maintenance.objects.values('product').annotate(total=Count('product_id')).order_by('total')
+    # print("======+++======")
+    # print(count_maintenance)
+    # print(general_porcentaje)
+    list_count_maintenance = []
+    aux = 0
+    for item2 in products:
+        
+        if aux < 3:
+            for item in count_maintenance:
+                if item['product'] == item2.id:
+                    objeto = {}
+                    objeto['product'] = item2
+                    objeto['total'] = item['total']
+                    list_count_maintenance.append(objeto)
+                    aux = aux + 1
+
     lista_por = []
     for item in general_porcentaje:
         objeto_order = {}
@@ -46,7 +64,7 @@ def home(request):
             # Se deberia asignar al dictionary todos los atributos que desee enviar en el json.
         lista_por.append(objeto_order)
 
-    contexto = {'obj':contracts_count,'obj2':lista_por,'obj3':products}
+    contexto = {'contract_money':contracts_money,'contract_auspice':contract_auspice,'obj2':lista_por,'obj3':products,'count_maintenance':list_count_maintenance}
     return render(request, template_name, contexto)
 
 # class Home(LoginRequiredMixin  ,generic.ListView):
