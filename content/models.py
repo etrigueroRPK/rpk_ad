@@ -24,6 +24,13 @@ class Video(ClassModel):
         duration = str(self.duration)
         return duration
 
+    def duration_seconds(self):
+        t = self.duration
+        seconds = (t.hour * 60 + t.minute) * 60 + t.second
+        
+        # print(type(seconds)) 
+        return seconds
+
 
 class Playlist(ClassModel):
     create_date = models.DateField(null=False, blank=False)

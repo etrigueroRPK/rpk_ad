@@ -6,7 +6,7 @@
 <div class="card shadow mb-4">
     <!-- Card Header - Dropdown -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Listado de clientes con ordenes de trabajo (para reportes)</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Listado de reportes con ordenes de trabajo </h6>
         <!-- <div class="dropdown no-arrow">
             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -25,7 +25,7 @@
     <!-- Card Body -->
     <div class="card-body">
         {% if not obj %}
-        <div class="alert alert-info">No hay ordenes de trabajo</div>
+        <div class="alert alert-info">No hay reportes de ordenes de trabajo</div>
 
         {% else %}
         <div class="table-responsive">
@@ -34,11 +34,11 @@
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Cliente</th>
-                        <th>Desc.</th>
+                        <th>Producto</th>
+                        
                         <th>F. Inicio</th>
                         <th>F. Final</th>
-                        <th>Estado</th>
+                        <!-- <th>Estado</th> -->
                         <!-- <th>F. Creacion</th> -->
                         <!-- <th>F. Mod</th> -->
                         <!-- <th>U.C</th> -->
@@ -51,12 +51,12 @@
                     {% for item in obj %}
                     <tr>
                         <td>{{ item.id }}</td>
-                        <td>{{ item.client}}</td>
-                        <td>{{ item.description}}</td>
+                        <td>{{ item.order.product}}</td>
+                       
                         <td>{{ item.start_date|date:"d/m/Y" }}</td>
                         <td>{{ item.end_date|date:"d/m/Y" }}</td>
 
-                        <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
+                        <!-- <td>{{ item.state|yesno:"Activo,Inactivo" }}</td> -->
                         <!-- <td>{{ item.created_at|date:"d/m/Y"}}</td> -->
                         <!-- <td>{{ item.updated_at|date:"d/m/Y"}}</td> -->
                         <!-- <td>{{ item.user_created}}</td> -->
@@ -64,14 +64,9 @@
                         <!-- para fecha formateada |date: "d/m/Y H:i:s" -->
 
                         <td>
-                            <a href="{% url 'reportemision:report_client_all' item.id %}"
-                                class="btn btn-sm btn-outline-success btn-circle"><i class="fas fa-eye"></i></a>
-                            <a target="blank" href="{% url 'reportprint:report_contract' item.id %}"
+                           
+                            <a target="blank" href="{% url 'reportemision:order_report_print' item.id %}"
                                 class="btn btn-sm btn-outline-primary btn-circle"><i class="far fa-file-alt"></i></a>
-                            <a href="{% url 'reportemision:order_report_list' item.id %}"
-                                class="btn btn-sm btn-outline-primary btn-circle"><i class="fas fa-file-invoice"></i></a>
-
-                            
                             <!-- <a href="{% url 'sales:contract_edit' item.id %}"
                                 class="btn btn-sm btn-outline-warning btn-circle" role="button"><i
                                     class="far fa-edit"></i></a>
@@ -98,7 +93,7 @@
 <script>
     $(document).ready(function () {
         $('.table').DataTable({
-
+           
         }
 
         );

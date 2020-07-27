@@ -54,6 +54,18 @@ class Product(ClassModel):
             return '24:00:00'
 
         return self.time_operating
+
+
+    def time_operating_seconds(self):
+        t = self.time_operating
+        seconds = (t.hour * 60 + t.minute) * 60 + t.second
+        if seconds == 0:
+            seconds = 86400
+        # print(type(seconds)) 
+        
+
+        return seconds
+
     # TODO: buscar la forma de continuar la tabla de inventarios 
 
 class Subproduct(ClassModel):
