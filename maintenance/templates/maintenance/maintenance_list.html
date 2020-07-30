@@ -33,6 +33,7 @@
                 <thead>
                     <tr>
                         <th>Id</th>
+                        <th>Usuario</th>
                         <th>Fecha</th>
                         <th>Producto</th>
                         <th>Users</th>
@@ -47,6 +48,7 @@
                     {% for item in obj %}
                     <tr>
                         <td>{{ item.id }}</td>
+                        <td>{{ item.user_created.first_name }} {{item.user_created.last_name}}</td>
                         <td>{{ item.created_date }}</td>
                         <td>{{item.product}} </td>
                         <td>{{ item.collaboration }}</td>

@@ -98,6 +98,7 @@ def order_report_print(request, id):
     contexto = {'obj':document, 'videos':videos, 'time':time_in_pauta_total,'time2':repeat_in_pauta, 'playlist':playlist_client}
 
     return render(request,template_name,contexto)
+# ============################################################
 
 def report_client_all(request, id):
     template_name = 'reportemision/contract_list.html'
@@ -105,7 +106,7 @@ def report_client_all(request, id):
 
     contract = Contract.objects.get(pk=id)
     order = Order.objects.filter(contract=id)
-
+    color =1
     report = []
     # print(contract)
     for i in order:
@@ -113,8 +114,10 @@ def report_client_all(request, id):
         # print(i.id)
         playlist_client_detail = Playlist_client_detail.objects.filter(order=order_id).order_by('playlist__create_date')
         if playlist_client_detail:
-
             for j in playlist_client_detail:
+                
+                
+                
                 # print(j.order.id)
                 playlist_spot_detail = Playlist_spot_detail.objects.filter(playlist=j.playlist.id, order=order_id)
                 for k in playlist_spot_detail:
@@ -138,9 +141,14 @@ def report_client_all(request, id):
                     item["second_total"] = j.second_total
                     item["time_contract"] = j.time_contract
                     item["time_bonification"] = j.time_bonification
-
+                    item["color"] = color
                     # print(j.playlist.create_date)
                     report.append(item)
+                if color == 1:
+                    color = 0
+                else:
+                    color = 1
+                    
 
         else:
             # encaso de no existir informacion de los videos se toma todo en vacio
@@ -163,6 +171,7 @@ def report_client_all(request, id):
             item["second_total"] = 0
             item["time_contract"] = 0
             item["time_bonification"] = 0
+            item["color"] = 3
             report.append(item)
 
         report_2 = report_resume(report)
@@ -175,10 +184,6 @@ def report_client_all(request, id):
 
         template_name = 'reportemision/contract_date.html'
         contexto = {'report': report, 'contract': contract, 'order': order, 'report2':report_2}
-
-
-
-
 
         return render(request, template_name, contexto)
 
@@ -229,6 +234,7 @@ def report_client_all(request, id):
             # print(diferencia)
 
             report_date = []
+            randos_de_fechas = [] # prueba para determinar fechas de inicio y final por cada lista creada
             aux = []
             aux_report = []
             for item in report:
@@ -237,12 +243,11 @@ def report_client_all(request, id):
                     
                     aux.append(item["id"])
                     report_id = item["id"]
-                    fechas = rellenar_fechas(aux_report, report_id, start_date_n, end_date_n)
-                    report_date.append(fechas)
+                    randos_de_fechas = determinar_fechas(aux_report, report_id, start_date_n, end_date_n)
+                    # fechas = rellenar_fechas(aux_report, report_id, start_date_n, end_date_n)
+                    # report_date.append(fechas)
                     # print(report_date)
             
-                
-
             template_name = 'reportemision/contract_complet.html'
             contexto = {'obj': report_date}
             # print(report_date)
@@ -251,7 +256,7 @@ def report_client_all(request, id):
 
 
     return render(request, template_name, contexto)
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+# ======================================================================
 def report_resume(report):
     nueva_report = []
     aux_lista = []
@@ -293,6 +298,63 @@ def hallar_bonificacion_max(report, order_id):
     
     return(aux_max)
 # ==================================================================
+# prueba para determinar fechas de inicio y final por cada lista creada
+def determinar_fechas(lista,id, start_date_n, end_date_n):
+    aux_list = []
+    dias = end_date_n - start_date_n
+    dias = dias.days 
+
+    for item in lista:
+        if item["id"] == id:
+            aux_list.append(item)
+    print("---------")
+    print(start_date_n)
+    print(end_date_n)
+    print('---------')
+
+    oficial = aux_list[0]
+
+    inicio = start_date_n
+    dia = start_date_n
+    lol = aux_list[0]
+    final = aux_list[len(aux_list)-1]["create_date"]
+    aux_final = 0 #datetime.datetime.strptime('', "%Y-%m-%d").date()
+    lista_final = []
+    if str(aux_list[0]["create_date"]) == '0001-01-01':
+        # print('no tiene registro de video ni de pauta')
+        pass
+    for item in aux_list:
+        if inicio > item['create_date']:
+            # aux_final = item['create_date']
+            pass
+        else:
+            if item['create_date'] > end_date_n:
+                # aux_final = item['create_date']
+                pass
+            else:
+                day_play = item['create_date'] - inicio
+                print(type(day_play))
+                print(day_play)
+                aux_final = item['create_date']
+                print('llego?')
+                inicio = item['create_date']
+                # item['start_date_pauta'] = inicio 
+    
+    if final > end_date_n:
+        # colocar un return
+        if aux_list[len(aux_list)-2]["create_date"]:
+            day_play =  end_date_n - aux_list[len(aux_list)-2]["create_date"]
+            print('lol')
+            print(type(day_play))
+            print(day_play)
+        
+    else:
+        day_play =  aux_final - end_date_n 
+        print(type(day_play))
+        print(day_play)
+
+
+    pass
 
 def rellenar_fechas(lista, id, start_date_n, end_date_n):
     
@@ -304,6 +366,7 @@ def rellenar_fechas(lista, id, start_date_n, end_date_n):
     for item in lista:
         if item["id"] == id:
             aux_lista.append(item)
+
 
     
     

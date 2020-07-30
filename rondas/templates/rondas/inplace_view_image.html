@@ -1,0 +1,36 @@
+<div class="modal-dialog modal-dialog-centered modal-xl ">
+    <div class="modal-content">
+
+        <form method="POST" class="form-group">
+            {% csrf_token %}
+
+            <div class="col-xl-12 col-md-12 mb-12">
+
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div>
+                                {% if obj.img %}
+                                <img src="{{ obj.img.url }}" class="img-fluid" alt="Responsive image">
+                                {% else %}
+                                <h5>No se encontro imagen</h5>
+                                {% endif %}
+                            </div>
+
+
+                            <div class="modal-footer">
+
+                                <button type="button" class="btn btn-success"
+                                    onclick="return cerrar_modal()">Aceptar</button>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

@@ -39,7 +39,7 @@
                             </div>
                             <!-- </div> -->
                         </div>
-                        <div> <strong>LOCACIONES CONTRATADAS</strong>  </div>
+                        <div> <strong>LOCACIONES CONTRATADAS</strong> </div>
                         <ul class="list-unstyled">
                             <ul>
                                 {% for item in order %}
@@ -64,6 +64,8 @@
                                         <td>Check</td>
                                         <th>Producto</th>
                                         <th>Fecha de aparición</th>
+                                        <th>incio pauta</th>
+                                        <th>final pauta</th>
                                         <th>video</th>
                                         <th>Tiempo(s)</th>
                                         <th>Apariciones en lista</th>
@@ -76,104 +78,110 @@
                                 <tbody>
                                     {% for item in report %}
 
-                                    <tr>
+                                    <tr {% if item.color == 1 %} class="table-primary" {% endif %}
+                                        {% if item.color == 0 %} class="table-success" {% endif %}
+                                        {% if item.color == 3 %} class="table-danger" {% endif %}>
                                         <!-- <td>1</td> -->
-                                        
-                                        <td><input type="checkbox" checked></td>
+
+                                        <td><input name="bandera"  type="checkbox" checked></td>
                                         <td>{{item.location}}</td>
-                                        <td>{{item.create_date}}</td>
+                                        <td>{{item.create_date|date:'d/m/Y'}}</td>
+                                        <td><input name="inicio" type="date"></td>
+                                        <td><input name="final" type="date"></td>
                                         <td>{{item.video_name}}</td>
                                         <td>{{item.video_duration}}</td>
                                         <td>{{item.repeticiones}}</td>
                                         <td>{{item.pauta_loop}}</td>
                                         <td>{{item.second_total}}</td>
                                         <td>{{item.time_contract}}</td>
-                                        <td>{{item.time_bonification}}</td> 
-                                        <!-- <input type="text" value=""> -->
+                                        <td>{{item.time_bonification}}</td>
+                                        <input type="text" name="datos"
+                                            value="{{item.order_id}}|{{item.video_id}}|{{item.playlist_id}}">
                                     </tr>
                                     {% endfor %}
-
-
                                 </tbody>
                             </table>
                         </div>
                         {% else %}
-                        <h5>  Sin registros encontrados</h4>
-                            <p>No se encontraron registros para el contrato, debe crear listas de reproduccion para encontrar registros que puedan ser validados para el reporte de emision.</p>
-                        {% endif %}
+                        <h5> Sin registros encontrados</h4>
+                            <p>No se encontraron registros para el contrato, debe crear listas de reproduccion para
+                                encontrar registros que puedan ser validados para el reporte de emision.</p>
+                            {% endif %}
 
-                        <div class="dropdown-divider"> </div>
-                        <div class="text-m font-weight-bold text-uppercase mb-1">
-                            Todas las listas de reproduccion encontradas - con mayor bonificación
-                        </div>
-                        {% if report2 %}
-                        <div class="row">
-                            <table class="table table-sm table-bordered table-responsive">
-                                <thead>
-                                    <tr>
-                                        <!-- <th scope="col-sm-1">#</th> -->
-                                       
-                                        <th>Producto</th>
-                                        <th>Fecha de aparición</th>
-                                        <th>video</th>
-                                        <th>Tiempo(s)</th>
-                                        <th>Apariciones en lista</th>
-                                        <th>Repeticiones de pauta</th>
-                                        <th>Total (s) cliente</th>
-                                        <th>Tiempo contratado</th>
-                                        <th>bonificación</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for item in report2 %}
-
-                                    <tr>
-                                        <!-- <td>1</td> -->
-                                        
-                                        
-                                        <td>{{item.location}}</td>
-                                        <td>{{item.create_date}}</td>
-                                        <td>{{item.video_name}}</td>
-                                        <td>{{item.video_duration}}</td>
-                                        <td>{{item.repeticiones}}</td>
-                                        <td>{{item.pauta_loop}}</td>
-                                        <td>{{item.second_total}}</td>
-                                        <td>{{item.time_contract}}</td>
-                                        <td>{{item.time_bonification}}</td> 
-                                        <!-- <input type="text" value=""> -->
-                                    </tr>
-                                    {% endfor %}
-
-
-                                </tbody>
-                            </table>
-                        </div>
-                        {% else %}
-                        <h5>  Sin registros encontrados</h4>
-                            <p>No se encontraron registros para el contrato, debe crear listas de reproduccion para encontrar registros que puedan ser validados para el reporte de emision.</p>
-                        {% endif %}
-                            
-                        
-
-
-
-
-                        <br />
-                        <div>
-                            <label class="mr-2" for="bandera">Marcar para reporte  <strong>Comercial</strong> </label>
-                            <input type="checkbox" name="bandera" value="1">
-                        </div>
-
-                        <div class="form-row text-center ">
-
-                            <div class="col-sm-10">
-                                <a href="{% url 'reportemision:report_client' %}" class="btn btn-danger"><span
-                                        class="fa fa-undo"> Cancelar</span></a>
-                                <button type="submit" class="btn btn-success" id="btn_guardar"><span
-                                        class="fa fa-save"></span>
-                                    Guardar</button>
+                            <div class="dropdown-divider"> </div>
+                            <div class="text-m font-weight-bold text-uppercase mb-1">
+                                Todas las listas de reproduccion encontradas - con mayor bonificación
                             </div>
-                        </div>
+                            {% if report2 %}
+                            <div class="row">
+                                <table class="table table-sm table-bordered table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <!-- <th scope="col-sm-1">#</th> -->
+
+                                            <th>Producto</th>
+                                            <th>Fecha de aparición</th>
+                                            <th>video</th>
+                                            <th>Tiempo(s)</th>
+                                            <th>Apariciones en lista</th>
+                                            <th>Repeticiones de pauta</th>
+                                            <th>Total (s) cliente</th>
+                                            <th>Tiempo contratado</th>
+                                            <th>bonificación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in report2 %}
+
+                                        <tr>
+                                            <!-- <td>1</td> -->
+
+
+                                            <td>{{item.location}}</td>
+                                            <td>{{item.create_date}}</td>
+                                            <td>{{item.video_name}}</td>
+                                            <td>{{item.video_duration}}</td>
+                                            <td>{{item.repeticiones}}</td>
+                                            <td>{{item.pauta_loop}}</td>
+                                            <td>{{item.second_total}}</td>
+                                            <td>{{item.time_contract}}</td>
+                                            <td>{{item.time_bonification}}</td>
+                                            <!-- <input type="text" value=""> -->
+                                        </tr>
+                                        {% endfor %}
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <h5> Sin registros encontrados</h4>
+                                <p>No se encontraron registros para el contrato, debe crear listas de reproduccion para
+                                    encontrar registros que puedan ser validados para el reporte de emision.</p>
+                                {% endif %}
+
+
+
+
+
+
+                                <br />
+                                <div>
+                                    <label class="mr-2" for="bandera">Marcar para reporte <strong>Comercial</strong>
+                                    </label>
+                                    <input type="checkbox" name="bandera" value="1">
+                                </div>
+
+                                <div class="form-row text-center ">
+
+                                    <div class="col-sm-10">
+                                        <a href="{% url 'reportemision:report_client' %}" class="btn btn-danger"><span
+                                                class="fa fa-undo"> Cancelar</span></a>
+                                        <button type="submit" class="btn btn-success" id="btn_guardar"><span
+                                                class="fa fa-save"></span>
+                                            Guardar</button>
+                                    </div>
+                                </div>
                     </div>
                 </div>
             </div>
@@ -186,7 +194,7 @@
 
 {% block js_page %}
 <script>
-   
+
 
 </script>
 {% endblock %}

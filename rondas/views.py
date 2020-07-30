@@ -109,6 +109,23 @@ def inplace_delete(request, id):
 
     return render(request, template_name, contexto)
 
+@login_required(login_url='/login/')
+@permission_required('rondas.view_inplace', login_url='bases:sin_privilegios')
+def inplace_view_image(request, id):
+    template_name = 'rondas/inplace_view_image.html'
+    contexto = {}
+    cat = Inplace.objects.get(pk=id)
+
+    if not cat:
+        return HttpResponse('Registro no encontrado' + str(id))
+
+    if request.method == 'GET':
+        
+        contexto = {'obj': cat}
+
+
+    return render(request, template_name, contexto)
+
 
 @login_required(login_url='/login/')
 @permission_required('rondas.view_inplace', login_url='bases:sin_privilegios')

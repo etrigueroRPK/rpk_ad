@@ -7,8 +7,8 @@
     <!-- Card Header - Dropdown -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">Listado de registros de visitas a locaciones</h6>
-        {% if perms.rondas.delete_inplace %}  
-        <a class="btn btn-sm btn-outline-primary" href="{% url 'rondas:routes_view' %}">Revision de rutas</a>  
+        {% if perms.rondas.delete_inplace %}
+        <a class="btn btn-sm btn-outline-primary" href="{% url 'rondas:routes_view' %}">Revision de rutas</a>
         {% endif %}
         <div class="dropdown no-arrow">
             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
@@ -38,11 +38,11 @@
                         <th>Usuario</th>
                         <th>Fecha</th>
                         <th>Producto</th>
-                      
-                        <th>Imagen</th>
+
+                        <!-- <th>Imagen</th> -->
                         <th>Latitud</th>
                         <th>Longitud</th>
-                   
+
                         <th class="all">Acciones</th>
                     </tr>
                 </thead>
@@ -56,11 +56,11 @@
                         <td>{{ item.user_created }}</td>
                         <td>{{ item.datetime_insitu}}</td>
                         <td>{{ item.product}}</td>
-                        <td class="text-center">
+                        <!-- <td class="text-center">
                             {% if item.img %}
                             <img src="{{ item.img.url }}" class="img-thumbnail" alt="IMG" width="60" height="60">
 
-                            {% endif %}
+                            {% endif %} -->
                         </td>
                         <td>{{ item.latitude }}</td>
                         <td>{{ item.longitude }}</td>
@@ -74,7 +74,10 @@
                             <button class="btn btn-sm btn-outline-primary btn-circle"
                                 onclick="return abrir_modal('{% url 'rondas:ronda_view' item.id %}')"><i
                                     class="fas fa-map-marked-alt"></i></button>
-                            {% if perms.rondas.delete_inplace %}        
+                            <button class="btn btn-sm btn-outline-success btn-circle"
+                                onclick="return abrir_modal('{% url 'rondas:ronda_view_image' item.id %}')"><i
+                                    class="far fa-image"></i></button>
+                            {% if perms.rondas.delete_inplace %}
                             <button class="btn btn-sm btn-outline-danger btn-circle"
                                 onclick="return abrir_modal('{% url 'rondas:ronda_delete' item.id %}')"><i
                                     class="far fa-trash-alt"></i></button>

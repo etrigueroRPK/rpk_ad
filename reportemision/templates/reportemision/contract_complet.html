@@ -4,14 +4,8 @@
 
 <form method="POST" class="form-group" enctype="multipart/form-data" id="formulario">
     {% csrf_token %}
-
     <div class="col-xl-12 col-md-12 mb-12" id="seleccion">
-
-
-
         <div class="card border-left-primary shadow h-100 py-2">
-
-
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
@@ -23,17 +17,18 @@
                         <div>Descripción: <strong>{{contract.description}}</strong> </div>
                         <div>Auspicio: <strong>{{contract.auspice|yesno:'Si,No'}}</strong> </div>
 
-
-                        
-
-
-
-
-
                         <div class="dropdown-divider"> </div>
 
                         {% if obj %}
                         <div class="row">
+                            {% for item in obj %}
+                                {{item.location}}
+                                <br/>
+                                {% for item2 in item.fechas %}
+                                    {{item2}}
+                                    <br/>
+                                {% endfor %}
+                            {% endfor %}
                             <table class="table table-sm table-bordered table-responsive">
                                 {% for item in obj %}
                                 <tr>
@@ -41,8 +36,6 @@
                                     <td>Horario</td>
                                     <td>Video</td>
                                     <td> </td>
-
-
                                     <!-- <td colspan="2"></td> -->
                                 </tr>
                                 <tr>
@@ -61,12 +54,16 @@
                                             <tr>
                                                 <td>Rep</td>
                                             </tr>
-                                            <tr><td>Contrato</td></tr>
-                                            <tr><td>Bonificacion</td></tr>
+                                            <tr>
+                                                <td>Contrato</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bonificacion</td>
+                                            </tr>
                                         </table>
                                     </td>
                                     {% for item2 in item.fechas%}
-                                    <td >
+                                    <td>
                                         {{item2.dia|date:"M-Y"}}
                                         <table class="table-sm">
                                             <tr>
@@ -95,9 +92,6 @@
 
                                 </tr>
                                 <!-- <tr >
-
-
-
                                 </tr> -->
                                 {% endfor %}
                             </table>
