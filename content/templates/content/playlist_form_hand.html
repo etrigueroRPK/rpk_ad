@@ -1,0 +1,664 @@
+{% extends 'base/base.html' %}
+
+
+
+
+{% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data" id="formulario">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12" id="seleccion">
+
+
+
+        <div class="card border-left-primary shadow h-100 py-2">
+
+
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Generador de playlist manual
+                        </div>
+                        <div class="dropdown-divider"></div>
+
+                        <div class="form-group row">
+                            <label for="id_product" class="col-sm-2 col-form-label">Productos</label>
+                            <div class="col-sm-6">
+                                <select name="product" id="id_product" required class="form-control">
+                                    <option value=""> Selecciona</option>
+                                    {% for item in obj %}
+                                    <option value="{{item.id}}"> {{item.category}} {{item.location}} {{item.name}}
+                                        {{item.time_operating_valid}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id_create_date" class="col-sm-2 col-form-label">Fecha de creacion</label>
+                            <div class="col-sm-4 ">
+                                <input type="date" name="create_date" class="form-control" id="id_create_date"
+                                    value="{{today|date:'Y-m-d'}}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row text-right">
+                            <div class="col-10">
+                                <button type="button" class="btn btn-outline-info" id="btn_clientes"
+                                    onclick="seleccionar_contratos()">Playlist con contratos activos</button>
+                                <button type="button" class="btn btn-outline-secondary" id="btn_clientes_antiguos"
+                                    onclick="seleccionar_contratos()">Simular playlist seleccionando</button>
+                            </div>
+
+                        </div>
+                        <div class="dropdown-divider"> </div>
+                        <div class="col-auto my-1 text-right">
+                            <button type="button" id="btn_generar_lista" class="btn btn-outline-info"
+                                onclick="generar_lista()">Generar
+                                Lista (1*)</button>
+                                <!-- se genera la lista con otro algoritmo de ordenacion  -->
+                            <button type="button" id="btn_generar_lista_2" class="btn btn-outline-primary"
+                                onclick="generar_lista_2()">Generar
+                                Lista (2*)</button>
+                        </div>
+                        
+                        <div class="row" id="informacion_spots">
+                            <div class="card col-8 ">
+                                <div class="card-body">
+                                    <table class="table table-sm table-bordered" id="tabla_spot">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Cliente, spot</th>
+                                                <th scope="col">Duracion</th>
+                                                <th scope="col">Repeticiones</th>
+                                                <th scope="col">Tiempo total (s)</th>
+                                                <th scope="col">Porcentaje por spot</th>
+                                                <th scope="col">Edit </th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla_boby_spot">
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card col-4">
+                                <div class="card-body p-0">
+                                    <div id="grafico_spots" style="width: 500px; height: 400px;"></div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row" id="informacion_clientes">
+                            <div class="card col-8 ">
+                                <div class="card-body">
+                                    <table class="table table-sm table-bordered" id="tabla_cliente">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Cliente</th>
+                                                <th scope="col">tiempo total (s)</th>
+                                                <th scope="col">repeticiones de pauta</th>
+                                                <th scope="col">total segundos</th>
+                                                <th scope="col">tiempo contratado (s)</th>
+                                                <th scope="col">tiempo de bonificion</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla_body_cliente">
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card col-4">
+                                <div class="card-body p-0">
+                                    <div id="grafico_clientes" style="width: 500px; height: 400px;"></div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="dropdown-divider"></div>
+                        <div class="card ">
+                            <div class="card-body ">
+                                <div class="text-xs font-weight-bold text-primary mb-1">
+                                    Lista de clientes y spots
+                                </div>
+                                <div class="col-12" id="content_product">
+
+                                </div>
+                                <div class="col-12" id="content_product_spots">
+                                    <table class="table table-bordered table-sm table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Spot</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="playlist_table">
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+
+                            </div>
+
+                        </div>
+                        <br />
+
+                        <div class="form-row text-center ">
+
+                            <div class="col-sm-10">
+                                <a href="{% url 'sales:contract_list' %}" class="btn btn-danger"><span
+                                        class="fa fa-undo"> Cancelar</span></a>
+                                <button type="submit" class="btn btn-success" id="btn_guardar"><span
+                                        class="fa fa-save"></span>
+                                    Guardar</button>
+                                    
+                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<input type="hidden" value="" id="bandera_reajuste" name="bandera_reorder">
+</form>
+
+{% endblock %}
+
+{% block js_page %}
+<script>
+    $(document).ready(function () {
+        $('#id_product').select2({ placeholder: "Seleccione", allowClear: true });
+        $('#informacion_spots').hide();
+        $('#informacion_clientes').hide();
+        $('#content_product_spots').hide();
+        $('#btn_generar_lista').prop('disabled', true);
+        $('#btn_guardar').prop('disabled', true);
+
+
+        //    para graficos 
+        google.charts.load("current", { packages: ["corechart"] });
+
+        // otro grafico
+
+
+        // fin para graficos
+
+
+    })
+    // var clientes_g;
+    var spots_g;
+    var playlist_g;
+
+    function seleccionar_contratos() {
+        var token = '{{csrf_token}}';
+
+        id_product = $('#id_product').val();
+        var data = { 'id_product': id_product };
+
+        if (!id_product) {
+            mensaje("Debe seleccionar un producto!!!", "red");
+            return
+        }
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/content/playlist/contract_list/",
+            data: data,
+            // processData: false,
+            // contentType: false,
+            success: function (response) {
+                aux = response;
+
+                for (i = 0; i < aux.order.length; i++) {
+                    var check = '<div class="col-12" id="content_product"><div class="form-check">' +
+                        '<input class="form-check-input" type="checkbox" name="clientes_spots"  value="' + aux.order[i].id + '-' + aux.order[i].video_id + '" checked>' +
+                        '<label class="form-check-label">' + aux.order[i].contract + ', pases: ' + aux.order[i].pass + ', %: ' + aux.order[i].porcentage + ', ' + aux.order[i].video_name + ' , duracion: ' + aux.order[i].video_duration + ' </label></div></div>';
+                    $('#content_product').append(check);
+                }
+
+
+
+                $('#btn_clientes').prop('disabled', true);
+                $('#btn_clientes_antiguos').prop('disabled', true);
+                $('#btn_generar_lista').prop('disabled', false);
+
+
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+// funcion para generar listas de con el metodo 1
+    function generar_lista() {
+        var data = new FormData($("#formulario").get(0));
+
+        var token = '{{ csrf_token }}';
+
+        // console.log(data);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/content/playlist/generator/order/",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('#content_product').remove();
+                $('#informacion_spots').show();
+                $('#informacion_clientes').show();
+                $('#content_product_spots').show();
+                // console.log(response)
+                aux = response;
+
+                console.log(aux)
+
+                // $('#clientes_g').val(JSON.stringify(clientes_g));
+                $('#spots_g').val(JSON.stringify(spots_g));
+                $('#playlist_g').val(JSON.stringify(playlist_g))
+
+
+                for (i = 0; i < aux.order.length; i++) {
+                    var check = '<tr class="col-md-12" id="fila">' +
+                        '<input type="hidden" name="playlist_g" value="' + (parseInt(i) + parseInt(1)) + '|' + aux.order[i].video_id + '">' +
+                        '<td>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                        '<td>' + aux.order[i].client + ', ' + aux.order[i].video_name + ' , duración: ' + aux.order[i].duration + '</td>' +
+                        '</tr>';
+
+
+                    $('#playlist_table').append(check);
+                }
+                var datos_spot = [['Cliente, spot', 'tiempo(s)']]
+                for (j = 0; j < aux.info_spot.length; j++) {
+                    var spot = [aux.info_spot[j].client, parseInt(aux.info_spot[j].time_total)]
+                    datos_spot.push(spot)
+                    var fila = '<tr class="col-md-12" id="fila">' +
+                        '<input type="hidden" name="spots_g" value="' + aux.info_spot[j].count_repeat + '|' + aux.info_spot[j].time_total + '|' +
+                        aux.info_spot[j].porcentage + '|' + aux.info_spot[j].video_id + '|' + aux.info_spot[j].order_id + '"> ' +
+                        '<td> ' + (parseInt(j) + parseInt(1)) + '</td>' +
+                        '<td> ' + aux.info_spot[j].client + ', ' + aux.info_spot[j].video_name + '</td>' +
+                        '<td> ' + aux.info_spot[j].duration + '</td>' +
+                        '<td> ' + aux.info_spot[j].count_repeat + '</td>' +
+                        '<td> ' + aux.info_spot[j].time_total + '</td>' +
+                        '<td> ' + aux.info_spot[j].porcentage + '</td>' +
+                        '<td><button type="button" onclick="reajustar_pauta(1,'+aux.info_spot[j].video_id+')" class="btn btn-success btn-sm" ><i class="fas fa-plus"></i></button>'+
+                        '<button type="button" onclick="reajustar_pauta(0,'+aux.info_spot[j].video_id+')" class="btn btn-danger btn-sm" ><i class="fas fa-minus"></i></button></td>'+
+
+                        '</tr>';
+
+                    $('#tabla_spot').append(fila);
+
+
+                }
+                var datos_client = [['Cliente', 'tiempo(s)']]
+                for (k = 0; k < aux.info_client.length; k++) {
+                    var client = [aux.info_client[k].client, parseInt(aux.info_client[k].time_total_pauta)]
+                    datos_client.push(client)
+                    var fila2 = '<tr class="col-md-12" id="fila1">' +
+                        '<input type="hidden" name=clientes_g value="' + aux.info_client[k].time_total_pauta + '|' + aux.info_client[k].loop_pauta + '|' +
+                        aux.info_client[k].time_total_all + '|' + aux.info_client[k].time_contract + '|' +
+                        aux.info_client[k].time_bonification + '|' + + aux.info_client[k].order_id + '">' +
+                        '<td> ' + (parseInt(k) + parseInt(1)) + '</td>' +
+                        '<td> ' + aux.info_client[k].client + '</td>' +
+                        '<td> ' + aux.info_client[k].time_total_pauta + '</td>' +
+                        '<td> ' + aux.info_client[k].loop_pauta + '</td>' +
+                        '<td> ' + aux.info_client[k].time_total_all + '</td>' +
+                        '<td> ' + aux.info_client[k].time_contract + '</td>' +
+                        '<td> ' + aux.info_client[k].time_bonification + '</td>' +
+                        '</tr>';
+
+                    $('#tabla_cliente').append(fila2);
+
+
+                }
+
+                // para grafico===========================================
+                google.charts.setOnLoadCallback(drawChart2);
+                function drawChart2() {
+                    var data = google.visualization.arrayToDataTable(datos_spot);
+
+                    var options = {
+                        title: 'Grafico de spots',
+                        pieHole: 0.4,
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('grafico_spots'));
+                    chart.draw(data, options);
+                }
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart() {
+                    var data = google.visualization.arrayToDataTable(datos_client);
+
+                    var options = {
+                        title: 'Grafico de pauta',
+                        pieHole: 0.4,
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('grafico_clientes'));
+                    chart.draw(data, options);
+                }
+                // fin grafico ===========================================
+
+                $('#btn_guardar').prop('disabled', false);
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+    // funcion para reajustar de forma manual la pauta generada automaticamente
+    function reajustar_pauta(bandera, item){
+        $('#bandera_reajuste').val(bandera+'|'+item)
+
+        var data = new FormData($("#formulario").get(0));
+
+        var token = '{{ csrf_token }}';
+
+        // console.log(data);
+        
+        $('#tabla_boby_spot').empty()
+        $('#tabla_body_cliente').empty()
+        $('#playlist_table').empty()
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/content/playlist/generator/reorder/",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('#content_product').remove();
+                $('#informacion_spots').show();
+                $('#informacion_clientes').show();
+                $('#content_product_spots').show();
+                // console.log(response)
+                aux = response;
+
+                console.log(aux)
+
+                // $('#clientes_g').val(JSON.stringify(clientes_g));
+                $('#spots_g').val(JSON.stringify(spots_g));
+                $('#playlist_g').val(JSON.stringify(playlist_g))
+
+
+                for (i = 0; i < aux.order.length; i++) {
+                    var check = '<tr class="col-md-12" id="fila">' +
+                        '<input type="hidden" name="playlist_g" value="' + (parseInt(i) + parseInt(1)) + '|' + aux.order[i].video_id + '">' +
+                        '<td>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                        '<td>' + aux.order[i].client + ', ' + aux.order[i].video_name + ' , duración: ' + aux.order[i].duration + '</td>' +
+                        '</tr>';
+
+
+                    $('#playlist_table').append(check);
+                }
+                var datos_spot = [['Cliente, spot', 'tiempo(s)']]
+                for (j = 0; j < aux.info_spot.length; j++) {
+                    var spot = [aux.info_spot[j].client, parseInt(aux.info_spot[j].time_total)]
+                    datos_spot.push(spot)
+                    var fila = '<tr class="col-md-12" id="fila">' +
+                        '<input type="hidden" name="spots_g" value="' + aux.info_spot[j].count_repeat + '|' + aux.info_spot[j].time_total + '|' +
+                        aux.info_spot[j].porcentage + '|' + aux.info_spot[j].video_id + '|' + aux.info_spot[j].order_id + '"> ' +
+                        '<td> ' + (parseInt(j) + parseInt(1)) + '</td>' +
+                        '<td> ' + aux.info_spot[j].client + ', ' + aux.info_spot[j].video_name + '</td>' +
+                        '<td> ' + aux.info_spot[j].duration + '</td>' +
+                        '<td> ' + aux.info_spot[j].count_repeat + '</td>' +
+                        '<td> ' + aux.info_spot[j].time_total + '</td>' +
+                        '<td> ' + aux.info_spot[j].porcentage + '</td>' +
+                        '<td><button type="button" onclick="reajustar_pauta(1,'+aux.info_spot[j].video_id+')" class="btn btn-success btn-sm" ><i class="fas fa-plus"></i></button>'+
+                        '<button type="button" onclick="reajustar_pauta(0,'+aux.info_spot[j].video_id+')" class="btn btn-danger btn-sm" ><i class="fas fa-minus"></i></button></td>'+
+
+                        '</tr>';
+
+                    $('#tabla_spot').append(fila);
+
+
+                }
+                var datos_client = [['Cliente', 'tiempo(s)']]
+                for (k = 0; k < aux.info_client.length; k++) {
+                    var client = [aux.info_client[k].client, parseInt(aux.info_client[k].time_total_pauta)]
+                    datos_client.push(client)
+                    var fila2 = '<tr class="col-md-12" id="fila1">' +
+                        '<input type="hidden" name=clientes_g value="' + aux.info_client[k].time_total_pauta + '|' + aux.info_client[k].loop_pauta + '|' +
+                        aux.info_client[k].time_total_all + '|' + aux.info_client[k].time_contract + '|' +
+                        aux.info_client[k].time_bonification + '|' + + aux.info_client[k].order_id + '">' +
+                        '<td> ' + (parseInt(k) + parseInt(1)) + '</td>' +
+                        '<td> ' + aux.info_client[k].client + '</td>' +
+                        '<td> ' + aux.info_client[k].time_total_pauta + '</td>' +
+                        '<td> ' + aux.info_client[k].loop_pauta + '</td>' +
+                        '<td> ' + aux.info_client[k].time_total_all + '</td>' +
+                        '<td> ' + aux.info_client[k].time_contract + '</td>' +
+                        '<td> ' + aux.info_client[k].time_bonification + '</td>' +
+                        '</tr>';
+
+                    $('#tabla_cliente').append(fila2);
+
+
+                }
+
+                // para grafico===========================================
+                google.charts.setOnLoadCallback(drawChart2);
+                function drawChart2() {
+                    var data = google.visualization.arrayToDataTable(datos_spot);
+
+                    var options = {
+                        title: 'Grafico de spots',
+                        pieHole: 0.4,
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('grafico_spots'));
+                    chart.draw(data, options);
+                }
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart() {
+                    var data = google.visualization.arrayToDataTable(datos_client);
+
+                    var options = {
+                        title: 'Grafico de pauta',
+                        pieHole: 0.4,
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('grafico_clientes'));
+                    chart.draw(data, options);
+                }
+                // fin grafico ===========================================
+
+                $('#btn_guardar').prop('disabled', false);
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    
+    }
+
+    // funcion para generar listas con el segundo metodo
+    function generar_lista_2() {
+        var data = new FormData($("#formulario").get(0));
+
+        var token = '{{ csrf_token }}';
+
+        // console.log(data);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/content/playlist/generator/order_2/",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('#content_product').remove();
+                $('#informacion_spots').show();
+                $('#informacion_clientes').show();
+                $('#content_product_spots').show();
+                // console.log(response)
+                aux = response;
+
+                console.log(aux)
+
+                // $('#clientes_g').val(JSON.stringify(clientes_g));
+                $('#spots_g').val(JSON.stringify(spots_g));
+                $('#playlist_g').val(JSON.stringify(playlist_g))
+
+
+                for (i = 0; i < aux.order.length; i++) {
+                    var check = '<tr class="col-md-12" id="fila">' +
+                        '<input type="hidden" name="playlist_g" value="' + (parseInt(i) + parseInt(1)) + '|' + aux.order[i].video_id + '">' +
+                        '<td>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                        '<td>' + aux.order[i].client + ', ' + aux.order[i].video_name + ' , duración: ' + aux.order[i].duration + '</td>' +
+                        '</tr>';
+
+
+                    $('#playlist_table').append(check);
+                }
+                var datos_spot = [['Cliente, spot', 'tiempo(s)']]
+                for (j = 0; j < aux.info_spot.length; j++) {
+                    var spot = [aux.info_spot[j].client, parseInt(aux.info_spot[j].time_total)]
+                    datos_spot.push(spot)
+                    var fila = '<tr class="col-md-12" id="fila">' +
+                        '<input type="hidden" name="spots_g" value="' + aux.info_spot[j].count_repeat + '|' + aux.info_spot[j].time_total + '|' +
+                        aux.info_spot[j].porcentage + '|' + aux.info_spot[j].video_id + '|' + aux.info_spot[j].order_id + '"> ' +
+                        '<td> ' + (parseInt(j) + parseInt(1)) + '</td>' +
+                        '<td> ' + aux.info_spot[j].client + ', ' + aux.info_spot[j].video_name + '</td>' +
+                        '<td> ' + aux.info_spot[j].duration + '</td>' +
+                        '<td> ' + aux.info_spot[j].count_repeat + '</td>' +
+                        '<td> ' + aux.info_spot[j].time_total + '</td>' +
+                        '<td> ' + aux.info_spot[j].porcentage + '</td>' +
+                        '<td><button type="button" onclick="reajustar_pauta(1,'+aux.info_spot[j].video_id+')" class="btn btn-success btn-sm" ><i class="fas fa-plus"></i></button>'+
+                        '<button type="button" onclick="reajustar_pauta(0,'+aux.info_spot[j].video_id+')" class="btn btn-danger btn-sm" ><i class="fas fa-minus"></i></button></td>'+
+
+                       
+                        '</tr>';
+
+                    $('#tabla_spot').append(fila);
+
+
+                }
+                var datos_client = [['Cliente', 'tiempo(s)']]
+                for (k = 0; k < aux.info_client.length; k++) {
+                    var client = [aux.info_client[k].client, parseInt(aux.info_client[k].time_total_pauta)]
+                    datos_client.push(client)
+                    var fila2 = '<tr class="col-md-12" id="fila1">' +
+                        '<input type="hidden" name=clientes_g value="' + aux.info_client[k].time_total_pauta + '|' + aux.info_client[k].loop_pauta + '|' +
+                        aux.info_client[k].time_total_all + '|' + aux.info_client[k].time_contract + '|' +
+                        aux.info_client[k].time_bonification + '|' + + aux.info_client[k].order_id + '">' +
+                        '<td> ' + (parseInt(k) + parseInt(1)) + '</td>' +
+                        '<td> ' + aux.info_client[k].client + '</td>' +
+                        '<td> ' + aux.info_client[k].time_total_pauta + '</td>' +
+                        '<td> ' + aux.info_client[k].loop_pauta + '</td>' +
+                        '<td> ' + aux.info_client[k].time_total_all + '</td>' +
+                        '<td> ' + aux.info_client[k].time_contract + '</td>' +
+                        '<td> ' + aux.info_client[k].time_bonification + '</td>' +
+                        '</tr>';
+
+                    $('#tabla_cliente').append(fila2);
+
+
+                }
+
+                // para grafico===========================================
+                google.charts.setOnLoadCallback(drawChart2);
+                function drawChart2() {
+                    var data = google.visualization.arrayToDataTable(datos_spot);
+
+                    var options = {
+                        title: 'Grafico de spots',
+                        pieHole: 0.4,
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('grafico_spots'));
+                    chart.draw(data, options);
+                }
+                google.charts.setOnLoadCallback(drawChart);
+                function drawChart() {
+                    var data = google.visualization.arrayToDataTable(datos_client);
+
+                    var options = {
+                        title: 'Grafico de pauta',
+                        pieHole: 0.4,
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('grafico_clientes'));
+                    chart.draw(data, options);
+                }
+                // fin grafico ===========================================
+
+                $('#btn_guardar').prop('disabled', false);
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+
+
+
+
+    // funcion de prueba 
+
+    $("form").submit(function (e) {
+
+        e.preventDefault();
+
+
+        var data = new FormData($("#formulario").get(0));
+
+        var token = '{{ csrf_token }}';
+
+        // console.log(data);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/content/playlist/new",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log(response)
+                if (response == 'ok') {
+                    window.location.href = "/content/playlist/";
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+
+
+    });
+
+</script>
+{% endblock %}

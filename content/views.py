@@ -218,8 +218,118 @@ def playlist_generator(request):
         # return HttpResponse('ok')
 
     return render(request, template_name, contexto)
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# ================================================================================================================
+def playlist_generator2(request):
+    contexto = {}
+    template_name = 'content/playlist_form_hand.html'
+
+    if request.method == 'GET':
+        product = Product.objects.filter(state=1).all()
+        today = datetime.datetime.now()
+        contexto = {'obj': product, 'today': today}
+
+    if request.method == 'POST':
+
+        id_product = request.POST.get("id_product")
+
+        order = Order.objects.filter(product_id=id_product, state=1).all().order_by('-contract__auspice')
+        # print(order)
+        lista_order_json = []
+        for item in order:
+            # print(item.contract.id)
+            videos = Video.objects.all().filter(contract_id=item.contract.id, state=True)
+            for video in videos:
+
+                # print(video)
+                objeto_order = {}
+                objeto_order["id"] = item.id
+                objeto_order["pass"] = item.pass_contract
+                objeto_order["porcentage"] = item.porcentage_contract
+                objeto_order["contract"] = item.contract.client.name + " desde " + \
+                    str(item.contract.start_date) + \
+                    " al " + str(item.contract.end_date)
+                objeto_order["description"] = item.description
+                objeto_order["video_id"] = video.id
+                objeto_order["video_name"] = video.name
+                objeto_order["video_duration"] = video.duration_all()
+                # Se deberia asignar al dictionary todos los atributos que desee enviar en el json.
+                lista_order_json.append(objeto_order)
+
+        # print(lista_order_json)
+
+        contexto = {'obj': 'OK', 'order': lista_order_json}
+        return HttpResponse(json.dumps(contexto), content_type=json)
+
+        # return HttpResponse('ok')
+
+    return render(request, template_name, contexto)
+# ================================================================================================================
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# ----------------------------funcion de reajuste de pauta manual------------------------------------------------
+def playlist_reorder(request):
+    contexto = {}
+
+    if request.method == 'POST':
 
 
+        product_id = request.POST.get('product')
+        create_date = request.POST.get('create_date')
+        clientes_g = request.POST.getlist('clientes_g')
+        spots_g = request.POST.getlist('spots_g')
+        playlist_g = request.POST.getlist('playlist_g')
+        bandera_reorder = request.POST.get('bandera_reorder')
+        bandera = bandera_reorder.split('|')[0]
+        video_id_edit = bandera_reorder.split('|')[1]
+        
+        lista_reajustada = []
+        for item in spots_g:
+            repeat_count = int(item.split('|')[0])
+            porcentage = item.split('|')[2]
+            video_id = item.split('|')[3]
+            order_id = item.split('|')[4]
+            video = Video.objects.get(pk=video_id)
+            order = Order.objects.get(pk=order_id)
+            if video_id == video_id_edit and bandera == '1':
+                repeat_count = repeat_count + 1
+            if video_id == video_id_edit and bandera == '0':
+                repeat_count = repeat_count - 1
+            for x in range(repeat_count):
+                objeto = {}
+                objeto['order_id'] = order_id
+                objeto['client'] = order.contract.client.name
+                objeto['pass'] = order.pass_contract
+                objeto['porcentage'] = porcentage
+                objeto['video_id'] = video_id
+                objeto['video_name'] = video.name
+                objeto['duration'] = video.duration_all()
+                objeto['time_operating'] = order.product.time_operating_seconds()
+                objeto['num_spot'] = 1
+                lista_reajustada.append(objeto)
+        
+
+
+
+        
+        lista_nueva = []
+        lista_info_spots = []
+        lista_info_cliente = []
+        lista_ordenada = []
+
+        
+        lista_ordenada = ordenar_lista(lista_reajustada)
+        lista_info_spots = extraxt_data_spots(lista_reajustada)
+        lista_info_cliente = extract_data_client(lista_reajustada)
+
+        contexto = {'obj': 'OK', 'order': lista_ordenada,
+                    'info_spot': lista_info_spots, 'info_client': lista_info_cliente}
+        return HttpResponse(json.dumps(contexto), content_type=json)
+    return HttpResponse('ok')
+
+
+
+# ------------------------------funcion de ordenamiento por algoritmo 1
 def playlist_order(request):
     contexto = {}
 
@@ -258,6 +368,11 @@ def playlist_order(request):
         lista_ordenada = []
 
         lista_nueva = complet_pass(lista_clientes_spot)
+        # print('~~~~~~~~~~~~~~~~~~~~~')
+        # for item in lista_nueva:
+        #     print(item)
+        # print('~~~~~~~~~~~~~~~~~~~~~')
+
         lista_ordenada = ordenar_lista(lista_nueva)
         lista_info_spots = extraxt_data_spots(lista_nueva)
         lista_info_cliente = extract_data_client(lista_nueva)
@@ -279,8 +394,8 @@ def playlist_order_2(request):
 
         product = Product.objects.filter(pk=product_id).get()
         time_operating = product.time_operating_valid()
-        print('Time operation')
-        print(time_operating)
+        # print('Time operation')
+        # print(time_operating)
         time_operating_second = convert_to_seconds(time_operating)
         lista_clientes_spot = []
         # se vuelve a generar la lista de clientes y spots con los que selecciono el cliente
@@ -566,7 +681,6 @@ def extraxt_data_spots(listas):
 # completa los pases segun el porcentaje de contrato general 
 def complet_pass_2(listas):
 
-
     lista_nueva = []
 
     for lista in listas:
@@ -594,7 +708,8 @@ def complet_pass_2(listas):
             # print(porc)
             porc_aux = (duracion_seg * 100) / suma_tem
             # print(porc_aux)
-            if porc >= porc_aux:
+            # print("#####esta llegando") 
+            if porc > porc_aux:
                 lista_nueva.append(item)
             else:
                 bandera = False
