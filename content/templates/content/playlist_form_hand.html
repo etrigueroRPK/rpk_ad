@@ -57,12 +57,12 @@
                             <button type="button" id="btn_generar_lista" class="btn btn-outline-info"
                                 onclick="generar_lista()">Generar
                                 Lista (1*)</button>
-                                <!-- se genera la lista con otro algoritmo de ordenacion  -->
+                            <!-- se genera la lista con otro algoritmo de ordenacion  -->
                             <button type="button" id="btn_generar_lista_2" class="btn btn-outline-primary"
                                 onclick="generar_lista_2()">Generar
                                 Lista (2*)</button>
                         </div>
-                        
+
                         <div class="row" id="informacion_spots">
                             <div class="card col-8 ">
                                 <div class="card-body">
@@ -140,7 +140,7 @@
 
                                 </div>
                                 <div class="col-12" id="content_product_spots">
-                                    <table class="table table-bordered table-sm table-hover">
+                                    <table class="table table-bordered table-sm table-hover" id="sort">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
@@ -170,22 +170,25 @@
                                 <button type="submit" class="btn btn-success" id="btn_guardar"><span
                                         class="fa fa-save"></span>
                                     Guardar</button>
-                                    
-                                    
+
+
                             </div>
+                            <button class="btn" type="button" onclick="add_row()">add</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-<input type="hidden" value="" id="bandera_reajuste" name="bandera_reorder">
+    <input type="hidden" value="" id="bandera_reajuste" name="bandera_reorder">
 </form>
 
 {% endblock %}
 
 {% block js_page %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
+
     $(document).ready(function () {
         $('#id_product').select2({ placeholder: "Seleccione", allowClear: true });
         $('#informacion_spots').hide();
@@ -252,7 +255,45 @@
             }
         });
     }
-// funcion para generar listas de con el metodo 1
+    // ########## funcion de que permite mover con el mouse la fila de la lista de reproduccion 
+    var aux_fila
+    var fixHelperModified = function (e, tr) {
+        var $originals = tr.children();
+        var $helper = tr.clone();
+        $helper.children().each(function (index) {
+            $(this).width($originals.eq(index).width())
+        });
+        return $helper;
+    },
+        updateIndex = function (e, ui) {
+           
+            $('td.index', ui.item.parent()).each(function (i) {
+                $(this).html(i + 1);
+                // console.log(i+1)
+            });
+            $('input.index2', ui.item.parent()).each(function (i) {
+                // console.log($(this))
+                $(this).html(i + 1);
+                var val_now = $(this).val()
+                val_now_array = val_now.split('|')
+                val_new = (i + 1) + '|' + val_now_array[1]
+                $(this).val(val_new)
+
+                // console.log(val_now)
+                // console.log(val_new)
+            });
+        
+        };
+
+    $("#sort tbody").sortable({
+        helper: fixHelperModified,
+        stop: updateIndex
+    }).disableSelection();
+
+   
+
+
+    // funcion para generar listas de con el metodo 1
     function generar_lista() {
         var data = new FormData($("#formulario").get(0));
 
@@ -283,9 +324,9 @@
 
 
                 for (i = 0; i < aux.order.length; i++) {
-                    var check = '<tr class="col-md-12" id="fila">' +
-                        '<input type="hidden" name="playlist_g" value="' + (parseInt(i) + parseInt(1)) + '|' + aux.order[i].video_id + '">' +
-                        '<td>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                    var check = '<tr class="col-md-12" id="fila_play'+(parseInt(i) + parseInt(1))+'">' +
+                        '<input class="index2" id="fila_play'+(parseInt(i) + parseInt(1))+'h" type="hidden" name="playlist_g" value="' + (parseInt(i) + parseInt(1)) + '|' + aux.order[i].video_id + '">' +
+                        '<td class="index" >' + (parseInt(i) + parseInt(1)) + '</td>' +
                         '<td>' + aux.order[i].client + ', ' + aux.order[i].video_name + ' , duración: ' + aux.order[i].duration + '</td>' +
                         '</tr>';
 
@@ -305,8 +346,8 @@
                         '<td> ' + aux.info_spot[j].count_repeat + '</td>' +
                         '<td> ' + aux.info_spot[j].time_total + '</td>' +
                         '<td> ' + aux.info_spot[j].porcentage + '</td>' +
-                        '<td><button type="button" onclick="reajustar_pauta(1,'+aux.info_spot[j].video_id+')" class="btn btn-success btn-sm" ><i class="fas fa-plus"></i></button>'+
-                        '<button type="button" onclick="reajustar_pauta(0,'+aux.info_spot[j].video_id+')" class="btn btn-danger btn-sm" ><i class="fas fa-minus"></i></button></td>'+
+                        '<td><button type="button" onclick="reajustar_pauta(1,' + aux.info_spot[j].video_id + ')" class="btn btn-success btn-sm" ><i class="fas fa-plus"></i></button>' +
+                        '<button type="button" onclick="reajustar_pauta(0,' + aux.info_spot[j].video_id + ')" class="btn btn-danger btn-sm" ><i class="fas fa-minus"></i></button></td>' +
 
                         '</tr>';
 
@@ -373,15 +414,15 @@
         });
     }
     // funcion para reajustar de forma manual la pauta generada automaticamente
-    function reajustar_pauta(bandera, item){
-        $('#bandera_reajuste').val(bandera+'|'+item)
+    function reajustar_pauta(bandera, item) {
+        $('#bandera_reajuste').val(bandera + '|' + item)
 
         var data = new FormData($("#formulario").get(0));
 
         var token = '{{ csrf_token }}';
 
         // console.log(data);
-        
+
         $('#tabla_boby_spot').empty()
         $('#tabla_body_cliente').empty()
         $('#playlist_table').empty()
@@ -408,9 +449,9 @@
 
 
                 for (i = 0; i < aux.order.length; i++) {
-                    var check = '<tr class="col-md-12" id="fila">' +
-                        '<input type="hidden" name="playlist_g" value="' + (parseInt(i) + parseInt(1)) + '|' + aux.order[i].video_id + '">' +
-                        '<td>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                    var check = '<tr class="col-md-12" id="fila_play'+(parseInt(i) + parseInt(1))+'">' +
+                        '<input class="index2" id="fila_play'+(parseInt(i) + parseInt(1))+'h"  type="hidden" name="playlist_g" value="' + (parseInt(i) + parseInt(1)) + '|' + aux.order[i].video_id + '">' +
+                        '<td class="index" >' + (parseInt(i) + parseInt(1)) + '</td>' +
                         '<td>' + aux.order[i].client + ', ' + aux.order[i].video_name + ' , duración: ' + aux.order[i].duration + '</td>' +
                         '</tr>';
 
@@ -430,8 +471,8 @@
                         '<td> ' + aux.info_spot[j].count_repeat + '</td>' +
                         '<td> ' + aux.info_spot[j].time_total + '</td>' +
                         '<td> ' + aux.info_spot[j].porcentage + '</td>' +
-                        '<td><button type="button" onclick="reajustar_pauta(1,'+aux.info_spot[j].video_id+')" class="btn btn-success btn-sm" ><i class="fas fa-plus"></i></button>'+
-                        '<button type="button" onclick="reajustar_pauta(0,'+aux.info_spot[j].video_id+')" class="btn btn-danger btn-sm" ><i class="fas fa-minus"></i></button></td>'+
+                        '<td><button type="button" onclick="reajustar_pauta(1,' + aux.info_spot[j].video_id + ')" class="btn btn-success btn-sm" ><i class="fas fa-plus"></i></button>' +
+                        '<button type="button" onclick="reajustar_pauta(0,' + aux.info_spot[j].video_id + ')" class="btn btn-danger btn-sm" ><i class="fas fa-minus"></i></button></td>' +
 
                         '</tr>';
 
@@ -496,7 +537,7 @@
                 cerrar_modal();
             }
         });
-    
+
     }
 
     // funcion para generar listas con el segundo metodo
@@ -530,9 +571,9 @@
 
 
                 for (i = 0; i < aux.order.length; i++) {
-                    var check = '<tr class="col-md-12" id="fila">' +
-                        '<input type="hidden" name="playlist_g" value="' + (parseInt(i) + parseInt(1)) + '|' + aux.order[i].video_id + '">' +
-                        '<td>' + (parseInt(i) + parseInt(1)) + '</td>' +
+                    var check = '<tr class="col-md-12" id="fila_play'+(parseInt(i) + parseInt(1))+'">' +
+                        '<input class="index2" id="fila_play'+(parseInt(i) + parseInt(1))+'h" type="hidden" name="playlist_g" value="' + (parseInt(i) + parseInt(1)) + '|' + aux.order[i].video_id + '">' +
+                        '<td class="index" >' + (parseInt(i) + parseInt(1)) + '</td>' +
                         '<td>' + aux.order[i].client + ', ' + aux.order[i].video_name + ' , duración: ' + aux.order[i].duration + '</td>' +
                         '</tr>';
 
@@ -552,10 +593,10 @@
                         '<td> ' + aux.info_spot[j].count_repeat + '</td>' +
                         '<td> ' + aux.info_spot[j].time_total + '</td>' +
                         '<td> ' + aux.info_spot[j].porcentage + '</td>' +
-                        '<td><button type="button" onclick="reajustar_pauta(1,'+aux.info_spot[j].video_id+')" class="btn btn-success btn-sm" ><i class="fas fa-plus"></i></button>'+
-                        '<button type="button" onclick="reajustar_pauta(0,'+aux.info_spot[j].video_id+')" class="btn btn-danger btn-sm" ><i class="fas fa-minus"></i></button></td>'+
+                        '<td><button type="button" onclick="reajustar_pauta(1,' + aux.info_spot[j].video_id + ')" class="btn btn-success btn-sm" ><i class="fas fa-plus"></i></button>' +
+                        '<button type="button" onclick="reajustar_pauta(0,' + aux.info_spot[j].video_id + ')" class="btn btn-danger btn-sm" ><i class="fas fa-minus"></i></button></td>' +
 
-                       
+
                         '</tr>';
 
                     $('#tabla_spot').append(fila);
