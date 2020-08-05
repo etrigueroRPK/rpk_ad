@@ -48,7 +48,7 @@ def report_playlist(request, id):
     playlist_id = playlist.id
     playlist_client = Playlist_client_detail.objects.filter(playlist=id).all()
     playlist_spot = Playlist_spot_detail.objects.filter(playlist=id).all()
-    playlist_document = Playlist_document.objects.filter(playlist=id).all()
+    playlist_document = Playlist_document.objects.filter(playlist=id).all().order_by('order_list')
     # print(playlist_id)
     today = datetime.datetime.now()
     # order = Order.objects.filter(contract=id)

@@ -191,7 +191,7 @@
                 <tbody>
                     {% for  item in playlist_document %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.order_list }}</td>
                         <td>{{ item.video.contract.client }}, {{item.video}}</td>
 
 
