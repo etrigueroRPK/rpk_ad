@@ -1,0 +1,205 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data" id="formulario">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12" id="seleccion">
+        <div class="card border-left-primary shadow h-100 py-2">
+
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Confirmar fechas de reporte.
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div>Cliente: <strong>{{contract.client.name}}</strong> </div>
+                        <div>Descripción: <strong>{{contract.description}}</strong> </div>
+                        <div>Auspicio: <strong>{{contract.auspice|yesno:'Si,No'}}</strong> </div>
+
+                        <div class="form-group row">
+                            <!-- <div class="form-control col-6"> -->
+                            <label for="id_start_date" class="col-sm-2 col-form-label">Fecha de inicio</label>
+                            <div class="col-sm-4 ">
+                                <input type="date" name="start_date" class="form-control" id="id_start_date"
+                                    value="{{contract.start_date|date:'Y-m-d'}}" required>
+                                {% if contract.start_date|date:'Y-m-d' == '1-01-01' or contract.start_date == None %}
+                                <h5 class="m-1">Sin fecha</h5>
+                                {% endif%}
+
+                            </div>
+                            <!-- </div> -->
+                            <!-- <div class="form-control col-6 "> -->
+                            <label for="id_end_date" class="col-sm-2 col-form-label">Fecha final</label>
+                            <div class="col-sm-4 ">
+                                <input type="date" name="end_date" class="form-control" id="id_end_date"
+                                    value="{{contract.end_date|date:'Y-m-d'}}" required>
+                                {% if contract.end_date|date:'Y-m-d' == '1-01-01' or contract.end_date == None %}
+                                <h5 class="m-1">Sin fecha</h5>
+                                {% endif%}
+                            </div>
+                            <!-- </div> -->
+                        </div>
+                        <div> <strong>LOCACIONES CONTRATADAS</strong> </div>
+                        <ul class="list-unstyled">
+                            <ul>
+                                {% for item in order %}
+                                <li>{{item.product}}</li>
+                                {% endfor %}
+                            </ul>
+                        </ul>
+
+
+
+
+                        <div class="dropdown-divider"> </div>
+                        <div class="text-m font-weight-bold text-uppercase mb-1">
+                            Todas las listas de reproduccion encontrados
+                        </div>
+                        {% if report %}
+                        <div class="row">
+                            <table class="table table-sm table-bordered table-responsive">
+                                <thead>
+                                    <tr>
+                                        <!-- <th scope="col-sm-1">#</th> -->
+                                        <td>Check</td>
+                                        <th>Producto</th>
+                                        <th>Fecha de aparición</th>
+                                        <th>incio pauta</th>
+                                        <th>final pauta</th>
+                                        <th>video</th>
+                                        <th>Tiempo(s)</th>
+                                        <th>Apariciones en lista</th>
+                                        <th>Repeticiones de pauta</th>
+                                        <th>Total (s) cliente</th>
+                                        <th>Tiempo contratado</th>
+                                        <th>bonificación</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-black">
+                                    {% for item in report %}
+
+                                    <tr {% if item.color == 1 %} class="table-primary" {% endif %}
+                                        {% if item.color == 0 %} class="table-success" {% endif %}
+                                        {% if item.color == 3 %} class="table-danger" {% endif %}>
+                                        <!-- <td>1</td> -->
+
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-success btn-sm"
+                                                onclick="send_report_day('{{item.order_id}}|{{item.video_id}}|{{item.playlist_id}}|{{item.contract_id}}', '{{item.order_id}}{{item.video_id}}{{item.playlist_id}}')"
+                                                {% if item.state == 0 %}disabled {% endif %}>
+                                                <i class="font-15 far fa-save"></i>
+                                            </button>
+                                        </td>
+                                        <td>{{item.location}}</td>
+                                        <td>{{item.create_date|date:'d/m/Y'}}</td>
+                                        <td><input id="{{item.order_id}}{{item.video_id}}{{item.playlist_id}}start_date" name="inicio" type="date" value="{{item.create_date|date:'Y-m-d'}}">
+                                        </td>
+                                        <td><input id="{{item.order_id}}{{item.video_id}}{{item.playlist_id}}end_date" name="final" type="date"></td>
+                                        <td>{{item.video_name}}</td>
+                                        <td>{{item.video_duration}}</td>
+                                        <td>{{item.repeticiones}}</td>
+                                        <td>{{item.pauta_loop}}</td>
+                                        <td>{{item.second_total}}</td>
+                                        <td>{{item.time_contract}}</td>
+                                        <td>{{item.time_bonification}}</td>
+                                        <input type="text" name="datos"
+                                            value="{{item.order_id}}|{{item.video_id}}|{{item.playlist_id}}">
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <h5> Sin registros encontrados</h5>
+                        <p>No se encontraron registros para el contrato, debe crear listas de reproduccion para
+                            encontrar registros que puedan ser validados para el reporte de emision.</p>
+                        {% endif %}
+
+
+                        <div class="form-row text-center ">
+
+                            <div class="col-sm-10">
+                                <a href="{% url 'reportemision:report_client' %}" class="btn btn-danger"><span
+                                        class="fa fa-undo"> Cancelar</span></a>
+                                <button type="submit" class="btn btn-success" id="btn_guardar"><span
+                                        class="fa fa-save"></span>
+                                    Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+{% endblock %}
+
+{% block js_page %}
+<script>
+
+
+    // funcion que envia la parte de este spot en la base de datos 
+    function send_report_day(valor, id) {
+        console.log(valor)
+        var start_date = $("#"+id+"start_date").val()
+        var end_date = $("#"+id+"end_date").val()
+        console.log(start_date)
+        console.log(end_date)
+
+        if (!end_date) {
+            mensaje("Debe definir una fecha !!!", "red");
+            return
+        }
+        if (!start_date) {
+            mensaje("Debe definir una fecha !!!", "red");
+            return
+        }
+        var token = '{{csrf_token}}';
+        var data = { 'val': valor, 'start_date':start_date, 'end_date':end_date };
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/reportemision/report_generate_save/",
+            data: data,
+            // processData: false,
+            // contentType: false,
+            success: function (response) {
+                aux = response;
+                console.log(aux)
+                // for (i = 0; i < aux.order.length; i++) {
+                //     var check = '<div class="col-12" id="content_product"><div class="form-check">' +
+                //         '<input class="form-check-input" type="checkbox" name="clientes_spots"  value="' + aux.order[i].id + '-' + aux.order[i].video_id + '" checked>' +
+                //         '<label class="form-check-label">' + aux.order[i].contract + ', pases: ' + aux.order[i].pass + ', %: ' + aux.order[i].porcentage + ', ' + aux.order[i].video_name + ' , duracion: ' + aux.order[i].video_duration + ' </label></div></div>';
+                //     $('#content_product').append(check);
+                // }
+
+
+
+                // $('#btn_clientes').prop('disabled', true);
+                // $('#btn_clientes_antiguos').prop('disabled', true);
+                // $('#btn_generar_lista').prop('disabled', false);
+
+
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+
+
+    }
+
+
+
+
+
+</script>
+{% endblock %}

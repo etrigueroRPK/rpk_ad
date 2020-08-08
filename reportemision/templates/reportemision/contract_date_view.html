@@ -1,0 +1,169 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<form method="POST" class="form-group" enctype="multipart/form-data" id="formulario">
+    {% csrf_token %}
+
+    <div class="col-xl-12 col-md-12 mb-12" id="seleccion">
+        <div class="card border-left-primary shadow h-100 py-2">
+
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Confirmar fechas de reporte.
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div>Cliente: <strong>{{contract.client.name}}</strong> </div>
+                        <div>Descripción: <strong>{{contract.description}}</strong> </div>
+                        <div>Auspicio: <strong>{{contract.auspice|yesno:'Si,No'}}</strong> </div>
+
+                        <div class="form-group row">
+                            <!-- <div class="form-control col-6"> -->
+                            <label for="id_start_date" class="col-sm-2 col-form-label">Fecha de inicio</label>
+                            <div class="col-sm-4 ">
+                                <input type="date" name="start_date" class="form-control" id="id_start_date"
+                                    value="{{contract.start_date|date:'Y-m-d'}}" required readonly>
+                                {% if contract.start_date|date:'Y-m-d' == '1-01-01' or contract.start_date == None %}
+                                <h5 class="m-1">Sin fecha</h5>
+                                {% endif%}
+
+                            </div>
+                            <!-- </div> -->
+                            <!-- <div class="form-control col-6 "> -->
+                            <label for="id_end_date" class="col-sm-2 col-form-label">Fecha final</label>
+                            <div class="col-sm-4 ">
+                                <input type="date" name="end_date" class="form-control" id="id_end_date"
+                                    value="{{contract.end_date|date:'Y-m-d'}}" required readonly>
+                                {% if contract.end_date|date:'Y-m-d' == '1-01-01' or contract.end_date == None %}
+                                <h5 class="m-1">Sin fecha</h5>
+                                {% endif%}
+                            </div>
+                            <!-- </div> -->
+                        </div>
+                        <div> <strong>LOCACIONES CONTRATADAS</strong> </div>
+                        <ul class="list-unstyled">
+                            <ul>
+                                {% for item in order %}
+                                <li class="m-2">{{item.product}}</li>
+                               
+                                {% if obj %}
+                                
+                                <div class="card-columns">
+                                    
+                                    {% for item2 in obj %}
+                                    {% if item.id == item2.order.id%}
+                                    <a  href="{% url 'reportemision:report_client_xls' contract.id item2.month_report item.id %}">
+
+                                        <div class="card border-info ">
+
+                                            <div class="card-body text-info text-center">
+                                                <h5 class="card-title">{{item2.month_report}}</h5>
+                                               
+                                            </div>
+                                        </div>
+                                    </a>
+                                    {% else %}
+                                    <div class="text-m font-weight-bold   m-1">
+                                        No se encontraron registros
+                                    </div>
+                                    {% endif%}
+                                    {% endfor %}
+                                </div>
+
+                                {% else %}
+                                <h5> Sin registros encontrados</h5>
+                                <p>No se encontraron registros para el contrato, debe crear listas de reproduccion y
+                                    crear
+                                    reportes por cada lista generada para
+                                    encontrar registros que puedan ser validados para el reporte de emision.</p>
+                                {% endif %}
+
+
+                                {% endfor %}
+                            </ul>
+                        </ul>
+
+
+
+
+                     
+
+
+                        <div class="form-row text-center ">
+
+                            <div class="col-sm-10">
+                                <a href="{% url 'reportemision:report_client' %}" class="btn btn-danger"><span
+                                        class="fa fa-undo"> Cancelar</span></a>
+                                <button type="submit" class="btn btn-success" id="btn_guardar"><span
+                                        class="fa fa-save"></span>
+                                    Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+{% endblock %}
+
+{% block js_page %}
+<script>
+
+
+    // funcion que envia la parte de este spot en la base de datos 
+    function send_month(contract_id, month, order_id) {
+        console.log(contract_id)
+        console.log(month)
+        console.log(order_id)
+
+        var token = '{{csrf_token}}';
+        var data = { 'month_report': month, 'contract': contract_id, 'order':order_id };
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/reportemision/report_client_xls/",
+            data: data,
+            // processData: false,
+            // contentType: false,
+            success: function (data) {
+                // aux = response;
+                // console.log(aux)
+                var response = JSON.parse(data); 
+                window.location = '/Report/Download?fileGuid=' + response.FileGuid + '&filename=' + response.FileName;
+                // for (i = 0; i < aux.order.length; i++) {
+                //     var check = '<div class="col-12" id="content_product"><div class="form-check">' +
+                //         '<input class="form-check-input" type="checkbox" name="clientes_spots"  value="' + aux.order[i].id + '-' + aux.order[i].video_id + '" checked>' +
+                //         '<label class="form-check-label">' + aux.order[i].contract + ', pases: ' + aux.order[i].pass + ', %: ' + aux.order[i].porcentage + ', ' + aux.order[i].video_name + ' , duracion: ' + aux.order[i].video_duration + ' </label></div></div>';
+                //     $('#content_product').append(check);
+                // }
+
+
+
+                // $('#btn_clientes').prop('disabled', true);
+                // $('#btn_clientes_antiguos').prop('disabled', true);
+                // $('#btn_generar_lista').prop('disabled', false);
+
+
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+
+
+    }
+
+
+
+
+
+</script>
+{% endblock %}

@@ -22,3 +22,9 @@ class Document(ClassModel):
     time_bonification = models.IntegerField(null=False, blank=False)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
 
+class Report_day(ClassModel):
+    date_now = models.DateField(null=False, blank=False)
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)

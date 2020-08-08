@@ -9,10 +9,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 import json
 import datetime
+
 from datetime import timedelta
 import calendar
 
 from openpyxl import Workbook
+import openpyxl
+import locale
 
 # from django.utils import simplejson
 
@@ -22,7 +25,7 @@ from openpyxl import Workbook
 # from .forms import ClientForm, ContractForm
 
 from sales.models import Contract, Order
-from .models import Document
+from .models import Document, Report_day
 from content.models import Video
 from content.models import Playlist, Playlist_client_detail, Playlist_spot_detail, Playlist_document
 
@@ -43,14 +46,15 @@ def report_client(request):
 
     return render(request, template_name, contexto)
 
+
 def order_report_list(request, id):
     # id => contract_id
     template_name = 'reportemision/order_report_list.html'
     contexto = {}
-    
+
     document = Document.objects.filter(contract=id).all()
-    
-    contexto = {'obj':document}
+
+    contexto = {'obj': document}
     return render(request, template_name, contexto)
 
 
@@ -59,10 +63,11 @@ def order_report_print(request, id):
     contexto = {}
 
     document = Document.objects.get(pk=id)
-   
-    playlist_spot = Playlist_spot_detail.objects.filter(order_id=document.order.id, playlist_id=document.playlist_id).all()
+
+    playlist_spot = Playlist_spot_detail.objects.filter(
+        order_id=document.order.id, playlist_id=document.playlist_id).all()
     videos = []
-    time_in_pauta_total = 0 
+    time_in_pauta_total = 0
     repeat_in_pauta = 0
     videos_id = []
     for item in playlist_spot:
@@ -74,11 +79,12 @@ def order_report_print(request, id):
         objeto['duration_seconds'] = video.duration_seconds
         objeto['repeat_in_pauta'] = item.repeat_count
         objeto['time_in_pauta'] = item.time_total
-        time_in_pauta_total = time_in_pauta_total + int(item.time_total) 
+        time_in_pauta_total = time_in_pauta_total + int(item.time_total)
         repeat_in_pauta = repeat_in_pauta + int(item.repeat_count)
         videos.append(objeto)
 
-    playlist = Playlist_document.objects.filter(playlist_id=document.playlist_id).all().order_by('order_list')
+    playlist = Playlist_document.objects.filter(
+        playlist_id=document.playlist_id).all().order_by('order_list')
     playlist_client = []
     for item in playlist:
         objeto = {}
@@ -91,14 +97,16 @@ def order_report_print(request, id):
             objeto['color'] = 1
         objeto['duration'] = item.video.duration_all()
         playlist_client.append(objeto)
+#
+    # for item in playlist_client:
+        # print(item)
 
-    for item in playlist_client:
-        print(item)
+    contexto = {'obj': document, 'videos': videos, 'time': time_in_pauta_total,
+                'time2': repeat_in_pauta, 'playlist': playlist_client}
 
-    contexto = {'obj':document, 'videos':videos, 'time':time_in_pauta_total,'time2':repeat_in_pauta, 'playlist':playlist_client}
-
-    return render(request,template_name,contexto)
+    return render(request, template_name, contexto)
 # ============################################################
+
 
 def report_client_all(request, id):
     template_name = 'reportemision/contract_list.html'
@@ -106,25 +114,26 @@ def report_client_all(request, id):
 
     contract = Contract.objects.get(pk=id)
     order = Order.objects.filter(contract=id)
-    color =1
+    color = 1
     report = []
     # print(contract)
     for i in order:
         order_id = i.id
         # print(i.id)
-        playlist_client_detail = Playlist_client_detail.objects.filter(order=order_id).order_by('playlist__create_date')
+        playlist_client_detail = Playlist_client_detail.objects.filter(
+            order=order_id).order_by('playlist__create_date')
         if playlist_client_detail:
             for j in playlist_client_detail:
-                
-                
-                
+
                 # print(j.order.id)
-                playlist_spot_detail = Playlist_spot_detail.objects.filter(playlist=j.playlist.id, order=order_id)
+                playlist_spot_detail = Playlist_spot_detail.objects.filter(
+                    playlist=j.playlist.id, order=order_id)
                 for k in playlist_spot_detail:
                     # print(k.video.name)
-                    # se extrae informacion por videos de todos los contratos 
+                    # se extrae informacion por videos de todos los contratos
                     item = {}
-                    item["id"] = str(order_id) + str(k.video.id) + str(j.playlist.product.id)
+                    item["id"] = str(order_id) + str(k.video.id) + \
+                        str(j.playlist.product.id)
                     item["contract_id"] = contract.id
                     item["order_id"] = order_id
                     item["video_id"] = k.video.id
@@ -142,18 +151,18 @@ def report_client_all(request, id):
                     item["time_contract"] = j.time_contract
                     item["time_bonification"] = j.time_bonification
                     item["color"] = color
+                    item["state"] = 1
                     # print(j.playlist.create_date)
                     report.append(item)
                 if color == 1:
                     color = 0
                 else:
                     color = 1
-                    
 
         else:
             # encaso de no existir informacion de los videos se toma todo en vacio
             item = {}
-            item["id"] = str(order_id) + str(0) + str(i.product.id) 
+            item["id"] = str(order_id) + str(0) + str(i.product.id)
             item["contract_id"] = contract.id
             item["order_id"] = order_id
             item["video_id"] = 0
@@ -161,9 +170,10 @@ def report_client_all(request, id):
             item["start_date"] = contract.start_date
             item["end_date"] = contract.end_date
             item["playlist_id"] = 0
-
+            item["state"] = 0
             item["location"] = i.product
-            item["create_date"] = datetime.datetime.strptime('0001-01-01', "%Y-%m-%d").date()
+            item["create_date"] = datetime.datetime.strptime(
+                '0001-01-01', "%Y-%m-%d").date()
             item["video_name"] = 'sin registro de playlist'
             item["video_duration"] = 0
             item["repeticiones"] = 0
@@ -179,11 +189,11 @@ def report_client_all(request, id):
     if request.method == 'GET':
 
         # for m in report:
-            # print(m)
-
+        # print(m)
 
         template_name = 'reportemision/contract_date.html'
-        contexto = {'report': report, 'contract': contract, 'order': order, 'report2':report_2}
+        contexto = {'report': report, 'contract': contract,
+                    'order': order, 'report2': report_2}
 
         return render(request, template_name, contexto)
 
@@ -202,77 +212,405 @@ def report_client_all(request, id):
             aux_order = []
             print(bandera)
             for item in report_2:
-                
+
                 if (not item['order_id'] in aux_order):
                     aux_order.append(item['order_id'])
                     order_id = Order.objects.get(pk=item['order_id'])
                     contract_id = Contract.objects.get(pk=item['contract_id'])
-                    playlist_id = Playlist.objects.get(pk=item['playlist_id'])
-                    document = Document(
-                        start_date=start_date_n,
-                        end_date=end_date_n,
-                        contract=contract_id,
-                        order=order_id,
-                        repeat_pauta_day=item['pauta_loop'],
-                        repeat_in_pauta=item['repeticiones'],
 
-                        second_total_day=item['second_total'],
-                        time_contract=item['time_contract'],
-                        time_bonification=item['time_bonification'],
-                        playlist=playlist_id,
-                        user_created=request.user
+                    if not item['playlist_id'] == 0:
+                        playlist_id = Playlist.objects.get(
+                            pk=item['playlist_id'])
+                        document = Document(
+                            start_date=start_date_n,
+                            end_date=end_date_n,
+                            contract=contract_id,
+                            order=order_id,
+                            repeat_pauta_day=item['pauta_loop'],
+                            repeat_in_pauta=item['repeticiones'],
 
-                    )
-                    document.save()
+                            second_total_day=item['second_total'],
+                            time_contract=item['time_contract'],
+                            time_bonification=item['time_bonification'],
+                            playlist=playlist_id,
+                            user_created=request.user
+
+                        )
+                        document.save()
                     contract = Contract.objects.filter(state=True).all()
-                    template_name = 'reportemision/contract_list.html'
 
-                    contexto = {'obj': contract}
+            template_name = 'reportemision/contract_list.html'
+
+            contexto = {'obj': contract}
+        # else:
+        #     # diferencia = end_date_n - start_date_n
+        #     # diferencia = diferencia.days + 1
+        #     # print(diferencia)
+
+        #     report_date = []
+        #     # prueba para determinar fechas de inicio y final por cada lista creada
+        #     randos_de_fechas = []
+        #     aux = []
+        #     aux_report = []
+        #     for item in report:
+        #         aux_report = report
+        #         if not(item["id"] in aux):
+
+        #             aux.append(item["id"])
+        #             report_id = item["id"]
+        #             randos_de_fechas = determinar_fechas(
+        #                 aux_report, report_id, start_date_n, end_date_n)
+        #             # fechas = rellenar_fechas(aux_report, report_id, start_date_n, end_date_n)
+        #             # report_date.append(fechas)
+        #             # print(report_date)
+
+        #     template_name = 'reportemision/contract_complet.html'
+        #     contexto = {'obj': report_date}
+        #     # print(report_date)
+
+        # return render(request, template_name, contexto)
+
+    return render(request, template_name, contexto)
+
+
+# para verificar clientes porfecha de creacion en cada lista de reprudoccion presente
+def report_client_generate(request, id):
+    template_name = 'reportemision/contract_list.html'
+    contexto = {}
+
+    contract = Contract.objects.get(pk=id)
+    order = Order.objects.filter(contract=id)
+    color = 1
+    report = []
+    # print(contract)
+    for i in order:
+        order_id = i.id
+        # print(i.id)
+        playlist_client_detail = Playlist_client_detail.objects.filter(
+            order=order_id).order_by('playlist__create_date')
+        if playlist_client_detail:
+            for j in playlist_client_detail:
+
+                playlist_spot_detail = Playlist_spot_detail.objects.filter(
+                    playlist=j.playlist.id, order=order_id)
+                for k in playlist_spot_detail:
+                    # print(k.video.name)
+                    # se extrae informacion por videos de todos los contratos
+                    item = {}
+                    item["id"] = str(order_id) + str(k.video.id) + \
+                        str(j.playlist.product.id)
+                    item["contract_id"] = contract.id
+                    item["order_id"] = order_id
+                    item["video_id"] = k.video.id
+                    item["client"] = contract.client.name
+                    item["start_date"] = contract.start_date
+                    item["end_date"] = contract.end_date
+                    item["playlist_id"] = j.playlist.id
+                    item["location"] = j.playlist.product
+                    item["create_date"] = j.playlist.create_date
+                    item["video_name"] = k.video.name
+                    item["video_duration"] = k.video.duration_all()
+                    item["repeticiones"] = k.repeat_count
+                    item["pauta_loop"] = j.pauta_loop
+                    item["second_total"] = j.second_total
+                    item["time_contract"] = j.time_contract
+                    item["time_bonification"] = j.time_bonification
+                    item["color"] = color
+                    item["state"] = 1
+                    # print(j.playlist.create_date)
+                    report.append(item)
+                if color == 1:
+                    color = 0
+                else:
+                    color = 1
+
         else:
-            # diferencia = end_date_n - start_date_n
-            # diferencia = diferencia.days + 1
-            # print(diferencia)
+            # encaso de no existir informacion de los videos se toma todo en vacio
+            item = {}
+            item["id"] = str(order_id) + str(0) + str(i.product.id)
+            item["contract_id"] = contract.id
+            item["order_id"] = order_id
+            item["video_id"] = 0
+            item["client"] = contract.client.name
+            item["start_date"] = contract.start_date
+            item["end_date"] = contract.end_date
+            item["playlist_id"] = 0
+            item["state"] = 0
+            item["location"] = i.product
+            item["create_date"] = datetime.datetime.strptime(
+                '0001-01-01', "%Y-%m-%d").date()
+            item["video_name"] = 'sin registro de playlist'
+            item["video_duration"] = 0
+            item["repeticiones"] = 0
+            item["pauta_loop"] = 0
+            item["second_total"] = 0
+            item["time_contract"] = 0
+            item["time_bonification"] = 0
+            item["color"] = 3
+            report.append(item)
 
-            report_date = []
-            randos_de_fechas = [] # prueba para determinar fechas de inicio y final por cada lista creada
-            aux = []
-            aux_report = []
-            for item in report:
-                aux_report = report
-                if not(item["id"] in aux):
-                    
-                    aux.append(item["id"])
-                    report_id = item["id"]
-                    randos_de_fechas = determinar_fechas(aux_report, report_id, start_date_n, end_date_n)
-                    # fechas = rellenar_fechas(aux_report, report_id, start_date_n, end_date_n)
-                    # report_date.append(fechas)
-                    # print(report_date)
-            
-            template_name = 'reportemision/contract_complet.html'
-            contexto = {'obj': report_date}
-            # print(report_date)
+    if request.method == 'GET':
+
+        template_name = 'reportemision/contract_date_generate.html'
+        contexto = {'report': report, 'contract': contract, 'order': order}
 
         return render(request, template_name, contexto)
 
+    return render(request, template_name, contexto)
+
+#  utilizado por ajax para guardar las fechas individduales de uso en la base de datos
+
+
+def report_generate_save(request):
+    if request.method == 'POST':
+        val = request.POST.get('val')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+        start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+        days = end_date - start_date
+        print(days.days)
+        day_delta = datetime.timedelta(days=1)
+        val = val.split('|')
+        order_id = val[0]
+        video_id = val[1]
+        playlist_id = val[2]
+        contract_id = val[3]
+
+        order = Order.objects.get(pk=order_id)
+        video = Video.objects.get(pk=video_id)
+        playlist = Playlist.objects.get(pk=playlist_id)
+        contract = Contract.objects.get(pk=contract_id)
+        for x in range(days.days+1):
+            report_day = Report_day(
+                order=order,
+                video=video,
+                contract=contract,
+                playlist=playlist,
+                user_created=request.user,
+                date_now=start_date + x*day_delta
+            )
+            report_day.save()
+
+    return HttpResponse('OK')
+# para ver la fechas en las que se generaron reportes
+
+
+def report_client_view(request, id):
+    template_name = 'reportemision/contract_date_view.html'
+    contexto = {}
+
+    if request.method == 'GET':
+        contract = Contract.objects.get(pk=id)
+        report_day = Report_day.objects.filter(contract_id=id).all()
+        order = Order.objects.filter(contract_id=id).all()
+        month_existing = []
+        aux2 = []
+        for item in report_day:
+            objeto = {}
+            date_now = item.date_now
+            month = date_now.month
+            year = date_now.year
+            aux = str(month) + '-' + str(year)
+            objeto['month_report'] = aux
+            objeto['order'] = item.order
+            if not aux in month_existing:
+                month_existing.append(aux)
+                aux2.append(objeto)
+
+        # print(month_existing)
+        contexto = {'contract': contract, 'obj': aux2, 'order': order}
 
     return render(request, template_name, contexto)
+
+# def separar lista por video()
+
+
+def div_list(lista, video_id):
+    nueva_lista = []
+
+    for item in lista:
+        if item.video.id == video_id:
+            nueva_lista.append(item)
+
+    return nueva_lista
+
+# imprecion o ver el reporte ya por locaion y por fechas creo que es mejor descargar en xls
+
+
+def report_client_xls(request, id, month, order_id):
+    # locale.setlocale(locale.LC_ALL, 'es-bo')
+    # Idioma "es-ES" (código para el español de España)
+    if request.method == 'GET':
+        # month_report = request.POST.get('month_report')
+        # contract_id = request.POST.get('contract')
+        # order_id = request.POST.get('order')
+        # print(id)
+        # print(month)
+        month_s = month.split('-')[0]
+        year = month.split('-')[1]
+        contract = Contract.objects.get(pk=id)
+        order = Order.objects.get(pk=order_id)
+        report_day = Report_day.objects.filter(date_now__month=month_s, date_now__year=year,
+                                               contract_id=id, order_id=order_id).all().order_by('order_id', 'video_id', 'date_now')
+
+        video_aux = []
+        new_report_day = []
+        for item in report_day:
+
+            if not item.video.id in video_aux:
+                video_aux.append(item.video.id)
+                aux_of_video = div_list(report_day, item.video.id)
+                new_report_day.append(aux_of_video)
+
+        wb = Workbook()
+        # Definimos como nuestra hoja de trabajo, la hoja activa, por defecto la primera del libro
+        ws = wb.active
+        # En la celda B1 ponemos el texto 'REPORTE DE PERSONAS'
+        # ws['B1'] = 'Sistema de Administración Publicitaria'
+        # Juntamos las celdas desde la B1 hasta la E1, formando una sola celda
+        ws.merge_cells('B1:E1')
+        # Creamos los encabezados desde la celda B3 hasta la E3
+        ws['B3'] = 'CLIENTE: '
+        ws['C3'] = str(contract.client.name)
+        ws['B4'] = 'FECHA DE INICIO: '
+        ws['C4'] = str(contract.start_date)
+        ws['B5'] = 'FECHA DE FINALIZACIÓN: '
+        ws['C5'] = str(contract.end_date)
+
+        ws['B7'] = 'PRODUCTO: '
+        ws['C7'] = str(order.product)
+        ws['B8'] = 'FUNCIONAMIENTO: '
+        ws['C8'] = str(order.product.start_time) + ' a ' + str(order.product.end_time) + '. ' + str(order.product.time_operating_valid()) + 'fun'
+        row = 10
+        column = 5
+        for item in new_report_day:
+            aux_num = len(item)
+            ws.merge_cells(start_row=int(row-1), start_column=int(column),
+                           end_row=int(row-1), end_column=int(aux_num+column-1))
+            for x in item:
+                ws.cell(row=row-1, column=5).value = x.date_now.strftime('%B')
+                spot_info = Playlist_spot_detail.objects.filter(
+                    video_id=x.video.id, playlist=x.playlist.id).get()
+                client_info = Playlist_client_detail.objects.filter(
+                    playlist=x.playlist.id, order_id=x.order.id).get()
+                # print(client_info)
+                ws.cell(row=row, column=column).value = x.date_now.day
+                ws.cell(row=row, column=2).value = 'video: '
+                ws.cell(row=row, column=3).value = str(x.video.name)
+                ws.cell(row=(row+1), column=2).value = 'Duración: '
+                ws.cell(row=(row+1), column=3).value = str(x.video.duration_all())
+                ws.cell(row=(row+1), column=4).value = 'Pases dia: '
+                ws.cell(row=(row+1), column=column).value = int(
+                    client_info.pauta_loop) * int(spot_info.repeat_count)
+                ws.cell(row=(row+2), column=4).value = 'Total (s): '
+
+                ws.cell(row=(row+2), column=column).value = int(float(client_info.pauta_loop) * float(spot_info.repeat_count) * float(x.video.duration_seconds()))
+                # row = row + 1
+                column = column + 1
+                # print(type(x.date_now))
+                # print(x.date_now)
+
+            row = row + 5
+            column = 5
+        # ws['B7'] = '#'
+        # ws['C7'] = 'Cliente, spot'
+        # ws['D7'] = 'Duración'
+        # ws['E7'] = 'Loop'
+        # ws['F7'] = 'tiempo total'
+        # ws['G7'] = 'porcentaje de spot'
+
+        # cont = 10
+        # cl = 1
+        # for item in playlist_spot:
+        #     cli = str(item.video.contract.client) + ', ' + str(item.video.name)
+        #     ws.cell(row=cont, column=2).value = cl
+        #     ws.cell(row=cont, column=3).value = cli
+        #     ws.cell(row=cont, column=4).value = item.video.duration_all()
+        #     ws.cell(row=cont, column=5).value = item.repeat_count
+        #     ws.cell(row=cont, column=6).value = item.time_total
+        #     ws.cell(row=cont, column=7).value = item.porcentage
+
+        #     cont = cont + 1
+        #     cl = cl + 1
+        # cont = cont + 1
+        # ws.cell(row=cont, column=2).value = '#'
+        # ws.cell(row=cont, column=3).value = 'Cliente'
+        # ws.cell(row=cont, column=4).value = 'tiempo total'
+        # ws.cell(row=cont, column=5).value = 'loop de pauta'
+        # ws.cell(row=cont, column=6).value = 'tiempo (s)'
+        # ws.cell(row=cont, column=7).value = 'tiempo contratado'
+        # ws.cell(row=cont, column=8).value = 'tiempo de bonificación'
+        # cont = cont + 1
+
+        # cs = 1
+        # for item in playlist_client:
+        #     cli = str(item.order.contract.client.name)
+        #     ws.cell(row=cont, column=2).value = cs
+        #     ws.cell(row=cont, column=3).value = cli
+        #     ws.cell(row=cont, column=4).value = item.time_total
+        #     ws.cell(row=cont, column=5).value = item.pauta_loop
+        #     ws.cell(row=cont, column=6).value = item.second_total
+        #     ws.cell(row=cont, column=7).value = item.time_contract
+        #     ws.cell(row=cont, column=8).value = item.time_bonification
+
+        #     cont = cont + 1
+        #     cs = cs + 1
+        # cont = cont + 1
+        # ws.cell(row=cont, column=2).value = '#'
+        # ws.cell(row=cont, column=3).value = 'Video'
+        # cont = cont + 1
+
+        # csl = 1
+        # for item in playlist_document:
+        #     cli = str(item.video.contract.client) +', '+ str(item.video)
+        #     ws.cell(row=cont, column=2).value = csl
+        #     ws.cell(row=cont, column=3).value = cli
+
+        #     cont = cont + 1
+        #     csl = csl + 1
+    for column_cells in ws.columns:
+        new_column_length = max(len(as_text(cell.value)) for cell in column_cells)
+        new_column_letter = (openpyxl.utils.get_column_letter(column_cells[0].column))
+        if new_column_length > 0:
+            ws.column_dimensions[new_column_letter].width = new_column_length + 1
+    
+    
+    today = datetime.datetime.now()
+
+    # Establecemos el nombre del archivo
+    nombre_archivo = "Reporte: " + str(today) + ".xlsx"
+    # Definimos que el tipo de respuesta a devolver es un archivo de microsoft excel
+    response = HttpResponse(content_type="application/ms-excel")
+    contenido = "attachment; filename={0}".format(nombre_archivo)
+    response["Content-Disposition"] = contenido
+    wb.save(response)
+    return response
+
+    # return HttpResponse('OK')
 # ======================================================================
+def as_text(value):
+    if value is None:
+        return ""
+    return str(value)
+
 def report_resume(report):
     nueva_report = []
     aux_lista = []
-    
+
     for item in report:
         if (not item["order_id"] in aux_lista):
             aux_lista.append(item["order_id"])
-            max_bonification = hallar_bonificacion_max(report, item["order_id"])
+            max_bonification = hallar_bonificacion_max(
+                report, item["order_id"])
             aux = extaer_playlist_id(report, max_bonification["playlist_id"])
             nueva_report = nueva_report + aux
 
-    
     # for item in nueva_report:
-        
+
     #     print(item)
     return(nueva_report)
+
 
 def extaer_playlist_id(report, playlist_id):
     aux = []
@@ -281,7 +619,7 @@ def extaer_playlist_id(report, playlist_id):
             aux.append(item)
 
     return(aux)
-        
+
 
 def hallar_bonificacion_max(report, order_id):
     aux_max = 0
@@ -292,85 +630,82 @@ def hallar_bonificacion_max(report, order_id):
 
     for item in report:
         if item["order_id"] == order_id:
-            if  item["time_bonification"] >= aux_max["time_bonification"]:
+            if item["time_bonification"] >= aux_max["time_bonification"]:
                 aux_max = item
-    
-    
+
     return(aux_max)
 # ==================================================================
 # prueba para determinar fechas de inicio y final por cada lista creada
-def determinar_fechas(lista,id, start_date_n, end_date_n):
-    aux_list = []
-    dias = end_date_n - start_date_n
-    dias = dias.days 
-
-    for item in lista:
-        if item["id"] == id:
-            aux_list.append(item)
-    print("---------")
-    print(start_date_n)
-    print(end_date_n)
-    print('---------')
-
-    oficial = aux_list[0]
-
-    inicio = start_date_n
-    dia = start_date_n
-    lol = aux_list[0]
-    final = aux_list[len(aux_list)-1]["create_date"]
-    aux_final = 0 #datetime.datetime.strptime('', "%Y-%m-%d").date()
-    lista_final = []
-    if str(aux_list[0]["create_date"]) == '0001-01-01':
-        # print('no tiene registro de video ni de pauta')
-        pass
-    for item in aux_list:
-        if inicio > item['create_date']:
-            # aux_final = item['create_date']
-            pass
-        else:
-            if item['create_date'] > end_date_n:
-                # aux_final = item['create_date']
-                pass
-            else:
-                day_play = item['create_date'] - inicio
-                print(type(day_play))
-                print(day_play)
-                aux_final = item['create_date']
-                print('llego?')
-                inicio = item['create_date']
-                # item['start_date_pauta'] = inicio 
-    
-    if final > end_date_n:
-        # colocar un return
-        if aux_list[len(aux_list)-2]["create_date"]:
-            day_play =  end_date_n - aux_list[len(aux_list)-2]["create_date"]
-            print('lol')
-            print(type(day_play))
-            print(day_play)
-        
-    else:
-        day_play =  aux_final - end_date_n 
-        print(type(day_play))
-        print(day_play)
 
 
-    pass
+# def determinar_fechas(lista, id, start_date_n, end_date_n):
+#     aux_list = []
+#     dias = end_date_n - start_date_n
+#     dias = dias.days
+
+#     for item in lista:
+#         if item["id"] == id:
+#             aux_list.append(item)
+#     # print("---------")
+#     # print(start_date_n)
+#     # print(end_date_n)
+#     # print('---------')
+
+#     oficial = aux_list[0]
+
+#     inicio = start_date_n
+#     dia = start_date_n
+#     lol = aux_list[0]
+#     final = aux_list[len(aux_list)-1]["create_date"]
+#     aux_final = 0  # datetime.datetime.strptime('', "%Y-%m-%d").date()
+#     lista_final = []
+#     if str(aux_list[0]["create_date"]) == '0001-01-01':
+#         # print('no tiene registro de video ni de pauta')
+#         pass
+#     for item in aux_list:
+#         if inicio > item['create_date']:
+#             # aux_final = item['create_date']
+#             pass
+#         else:
+#             if item['create_date'] > end_date_n:
+#                 # aux_final = item['create_date']
+#                 pass
+#             else:
+#                 day_play = item['create_date'] - inicio
+#                 # print(type(day_play))
+#                 # print(day_play)
+#                 aux_final = item['create_date']
+#                 # print('llego?')
+#                 inicio = item['create_date']
+#                 # item['start_date_pauta'] = inicio
+
+#     if final > end_date_n:
+#         # colocar un return
+#         if aux_list[len(aux_list)-2]["create_date"]:
+#             day_play = end_date_n - aux_list[len(aux_list)-2]["create_date"]
+#             # print('lol')
+#             # print(type(day_play))
+#             # print(day_play)
+
+#     else:
+#         day_play = aux_final - end_date_n
+#         # print(type(day_play))
+#         # print(day_play)
+
+#     pass
+
 
 def rellenar_fechas(lista, id, start_date_n, end_date_n):
-    
+
     aux_lista = []
-    
+
     dias = end_date_n - start_date_n
     dias = dias.days
-    
+
     for item in lista:
         if item["id"] == id:
             aux_lista.append(item)
 
-
-    
-    
-    
     oficial = aux_lista[0]
 
     inicio = start_date_n
@@ -386,15 +721,15 @@ def rellenar_fechas(lista, id, start_date_n, end_date_n):
 
         for k in aux_lista:
             aux = 0
-            diferencia =  k["create_date"] - inicio 
+            diferencia = k["create_date"] - inicio
             inicio = k["create_date"]
             # print(diferencia.days)
 
             if diferencia.days == 0:
                 aux = 0
             if diferencia.days > 1:
-                
-                aux = diferencia.days 
+
+                aux = diferencia.days
             if diferencia.days == 1:
                 aux = 1
 
@@ -429,14 +764,12 @@ def rellenar_fechas(lista, id, start_date_n, end_date_n):
                 a["time_bonification"] = k["time_bonification"]
                 lista_final.append(a)
 
-                
             lol = k
 
         if not(final == end_date_n):
             diferencia = end_date_n - final
             diferencia = diferencia.days + 1
-            
-            
+
             for num in range(diferencia):
                 # obj[str(dia)] = aux_lista[len(aux_lista) - 1]
                 lolo = aux_lista[len(aux_lista) - 1]
@@ -457,7 +790,7 @@ def rellenar_fechas(lista, id, start_date_n, end_date_n):
     # for w in obj:
     #     # print(type(w))
     #     print(str(obj[w]["create_date"]) + ' -> ' +str(w))
-    #     # print(w) 
+    #     # print(w)
     # print("================================================")
     # lista_final.append(obj)
     oficial["fechas"] = lista_final
