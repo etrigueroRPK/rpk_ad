@@ -496,6 +496,8 @@ def report_client_xls(request, id, month, order_id):
 
         video_aux = []
         new_report_day = []
+        totales = []
+        aux_date = []
         for item in report_day:
 
             if not item.video.id in video_aux:
@@ -521,20 +523,23 @@ def report_client_xls(request, id, month, order_id):
         ws['B7'] = 'PRODUCTO: '
         ws['C7'] = str(order.product)
         ws['B8'] = 'FUNCIONAMIENTO: '
-        ws['C8'] = str(order.product.start_time) + ' a ' + str(order.product.end_time) + '. ' + str(order.product.time_operating_valid()) + 'fun'
+        ws['C8'] = str(order.product.start_time) + ' a ' + str(order.product.end_time) + '. ' + str(order.product.time_operating_valid()) + ' fun'
         row = 10
         column = 5
         for item in new_report_day:
-            aux_num = len(item)
+            aux_num = 31
             ws.merge_cells(start_row=int(row-1), start_column=int(column),
                            end_row=int(row-1), end_column=int(aux_num+column-1))
             for x in item:
                 ws.cell(row=row-1, column=5).value = x.date_now.strftime('%B')
                 spot_info = Playlist_spot_detail.objects.filter(
                     video_id=x.video.id, playlist=x.playlist.id).get()
-                client_info = Playlist_client_detail.objects.filter(
+                client_info = Playlist_client_detail.objects.filter( 
                     playlist=x.playlist.id, order_id=x.order.id).get()
                 # print(client_info)
+                column = 4
+                day = x.date_now.day
+                column = column + day
                 ws.cell(row=row, column=column).value = x.date_now.day
                 ws.cell(row=row, column=2).value = 'video: '
                 ws.cell(row=row, column=3).value = str(x.video.name)
@@ -546,69 +551,43 @@ def report_client_xls(request, id, month, order_id):
                 ws.cell(row=(row+2), column=4).value = 'Total (s): '
 
                 ws.cell(row=(row+2), column=column).value = int(float(client_info.pauta_loop) * float(spot_info.repeat_count) * float(x.video.duration_seconds()))
+                
+                
+
+                objeto = {}
+                objeto['date_now'] = x.date_now
+                objeto['client_info'] = client_info
+                if not x.date_now in aux_date:
+                    aux_date.append(x.date_now)
+                    totales.append(objeto)
+
+                
+                
                 # row = row + 1
-                column = column + 1
+                # column = column + 1
                 # print(type(x.date_now))
                 # print(x.date_now)
 
             row = row + 5
             column = 5
-        # ws['B7'] = '#'
-        # ws['C7'] = 'Cliente, spot'
-        # ws['D7'] = 'Duración'
-        # ws['E7'] = 'Loop'
-        # ws['F7'] = 'tiempo total'
-        # ws['G7'] = 'porcentaje de spot'
 
-        # cont = 10
-        # cl = 1
-        # for item in playlist_spot:
-        #     cli = str(item.video.contract.client) + ', ' + str(item.video.name)
-        #     ws.cell(row=cont, column=2).value = cl
-        #     ws.cell(row=cont, column=3).value = cli
-        #     ws.cell(row=cont, column=4).value = item.video.duration_all()
-        #     ws.cell(row=cont, column=5).value = item.repeat_count
-        #     ws.cell(row=cont, column=6).value = item.time_total
-        #     ws.cell(row=cont, column=7).value = item.porcentage
-
-        #     cont = cont + 1
-        #     cl = cl + 1
-        # cont = cont + 1
-        # ws.cell(row=cont, column=2).value = '#'
-        # ws.cell(row=cont, column=3).value = 'Cliente'
-        # ws.cell(row=cont, column=4).value = 'tiempo total'
-        # ws.cell(row=cont, column=5).value = 'loop de pauta'
-        # ws.cell(row=cont, column=6).value = 'tiempo (s)'
-        # ws.cell(row=cont, column=7).value = 'tiempo contratado'
-        # ws.cell(row=cont, column=8).value = 'tiempo de bonificación'
-        # cont = cont + 1
-
-        # cs = 1
-        # for item in playlist_client:
-        #     cli = str(item.order.contract.client.name)
-        #     ws.cell(row=cont, column=2).value = cs
-        #     ws.cell(row=cont, column=3).value = cli
-        #     ws.cell(row=cont, column=4).value = item.time_total
-        #     ws.cell(row=cont, column=5).value = item.pauta_loop
-        #     ws.cell(row=cont, column=6).value = item.second_total
-        #     ws.cell(row=cont, column=7).value = item.time_contract
-        #     ws.cell(row=cont, column=8).value = item.time_bonification
-
-        #     cont = cont + 1
-        #     cs = cs + 1
-        # cont = cont + 1
-        # ws.cell(row=cont, column=2).value = '#'
-        # ws.cell(row=cont, column=3).value = 'Video'
-        # cont = cont + 1
-
-        # csl = 1
-        # for item in playlist_document:
-        #     cli = str(item.video.contract.client) +', '+ str(item.video)
-        #     ws.cell(row=cont, column=2).value = csl
-        #     ws.cell(row=cont, column=3).value = cli
-
-        #     cont = cont + 1
-        #     csl = csl + 1
+    aux_num = 31
+    ws.merge_cells(start_row=int(row), start_column=int(column), end_row=int(row), end_column=int(aux_num+column-1))
+    for item in totales:
+        # print(item)
+        column = 4
+        day = item['date_now'].day
+        column = column + day
+        client_info_2 = item['client_info']
+        ws.cell(row=(row+1), column=4).value = 'Pases dia: '
+        ws.cell(row=(row+1), column=column).value = client_info_2.pauta_loop
+        ws.cell(row=(row+2), column=4).value = 'Total (s): '
+        ws.cell(row=(row+2), column=column).value = client_info_2.second_total
+        ws.cell(row=(row+3), column=4).value = 'Contratado (s): '
+        ws.cell(row=(row+3), column=column).value = client_info_2.time_contract
+        ws.cell(row=(row+4), column=4).value = 'Bonificación (s): '
+        ws.cell(row=(row+4), column=column).value = client_info_2.time_bonification
+        
     for column_cells in ws.columns:
         new_column_length = max(len(as_text(cell.value)) for cell in column_cells)
         new_column_letter = (openpyxl.utils.get_column_letter(column_cells[0].column))
@@ -627,7 +606,7 @@ def report_client_xls(request, id, month, order_id):
     wb.save(response)
     return response
 
-    # return HttpResponse('OK')
+   
 # ======================================================================
 def as_text(value):
     if value is None:
@@ -826,20 +805,6 @@ def rellenar_fechas(lista, id, start_date_n, end_date_n):
                 dia = dia + timedelta(days=1)
                 lista_final.append(a)
 
-    # print("================================================")
-    # for w in obj:
-    #     # print(type(w))
-    #     print(str(obj[w]["create_date"]) + ' -> ' +str(w))
-    #     # print(w)
-    # print("================================================")
-    # lista_final.append(obj)
     oficial["fechas"] = lista_final
-    # print("oficia-despues")
-    # print(oficial)
-    # print(lista_final)
-    # print(oficial)
-    # print("====dia====")
-    # dia =  datetime.datetime.strptime('2020-02-29', "%Y-%m-%d").date()
-    # print(dia + timedelta(days=1))
-    # print("====dia=====")
+  
     return oficial
