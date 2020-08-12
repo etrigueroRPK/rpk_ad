@@ -294,12 +294,29 @@ def report_client_generate(request, id):
                 playlist_spot_detail = Playlist_spot_detail.objects.filter(
                     playlist=j.playlist.id, order=order_id)
                 for k in playlist_spot_detail:
-                    date_start_report_day = Report_day.objects.filter(order_id=order_id, video_id=k.video.id, contract_id=contract.id, playlist_id=j.playlist.id).order_by('date_now').first()
-                    date_end_report_day = Report_day.objects.filter(order_id=order_id, video_id=k.video.id, contract_id=contract.id, playlist_id=j.playlist.id).order_by('date_now').last()
+                    date_start_report_day = Report_day.objects.filter(
+                        order_id=order_id, video_id=k.video.id, contract_id=contract.id, playlist_id=j.playlist.id).order_by('date_now').first()
+
+                    date_end_report_day = Report_day.objects.filter(
+                        order_id=order_id, video_id=k.video.id, contract_id=contract.id, playlist_id=j.playlist.id).order_by('date_now').last()
                     
-                    count_report_day = Report_day.objects.filter(order_id=order_id, video_id=k.video.id, contract_id=contract.id, playlist_id=j.playlist.id).count()
+                    aux1 = ''
+                    aux2 = ''
+
+                    if not date_start_report_day:
+                        aux1 = 'sin registros'
+                    else:
+                        aux1 = date_start_report_day.date_now
+                    if not date_end_report_day:
+                        aux2 = 'sin registros'
+                    else:
+                        aux2 = date_end_report_day.date_now
+                        
+
+                    count_report_day = Report_day.objects.filter(
+                        order_id=order_id, video_id=k.video.id, contract_id=contract.id, playlist_id=j.playlist.id).count()
                     # print("contador: ")
-                    
+
                     # print(count_report_day)
                     # print(k.video.name)
                     # se extrae informacion por videos de todos los contratos
@@ -324,8 +341,9 @@ def report_client_generate(request, id):
                     item["time_bonification"] = j.time_bonification
                     item["color"] = color
                     item["state"] = count_report_day
-                    item["start_date_report"] = date_start_report_day.date_now
-                    item["end_date_report"] = date_end_report_day.date_now
+
+                    item["start_date_report"] = aux1
+                    item["end_date_report"] = aux2
                     # print(j.playlist.create_date)
                     report.append(item)
                 if color == 1:
