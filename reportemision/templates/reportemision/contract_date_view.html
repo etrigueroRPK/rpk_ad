@@ -48,7 +48,7 @@
                                 {% for item in order %}
                                 <li class="m-2">{{item.product}}</li>
                                
-                                {% if obj %}
+                                
                                 
                                 <div class="card-columns">
                                     
@@ -64,22 +64,9 @@
                                             </div>
                                         </div>
                                     </a>
-                                    {% else %}
-                                    <div class="text-m font-weight-bold   m-1">
-                                        No se encontraron registros
-                                    </div>
-                                    {% endif%}
+                                   {% endif %}
                                     {% endfor %}
                                 </div>
-
-                                {% else %}
-                                <h5> Sin registros encontrados</h5>
-                                <p>No se encontraron registros para el contrato, debe crear listas de reproduccion y
-                                    crear
-                                    reportes por cada lista generada para
-                                    encontrar registros que puedan ser validados para el reporte de emision.</p>
-                                {% endif %}
-
 
                                 {% endfor %}
                             </ul>

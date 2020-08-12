@@ -64,9 +64,9 @@
                                 <thead>
                                     <tr>
                                         <!-- <th scope="col-sm-1">#</th> -->
-                                        <td>Check</td>
+                                        <td colspan="2">Check</td>
                                         <th>Producto</th>
-                                        <th>Fecha de aparición</th>
+                                        <th>Fecha de creación</th>
                                         <th>incio pauta</th>
                                         <th>final pauta</th>
                                         <th>video</th>
@@ -85,14 +85,22 @@
                                         {% if item.color == 0 %} class="table-success" {% endif %}
                                         {% if item.color == 3 %} class="table-danger" {% endif %}>
                                         <!-- <td>1</td> -->
-
+                                        <td>
+                                            <a type="button" class="btn btn-primary btn-sm" href="{% url 'reportemision:report_client_day_view' item.order_id item.video_id item.playlist_id %}">
+                                                <i class="fas fa-spell-check"></i>
+                                            </a>
+                                        </td>
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-success btn-sm"
+                                            <button  type="button" class="btn btn-success btn-sm"
                                                 onclick="send_report_day('{{item.order_id}}|{{item.video_id}}|{{item.playlist_id}}|{{item.contract_id}}', '{{item.order_id}}{{item.video_id}}{{item.playlist_id}}')"
-                                                {% if item.state == 0 %}disabled {% endif %}>
+                                                {% if item.state == 'None' %} disabled {% endif %}>
                                                 <i class="font-15 far fa-save"></i>
                                             </button>
+                                            <p data-toggle="tooltip" title="{{item.start_date_report}} --/-- {{item.end_date_report}} " class="m-0 p-0">
+                                                {{item.state}}
+                                            </p> 
                                         </td>
+                                       
                                         <td>{{item.location}}</td>
                                         <td>{{item.create_date|date:'d/m/Y'}}</td>
                                         <td><input id="{{item.order_id}}{{item.video_id}}{{item.playlist_id}}start_date" name="inicio" type="date" value="{{item.create_date|date:'Y-m-d'}}">
@@ -105,8 +113,8 @@
                                         <td>{{item.second_total}}</td>
                                         <td>{{item.time_contract}}</td>
                                         <td>{{item.time_bonification}}</td>
-                                        <input type="text" name="datos"
-                                            value="{{item.order_id}}|{{item.video_id}}|{{item.playlist_id}}">
+                                        <!-- <input type="text" name="datos"
+                                            value="{{item.order_id}}|{{item.video_id}}|{{item.playlist_id}}"> -->
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -178,6 +186,9 @@
                 //         '<label class="form-check-label">' + aux.order[i].contract + ', pases: ' + aux.order[i].pass + ', %: ' + aux.order[i].porcentage + ', ' + aux.order[i].video_name + ' , duracion: ' + aux.order[i].video_duration + ' </label></div></div>';
                 //     $('#content_product').append(check);
                 // }
+                if (response == 'OK') {
+                    mensaje("Se registraron las fechas", "green")
+                }
 
 
 

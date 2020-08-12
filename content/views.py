@@ -174,6 +174,32 @@ def playlist_view(request, id):
     return render(request, template_name, contexto)
 
 
+
+def playlist_edit_date(request):
+    
+    id = request.POST.get('id')
+    date_new = request.POST.get('date_new')
+
+    print(request.POST)
+    playlist = Playlist.objects.get(pk=id)
+
+    if not playlist:
+        return HttpResponse('false')
+
+    
+
+    if request.method == 'POST':
+        date_new = datetime.datetime.strptime(date_new, "%Y-%m-%d").date()
+        playlist.create_date = date_new
+        playlist.save()
+        # mensaje par que la vista lo muestre sin coloca en comentarios pues al momento de los esta haciendo con ajax
+        # messages.success(request, 'Se inactivo correctamente')
+
+        
+        return HttpResponse('ok')
+
+    return HttpResponse('false')
+
 def playlist_generator(request):
     contexto = {}
     template_name = 'content/playlist_form.html'

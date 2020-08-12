@@ -14,8 +14,10 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                 <div class="dropdown-header">Acciones:</div>
-                <a class="dropdown-item" href="{% url 'content:playlist_generator' %}">Generar playlist (auntomatico)</a>
-                <a class="dropdown-item" href="{% url 'content:playlist_generator_hand' %}">Generar playlist (manual)</a>
+                <a class="dropdown-item" href="{% url 'content:playlist_generator' %}">Generar playlist
+                    (auntomatico)</a>
+                <a class="dropdown-item" href="{% url 'content:playlist_generator_hand' %}">Generar playlist
+                    (manual)</a>
 
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Something else here</a>
@@ -48,7 +50,7 @@
                     {% for item in obj %}
                     <tr>
                         <td>{{ item.id }}</td>
-                        <td>{{ item.create_date }}</td>
+                        <td id="{{item.id}}">{{ item.create_date }}</td>
                         <td>{{ item.product}}</td>
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
                         <td>{{ item.created_at}}</td>
@@ -66,8 +68,11 @@
                                 class="btn btn-sm btn-outline-warning btn-circle" role="button" ><i
                                     class="far fa-edit"></i></a> -->
                             <button class="btn btn-sm btn-outline-danger btn-circle"
-                                onclick="return abrir_modal('{% url 'content:playlist_delete' item.id %}')" ><i
-                                    class="far fa-trash-alt" ></i></button>
+                                onclick="return abrir_modal('{% url 'content:playlist_delete' item.id %}')"><i
+                                    class="far fa-trash-alt"></i></button>
+
+                            <button class="btn btn-sm btn-outline-warning btn-circle"
+                                onclick="add_input_date('{{item.id}}')"><i class="far fa-edit"></i></button>
 
                         </td>
                     </tr>
@@ -88,6 +93,52 @@
     $(document).ready(function () {
         $('.table').DataTable();
     })
+    function add_input_date(id) {
+
+        html_text = '<input type="date" id=date' + id + '> </input> <button onclick="edit_date(' + id + ')" class="btn btn-sm btn-outline-success btn-circle" ><i class="far fa-save"></i> </button>  '
+        $('#' + id).append(html_text)
+    }
+    function edit_date(id) {
+
+
+        date_new = $('#date' + id).val()
+        // alert(id + ' - ' + date)
+        if(!date_new){
+            mensaje('La fecha no puede estar vacia','red')
+            return
+        } 
+        
+        var data = {'id':id, 'date_new':date_new};
+
+        var token = '{{ csrf_token }}';
+
+        // console.log(data);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/content/playlist/edit_date",
+            data: data,
+            
+            success: function (response) {
+                console.log(response)
+                if (response == 'ok') {
+                    window.location.href = "/content/playlist/";
+                }
+                if (response == 'false'){
+                    mensaje('hubo un error!!!', 'red')
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+
+    }
+
+
 </script>
 
 

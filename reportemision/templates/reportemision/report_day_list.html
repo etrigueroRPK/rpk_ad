@@ -1,0 +1,83 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<!-- Dropdown Card Example -->
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary text-center">Listado de videos</h6>
+        
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+       
+        {% if not obj %}
+        <div class="alert alert-info">No hay registros</div>
+
+        {% else %}
+        <div class="table-responsive">
+
+            <table class="table table-striped table-hover table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Video</th>
+                        <th>Duración</th>
+                        <th>Fecha Registro</th>
+
+                        <th class="all">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in obj %}
+
+
+                    <tr>
+                        <td>{{ item.id }}</td>
+
+                        <td>{{ item.video.name }}</td>
+                        <td>{{ item.video.duration_all}}</td>
+                        <td>{{ item.date_now|date:"d/m/Y" }}</td>
+
+
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger btn-circle"
+                                onclick="return abrir_modal('{% url 'reportemision:report_day_delete' item.id %}')"><i
+                                    class="far fa-trash-alt"></i></button>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+        {% endif %}
+    </div>
+    <!-- <div class="card-footer text-center">
+        <a class="btn btn-primary " href="{{request.META.HTTP_REFERER}}">
+            <i class="fas fa-undo-alt"></i><span class="m-1"> Volver</span>
+        </a>
+    </div> -->
+</div>
+
+{% endblock %}
+
+
+{% block js_page %}
+<script>
+    $(document).ready(function () {
+        $('.table').DataTable({
+        "paging":   false,
+        "ordering": true,
+        "info":     true
+    });
+    })
+</script>
+
+
+{% endblock %}
+
+
+

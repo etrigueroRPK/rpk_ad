@@ -2,12 +2,13 @@ from django.urls import path
 from .views import VideoView, VideoNew, VideoEdit, VideoForm, video_delete, video_disabled, \
     playlist_list, playlist_generator, playlist_order, playlist_new, playlist_view, playlist_delete, \
     playlist_order_2, \
-    playlist_generator2, playlist_reorder
+    playlist_generator2, playlist_reorder, playlist_edit_date
 
 urlpatterns = [
     # vistas para videos
     path('videos/', VideoView.as_view(), name='videos_list'),
     path('videos/new', VideoNew.as_view(), name='video_new'),
+
     path('videos/edit/<int:pk>',
          VideoEdit.as_view(), name='video_edit'),
     path('videos/disabled/<int:id>', video_disabled, name='video_disabled'),
@@ -26,7 +27,10 @@ urlpatterns = [
 
     path('playlist/generator/order/', playlist_order, name='playlist_order'),
     path('playlist/new', playlist_new, name='playlist_new'),
+
     path('playlist/view/<int:id>', playlist_view, name='playlist_view'),
+    # playlist_edit_date manejado por ajax
+    path('playlist/edit_date', playlist_edit_date, name='playlist_edit_date'),
 
     
     path('playlist/generator/order_2/', playlist_order_2, name='playlist_order_2'),

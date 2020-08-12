@@ -294,6 +294,13 @@ def report_client_generate(request, id):
                 playlist_spot_detail = Playlist_spot_detail.objects.filter(
                     playlist=j.playlist.id, order=order_id)
                 for k in playlist_spot_detail:
+                    date_start_report_day = Report_day.objects.filter(order_id=order_id, video_id=k.video.id, contract_id=contract.id, playlist_id=j.playlist.id).order_by('date_now').first()
+                    date_end_report_day = Report_day.objects.filter(order_id=order_id, video_id=k.video.id, contract_id=contract.id, playlist_id=j.playlist.id).order_by('date_now').last()
+                    
+                    count_report_day = Report_day.objects.filter(order_id=order_id, video_id=k.video.id, contract_id=contract.id, playlist_id=j.playlist.id).count()
+                    # print("contador: ")
+                    
+                    # print(count_report_day)
                     # print(k.video.name)
                     # se extrae informacion por videos de todos los contratos
                     item = {}
@@ -316,7 +323,9 @@ def report_client_generate(request, id):
                     item["time_contract"] = j.time_contract
                     item["time_bonification"] = j.time_bonification
                     item["color"] = color
-                    item["state"] = 1
+                    item["state"] = count_report_day
+                    item["start_date_report"] = date_start_report_day.date_now
+                    item["end_date_report"] = date_end_report_day.date_now
                     # print(j.playlist.create_date)
                     report.append(item)
                 if color == 1:
@@ -335,7 +344,7 @@ def report_client_generate(request, id):
             item["start_date"] = contract.start_date
             item["end_date"] = contract.end_date
             item["playlist_id"] = 0
-            item["state"] = 0
+            item["state"] = 'None'
             item["location"] = i.product
             item["create_date"] = datetime.datetime.strptime(
                 '0001-01-01', "%Y-%m-%d").date()
@@ -358,9 +367,37 @@ def report_client_generate(request, id):
 
     return render(request, template_name, contexto)
 
+# ver todas las instalancias de report_day
+def report_client_day_view(request, order_id, video_id, playlist_id): 
+    template_name = 'reportemision/report_day_list.html'
+    if request.method == 'GET':
+        report_day = Report_day.objects.filter(order_id=order_id, video_id=video_id, playlist_id=playlist_id).order_by('date_now').all()
+
+        print(order_id)
+        print(video_id)
+        print(playlist_id)
+        contexto = {'obj':report_day}
+
+
+    return render(request, template_name, contexto)
+
+def report_day_delete(request, id):
+
+    if request.method == 'GET':
+        template_name = 'reportemision/report_day_delete.html'
+        report_day = Report_day.objects.get(pk=id)
+        contexto = {'obj':report_day}
+
+    if request.method == 'POST':
+        
+        report_day = Report_day.objects.get(pk=id)
+        report_day.delete()
+        
+        return HttpResponse('OK')
+
+    return render(request,template_name, contexto)
+
 #  utilizado por ajax para guardar las fechas individduales de uso en la base de datos
-
-
 def report_generate_save(request):
     if request.method == 'POST':
         val = request.POST.get('val')
@@ -411,14 +448,17 @@ def report_client_view(request, id):
             date_now = item.date_now
             month = date_now.month
             year = date_now.year
-            aux = str(month) + '-' + str(year)
-            objeto['month_report'] = aux
+            aux = str(item.order.id) + '-'+str(month) + '-' + str(year)
+            report_month = str(month) + '-' + str(year)
+
+            objeto['month_report'] = report_month
             objeto['order'] = item.order
             if not aux in month_existing:
                 month_existing.append(aux)
                 aux2.append(objeto)
 
         # print(month_existing)
+        print(aux2)
         contexto = {'contract': contract, 'obj': aux2, 'order': order}
 
     return render(request, template_name, contexto)
