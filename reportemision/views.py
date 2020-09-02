@@ -15,7 +15,7 @@ import calendar
 
 from openpyxl import Workbook
 import openpyxl
-import locale
+import locale 
 
 # from django.utils import simplejson
 
@@ -826,3 +826,8 @@ def rellenar_fechas(lista, id, start_date_n, end_date_n):
     oficial["fechas"] = lista_final
   
     return oficial
+
+
+
+
+# para 

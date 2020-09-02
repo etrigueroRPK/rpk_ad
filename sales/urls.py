@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import  ContractList, ClientView, ClientNew, ClientEdit, client_delete, \
     ContractList,contract_view,  contract_create, contract_edit, contract_delete, contract_list, contract_disabled, \
-    order_delete, order_new, order_update
+    order_delete, order_new, order_update, \
+    url_admin, url_new, url_id, url_delete
 
 urlpatterns = [
     # vistas para ventas
@@ -25,6 +26,15 @@ urlpatterns = [
     path('order/new',order_new, name='order_new'),
     path('order/delete/<int:id>',order_delete, name='order_delete'),
     path('order/update/<int:id>',order_update, name='order_update'),
+
+    # urls para crear url ubicaciones de google drive en la cuenta de repositorio 
+
+    path('url_admin/<int:id>',url_admin, name='url_admin'),
+    # ajax
+    path('url_new/<int:id>',url_new, name='url_new'),
+    path('url_id/view/<int:id>',url_id, name='url_id'),
+    path('url_delete/<int:id>',url_delete, name='url_delete'),
+
 
     
 ]

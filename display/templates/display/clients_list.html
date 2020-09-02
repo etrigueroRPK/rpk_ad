@@ -26,6 +26,7 @@
                         <th>Auspicio</th>
                         <th>F. inicio</th>
                         <th>F. final</th>
+                        <th>Respaldo Foto y/o video</th>
 
                     </tr>
                 </thead>
@@ -39,6 +40,16 @@
                         <td>{{ item.auspice|yesno:"Si,No"}}</td>
                         <td>{{ item.start_date|date:"d/m/Y" }}</td>
                         <td>{{ item.end_date|date:"d/m/Y" }}</td>
+                        <td class="nav nav-tabs"> <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-photo-video"></i></a>
+                            <div class="dropdown-menu">
+                                {% for item2 in respaldo %}
+                                {% if item.id == item2.contract.id%}
+                                    <a class="dropdown-item" href="{{item2.url}}" target="blank" >{{item2.month_year}}</a>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                          </li></td>
                         
                     </tr>
                     {% endfor %}

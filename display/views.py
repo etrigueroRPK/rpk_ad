@@ -20,7 +20,7 @@ import json
 from bases.views import SinPrivilegios
 
 from component.models import Product
-from sales.models import Contract, Order
+from sales.models import Contract, Order, Respaldo
 from content.models import Video, Playlist
 
 
@@ -98,12 +98,12 @@ def clients_list(request):
     template_name = 'display/clients_list.html'
     contexto = {}
     contract = Contract.objects.filter(state=True).all()
-
+    respaldo = Respaldo.objects.all()
     if not contract:
         contexto = {'obj':''}
 
     if request.method == 'GET':
-        contexto = {'obj':contract}
+        contexto = {'obj':contract, 'respaldo':respaldo}
 
     
 

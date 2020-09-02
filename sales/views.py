@@ -11,7 +11,7 @@ import json
 
 # from django.utils import simplejson
 
-from .models import Client, Contract, Order
+from .models import Client, Contract, Order, Respaldo
 
 from component.models import Product
 from .forms import ClientForm, ContractForm
@@ -450,3 +450,108 @@ def calculo_pases_porcentaje(time_operating, pases=None, porcentaje=None, time_s
         pases = tiempo_contratado / time_spot
         # print(pases)
         return pases
+
+
+
+# administrando url creado 
+
+def url_admin(request, id):
+    template_name = ''
+    contexto = {}
+
+    if request.method == 'GET':
+        contract = Contract.objects.get(pk=id)
+        order = Order.objects.filter(contract_id=id).all()
+        urls = Respaldo.objects.filter(contract_id=contract.id).all()
+
+        print(urls)
+
+        template_name = 'sales/url_admin.html'
+        contexto = {'contract':contract, 'obj':urls, 'order':order}
+
+    return render(request, template_name, contexto)
+
+def url_new(request, id):
+    "utilizado por AJAX"
+
+    if request.method == 'POST':
+
+        month_year = request.POST.get('month_year')
+        description = request.POST.get('description')
+        url = request.POST.get('url')
+        
+        if request.POST.get('estado') == 'on':
+            state = True
+        else:
+            state = False
+
+        if request.POST.get('respaldo'):
+            id_respaldo = request.POST.get('respaldo')
+            respaldo = Respaldo.objects.filter(id=id_respaldo).first()
+            respaldo.month_year = month_year
+            respaldo.description = description
+            respaldo.url = url
+            respaldo.state = state
+            respaldo.contract_id = id
+            respaldo.user_updated = request.user.id
+            respaldo.save()
+
+        else:
+            rspaldo = Respaldo
+            rspaldo = Respaldo(
+                month_year=month_year,
+                description=description,
+                url=url,
+                state=state,
+                contract_id=id,
+                user_created=request.user
+
+            )
+            rspaldo.save()
+
+        return HttpResponse('ok')
+
+    # return render(request, template_name, contexto)
+
+
+def url_id(request, id):
+    contexto = {}
+    if request.method == 'GET':
+        respaldo = Respaldo.objects.get(pk=id)
+        # print(respaldo.name)
+        respaldo_json = []
+        # for item in sub_product:
+        objeto_order = {}
+        objeto_order["id"] = respaldo.id
+        objeto_order["month_year"] = respaldo.month_year
+        objeto_order["description"] = respaldo.description
+        objeto_order["url"] = respaldo.url
+
+        # objeto_order["img"] = sub_product.img
+        objeto_order["state"] = respaldo.state
+        # TODO: ver la forma de enviar el nombre de la inagen
+
+        respaldo_json.append(objeto_order)
+        contexto = {'obj': 'OK', 'respaldo': respaldo_json}
+        return HttpResponse(json.dumps(contexto), content_type=json)
+
+
+def url_delete(request, id):
+    template_name = 'sales/url_delete.html'
+    contexto = {}
+    res = Respaldo.objects.get(pk=id)
+
+    if not res:
+        return HttpResponse('Url not ' + str(id))
+
+    if request.method == 'GET':
+        contexto = {'obj': res}
+
+    if request.method == 'POST':
+        # res.state = False
+        # res.user_updated = request.user.id
+        res.delete()
+        contexto = {'obj': 'OK'}
+        return HttpResponse('Url Borrada')
+
+    return render(request, template_name, contexto)

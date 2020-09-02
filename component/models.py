@@ -86,7 +86,7 @@ class Electronic(ClassModel):
     description = models.CharField(max_length=100, blank=True, null=True)
     sub_product = models.ForeignKey(Subproduct, on_delete=models.CASCADE)
 
-
+# no utilizado 
 class Electronic_detaill(ClassModel):
 
     name = models.CharField(max_length=50, unique=False, blank=True, null=True)

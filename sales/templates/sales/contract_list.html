@@ -77,7 +77,10 @@
                             <button class="btn btn-sm btn-outline-danger btn-circle"
                                 onclick="return abrir_modal('{% url 'sales:contract_delete' item.id %}')"><i
                                     class="far fa-trash-alt"></i></button>
-
+                            <a href="{% url 'sales:url_admin' item.id %}"
+                                class="btn btn-sm btn-outline-secondary btn-circle" role="button">
+                                <i class="fas fa-photo-video"></i>
+                            </a>
                         </td>
 
                     </tr>

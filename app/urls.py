@@ -33,6 +33,8 @@ urlpatterns = [
     # rutas para mostrar vistas de reportes rapidos como clinetes por locaion spots por clientes
     path('maintenance/', include(('maintenance.urls', 'maintenance'), namespace='maintenance')),
 
+    # rutas para mostrar todos los contratos y sus locaciones con sus respectivos spots 
+    # path('allviewcontract/', include(('allviewcontract.urls', 'allviewcontract'), namespace='allviewcontract')),
 
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

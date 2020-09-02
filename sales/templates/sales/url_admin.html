@@ -1,0 +1,262 @@
+{% extends 'base/base.html' %}
+
+{% block page_content %}
+
+<div class="row ">
+    <div class="col-xl-6 col-md-6 mb-6">
+        <div class="card border-left-primary shadow h-100 py-2 ml-3">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Datos de Contrato:</div>
+                        <div class="dropdown-divider"></div>
+                        <!--  -->
+                        <input type="hidden" name="id_contract" id="id_contract" value="{{contract.id}}">
+                        <div class="row ml-3">
+                            <p>Cliente: <strong>{{contract.client}}
+                                </strong></p> <br>
+                        </div>
+                        <div class="row ml-3">
+                            <p>Descripción: <strong> {{contract.description}} </strong></p>
+                        </div>
+                        <div class="row ml-3">
+                            <p>Fecha inicio: <strong class="mr-5">{{contract.start_date|date:'d/m/Y'}}</strong> Fecha
+                                final:
+                                <strong>{{contract.end_date|date:'d/m/Y'}}</strong> </p>
+                        </div>
+
+                        <div class="row ml-3">
+                            <p>Estado: <strong>{{contract.state|yesno:'Activo, Desactivo'}}</strong> </p>
+                        </div>
+                        <div class="row ml-3">
+                            <div>
+                                <p> Lista de productos contratados:</p>
+                            </div>
+
+
+                        </div>
+                        <div class="row ml-3">
+                            <ul>
+                                {% for item in order %}
+                                <li>{{item.product}} </li>
+                                {% endfor%}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+
+                        {% if product.img %}
+                        <img src="{{product.img.url}}" class="img-fluid" alt="{{product.img}}">
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-6 mb-6">
+        <div class="card border-left-primary shadow h-100 py-2 mr-3 ">
+            <div class="card-body pb-0 ">
+                <div class="row no-gutters align-items-center ">
+                    <div class="col mr-2 ">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Nuevo url:</div>
+                        <div class="dropdown-divider"></div>
+                        <!--  -->
+                        <form method="POST" class="form-group mb-0" enctype="multipart/form-data" id="formulario"
+                            name="formulario">
+                            {% csrf_token %}
+
+                            <div class="form-group row">
+                                <label for="id_month_year" class="col-sm-2 col-form-label">Mes y Año</label>
+                                <div class="col-sm-10 ">
+                                    <input type="text" name="month_year" maxlength="50" class="form-control" required
+                                        autocomplete="off" id="id_month_year" value="{% if obj %} {{obj.month_year}} {% endif %}">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="id_description" class="col-sm-2 col-form-label">Descripción</label>
+                                <div class="col-sm-10">
+                                    <input type="" name="description" maxlength="100" class="form-control" id="id_description"
+                                        value="{% if obj %} {{obj.description}} {% endif %}" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="id_url" class="col-sm-2 col-form-label">Url</label>
+                                <div class="col-sm-10">
+                                    <input type="" name="url" maxlength="500" class="form-control" id="id_url"
+                                        value="{% if obj %} {{obj.url}} {% endif %}" autocomplete="off">
+                                </div>
+                            </div>
+                            
+
+                            
+                            <div class="form-group row  ">
+                                <div class="col-sm-2">Estado</div>
+                                <div class="col-sm-10">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="estado" class="form-check-input" checked
+                                            {% if obj.state %} checked {% endif %} id="id_state">
+                                        <label class="form-check-label" for="id_state">
+                                            Marcar estado.
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- bandera que determina si es actualizacion de sub producto -->
+                            <input type="hidden" name="respaldo" id="id_respaldo" value="">
+
+
+                            <!--  -->
+
+
+                            <!-- {{form.as_p}} -->
+                            <div class="dropdown-divider"></div>
+                            <div class="form-group row text-center ">
+                                <div class="col-sm-12 ">
+                                    <a href="{% url 'sales:contract_list' %}" class="btn btn-danger "><span
+                                            class="fa fa-undo"> Cancelar</span></a>
+                                    <button type="submit" class="btn btn-success "><span class="fa fa-save "></span>
+                                        Guardar</button>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <!--  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-body">
+    {% if not obj %}
+    <div class="alert alert-info">No hay sub productos asignados </div>
+
+    {% else %}
+    <div class="table-responsive">
+
+        <table class="table table-striped table-hover table-bordered table-sm" data-page-length='25'>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Mes y Año</th>
+                    <th>Descripción</th>
+                    <th>url</th>
+                    <th>Estado</th>
+                    <th class="all">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in obj %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td> {{item.month_year}}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.url}}</td>
+                    <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
+                    <td>
+
+                        
+                        <button class="btn btn-sm btn-outline-warning btn-circle"
+                            onclick="edit_respaldo({{item.id}})"><i class="far fa-edit"></i></button>
+
+                        <button class="btn btn-sm btn-outline-danger btn-circle"
+                            onclick="return abrir_modal('{% url 'sales:url_delete' item.id %}')"><i
+                                class="far fa-trash-alt"></i></button>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+    {% endif %}
+</div>
+
+
+
+
+
+
+{% endblock %}
+{% block js_page %}
+<script>
+    $(document).ready(function () {
+
+
+    })
+
+
+    $("form").submit(function (e) {
+
+        e.preventDefault();
+        var data = new FormData($("#formulario").get(0));
+        var id_contract = $("#id_contract").val();
+        var token = '{{csrf_token}}';
+
+        // console.log(id_product);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/sales/url_new/" + id_contract,
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+
+                if (response == 'ok') {
+                    location.reload();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+
+
+    });
+
+    function edit_respaldo(id) {
+
+        var id_respaldo = id;
+        var token = '{{csrf_token}}';
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "GET",
+            url: "/sales/url_id/view/" + id_respaldo,
+
+            success: function (response) {
+
+                console.log(response.respaldo[0].state)
+                $("#id_respaldo").val(response.respaldo[0].id)
+                $("#id_month_year").val(response.respaldo[0].month_year)
+                $("#id_description").val(response.respaldo[0].description)
+                $("#id_url").val(response.respaldo[0].url)
+               
+
+
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+
+
+
+</script>
+
+
+{% endblock %}

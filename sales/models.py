@@ -14,7 +14,7 @@ class Client(ClassModel):
 
     def __str__(self):
         return '{}'.format(self.name)
-
+# ordenes de pautaa
 class Contract(ClassModel):
     start_date = models.DateField(auto_now=False, null=True, blank=True)
     end_date = models.DateField(auto_now=False, null=True, blank=True)
@@ -29,7 +29,7 @@ class Contract(ClassModel):
     
         
 
-    
+# orden por cada producto
 
 class Order(ClassModel):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
@@ -41,5 +41,13 @@ class Order(ClassModel):
 
     def __str__(self):
         return '{}'.format(self.description)
+
+# url de respaldo 
+class Respaldo(ClassModel):
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
+    month_year = models.CharField(max_length=50, null=False, blank=False)
+    url = models.CharField(max_length=500, null=False, blank=False)
+    description = models.CharField(max_length=150, null=True, blank=True)
+
 
     
