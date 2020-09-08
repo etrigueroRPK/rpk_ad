@@ -98,12 +98,24 @@ def clients_list(request):
     template_name = 'display/clients_list.html'
     contexto = {}
     contract = Contract.objects.filter(state=True).all()
+    list_contract = []
+    for item in contract:
+        objeto = {}
+        urls = Respaldo.objects.filter(contract_id=item.id).order_by('-year')
+        objeto['id'] = item.id
+        objeto['client'] = item.client
+        objeto['description'] = item.description
+        objeto['auspice'] = item.auspice
+        objeto['start_date'] = item.start_date
+        objeto['end_date'] = item.end_date
+        objeto['urls'] = urls
+        list_contract.append(objeto)
     respaldo = Respaldo.objects.all()
     if not contract:
         contexto = {'obj':''}
 
     if request.method == 'GET':
-        contexto = {'obj':contract, 'respaldo':respaldo}
+        contexto = {'obj':list_contract, 'respaldo':respaldo}
 
     
 

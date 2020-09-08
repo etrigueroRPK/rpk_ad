@@ -478,6 +478,9 @@ def url_new(request, id):
 
         month_year = request.POST.get('month_year')
         description = request.POST.get('description')
+        year = request.POST.get('year')
+        print(year)
+        # year = int(year)
         url = request.POST.get('url')
         
         if request.POST.get('estado') == 'on':
@@ -489,6 +492,7 @@ def url_new(request, id):
             id_respaldo = request.POST.get('respaldo')
             respaldo = Respaldo.objects.filter(id=id_respaldo).first()
             respaldo.month_year = month_year
+            respaldo.year = year
             respaldo.description = description
             respaldo.url = url
             respaldo.state = state
@@ -500,6 +504,7 @@ def url_new(request, id):
             rspaldo = Respaldo
             rspaldo = Respaldo(
                 month_year=month_year,
+                year=year,
                 description=description,
                 url=url,
                 state=state,
@@ -526,8 +531,8 @@ def url_id(request, id):
         objeto_order["month_year"] = respaldo.month_year
         objeto_order["description"] = respaldo.description
         objeto_order["url"] = respaldo.url
-
-        # objeto_order["img"] = sub_product.img
+        objeto_order["year"] = str(respaldo.year)
+        
         objeto_order["state"] = respaldo.state
         # TODO: ver la forma de enviar el nombre de la inagen
 

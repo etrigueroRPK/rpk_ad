@@ -196,6 +196,10 @@
             <a class="collapse-item" href="{% url 'content:playlist_list' %}">Listas</a>
             <!-- <a class="collapse-item" href="#">Generados de pautas</a> -->
             {% endif %}
+            {% if perms.sales.content_playlist %}
+            <a class="collapse-item" href="{% url 'allviewcontract:products_view' %}">Detalles...</a>
+            <!-- <a class="collapse-item" href="#">Generados de pautas</a> -->
+            {% endif %}
           </div>
         </div>
       </li>

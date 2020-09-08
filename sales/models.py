@@ -46,6 +46,7 @@ class Order(ClassModel):
 class Respaldo(ClassModel):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
     month_year = models.CharField(max_length=50, null=False, blank=False)
+    year = models.ImageField(null=False, blank=False)
     url = models.CharField(max_length=500, null=False, blank=False)
     description = models.CharField(max_length=150, null=True, blank=True)
 

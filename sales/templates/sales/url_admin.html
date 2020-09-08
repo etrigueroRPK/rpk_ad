@@ -69,10 +69,17 @@
                             {% csrf_token %}
 
                             <div class="form-group row">
-                                <label for="id_month_year" class="col-sm-2 col-form-label">Mes y Año</label>
+                                <label for="id_month_year" class="col-sm-2 col-form-label">Mes</label>
                                 <div class="col-sm-10 ">
                                     <input type="text" name="month_year" maxlength="50" class="form-control" required
                                         autocomplete="off" id="id_month_year" value="{% if obj %} {{obj.month_year}} {% endif %}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="id_year" class="col-sm-2 col-form-label">Año</label>
+                                <div class="col-sm-10 ">
+                                    <input type="number" name="year" maxlength="50" class="form-control" required
+                                        autocomplete="off" id="id_year" value="{% if obj %} {{obj.year}} {% endif %}">
                                 </div>
                             </div>
 
@@ -145,7 +152,8 @@
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Mes y Año</th>
+                    <th>Mes</th>
+                    <th>Año</th>
                     <th>Descripción</th>
                     <th>url</th>
                     <th>Estado</th>
@@ -157,6 +165,7 @@
                 <tr>
                     <td>{{ item.id }}</td>
                     <td> {{item.month_year}}</td>
+                    <td> {{item.year}}</td>
                     <td>{{ item.description }}</td>
                     <td>{{ item.url}}</td>
                     <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
@@ -240,6 +249,7 @@
                 console.log(response.respaldo[0].state)
                 $("#id_respaldo").val(response.respaldo[0].id)
                 $("#id_month_year").val(response.respaldo[0].month_year)
+                $('#id_year').val(response.respaldo[0].year)
                 $("#id_description").val(response.respaldo[0].description)
                 $("#id_url").val(response.respaldo[0].url)
                
