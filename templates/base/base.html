@@ -67,6 +67,7 @@
             
 
             <a class="collapse-item" href="{% url 'display:clients_list' %}">Clientes</a>
+            <a class="collapse-item " href="{% url 'display:drive_list' %}">Enlaces Drive  <i class="fab fa-google-drive"> </i></a>
             
             <!-- <a class="collapse-item" href="{% url 'component:locations_list' %}">Locaciones</a> -->
             <!-- <a class="collapse-item" href="{% url 'component:product_list' %}">Productos</a> -->
@@ -197,9 +198,11 @@
             <!-- <a class="collapse-item" href="#">Generados de pautas</a> -->
             {% endif %}
             {% if perms.sales.content_playlist %}
+            <a class="collapse-item " href="{% url 'content:drive_list' %}">Enlaces a Drive</i></a>
             <a class="collapse-item" href="{% url 'allviewcontract:products_view' %}">Detalles...</a>
             <!-- <a class="collapse-item" href="#">Generados de pautas</a> -->
             {% endif %}
+            
           </div>
         </div>
       </li>
@@ -264,7 +267,7 @@
               </div>
             </div>
           </form>
-
+          <!-- <a href="" class="btn btn-primary "><i class="fab fa-google-drive"></i> Videos AD</a> -->
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
 

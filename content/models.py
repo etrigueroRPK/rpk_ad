@@ -2,7 +2,7 @@ from django.db import models
 
 from bases.models import ClassModel
 from sales.models import Contract, Order
-from component.models import Product
+from component.models import Product, City
 # Create your models here.
  
 
@@ -64,3 +64,8 @@ class Playlist_document(ClassModel):
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
 
 
+class Drive_urls(ClassModel):
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    info = models.CharField(max_length=20, null=True, blank=True)
+    url = models.CharField(max_length=500, null=False, blank=False)
+    

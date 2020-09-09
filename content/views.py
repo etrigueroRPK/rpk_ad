@@ -15,8 +15,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, \
 from django.http import HttpResponse
 import json
 
-from .models import Video, Playlist, Playlist_client_detail, Playlist_spot_detail, Playlist_document
-from .forms import VideoForm
+from .models import Video, Playlist, Playlist_client_detail, Playlist_spot_detail, Playlist_document, Drive_urls
+from .forms import VideoForm, DriveForm
 
 from bases.views import SinPrivilegios
 
@@ -879,3 +879,66 @@ def convert_to_seconds(horas):
     seconds = (int(h) * 60 * 60) + (int(m) * 60) + int(s)
 
     return seconds
+
+
+
+# ===================================================================
+# ADMINSTRACION DE URL PARA VIDEOS DE LOCACIONES 
+# =================================================================== 
+class DriveView(LoginRequiredMixin, generic.ListView):
+    model = Drive_urls
+    template_name = 'content/drive_view.html'
+    context_object_name = 'obj'
+    login_url = 'bases:login'
+
+
+class DriveNew(LoginRequiredMixin, generic.CreateView):
+    model = Drive_urls
+    template_name = 'content/drive_form.html'
+    context_object_name = 'obj'
+    form_class = DriveForm
+    success_url = reverse_lazy('content:drive_list')
+    login_url = 'bases:login'
+
+    def form_valid(self, form):
+        form.instance.user_created = self.request.user
+
+        return super().form_valid(form)
+
+
+class DriveEdit(LoginRequiredMixin, generic.UpdateView):
+    model = Drive_urls
+    template_name = 'content/drive_form.html'
+    context_object_name = 'obj'
+    form_class = DriveForm
+    success_url = reverse_lazy('content:drive_list')
+    login_url = 'bases:login'
+
+    def form_valid(self, form):
+        form.instance.user_updated = self.request.user.id
+
+        return super().form_valid(form)
+
+
+def drive_delete(request, id):
+    template_name = 'content/drive_delete.html'
+    contexto = {}
+    cat = Drive_urls.objects.get(pk=id)
+
+    if not cat:
+        return HttpResponse('enlace no existe' + str(id))
+
+    if request.method == 'GET':
+        contexto = {'obj': cat}
+
+    if request.method == 'POST':
+        cat.state = False
+        cat.save()
+        contexto = {'obj': 'OK'}
+        return HttpResponse('Enlace Inactivo')
+
+    return render(request, template_name, contexto)
+
+# ===================================================================
+# FIN ADMINSTRACION DE URL PARA VIDEOS DE LOCACIONES 
+# =================================================================== 

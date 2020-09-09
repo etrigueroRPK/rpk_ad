@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import products_list, products_client, video_list, \
-    clients_list, client_order
+    clients_list, client_order, drive_list
 
 urlpatterns = [
    
@@ -12,7 +12,7 @@ urlpatterns = [
     path('display/clients', clients_list, name='clients_list'),
     path('display/client_order/<int:id>', client_order, name='client_order'),
 
-
+    path('display/drive', drive_list, name='drive_list'),
 
 
 

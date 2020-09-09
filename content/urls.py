@@ -2,7 +2,8 @@ from django.urls import path
 from .views import VideoView, VideoNew, VideoEdit, VideoForm, video_delete, video_disabled, \
     playlist_list, playlist_generator, playlist_order, playlist_new, playlist_view, playlist_delete, \
     playlist_order_2, \
-    playlist_generator2, playlist_reorder, playlist_edit_date
+    playlist_generator2, playlist_reorder, playlist_edit_date, \
+    DriveView, DriveNew, DriveEdit, drive_delete
 
 urlpatterns = [
     # vistas para videos
@@ -36,5 +37,12 @@ urlpatterns = [
     path('playlist/generator/order_2/', playlist_order_2, name='playlist_order_2'),
 
     path('playlist/generator/reorder/', playlist_reorder, name='playlist_reorder'),
+
+
+    # para adminidtrar las ruts a google /drive
+    path('drive/',DriveView.as_view(), name='drive_list'),
+    path('drive/new',DriveNew.as_view(), name='drive_new'),
+    path('drive/edit/<int:pk>',DriveEdit.as_view(), name='drive_edit'),
+    path('drive/delete/<int:id>',drive_delete, name='drive_delete'),
 
 ]

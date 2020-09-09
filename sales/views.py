@@ -560,3 +560,5 @@ def url_delete(request, id):
         return HttpResponse('Url Borrada')
 
     return render(request, template_name, contexto)
+
+

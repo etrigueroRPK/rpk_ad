@@ -21,7 +21,7 @@ from bases.views import SinPrivilegios
 
 from component.models import Product
 from sales.models import Contract, Order, Respaldo
-from content.models import Video, Playlist
+from content.models import Video, Playlist, Drive_urls
 
 
 import math
@@ -139,6 +139,36 @@ def client_order(request, id):
 
     if request.method == 'GET':
         contexto = {'obj': order, 'contract':contract}
+
+    
+
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='/login/')
+# @permission_required('display.view_display', login_url='bases:sin_privilegios')
+def drive_list(request):
+    template_name = 'display/drive_list.html'
+    contexto = {}
+    drive = Drive_urls.objects.filter(state=True).all()
+    # list_contract = [] 
+    # for item in contract:
+    #     objeto = {}
+    #     urls = Respaldo.objects.filter(contract_id=item.id).order_by('-year')
+    #     objeto['id'] = item.id
+    #     objeto['client'] = item.client
+    #     objeto['description'] = item.description
+    #     objeto['auspice'] = item.auspice
+    #     objeto['start_date'] = item.start_date
+    #     objeto['end_date'] = item.end_date
+    #     objeto['urls'] = urls
+    #     list_contract.append(objeto)
+    # respaldo = Respaldo.objects.all()
+    if not drive:
+        contexto = {'obj':''}
+
+    if request.method == 'GET':
+        contexto = {'obj':drive}
 
     
 
