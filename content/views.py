@@ -212,7 +212,14 @@ def playlist_generator(request):
     if request.method == 'POST':
 
         id_product = request.POST.get("id_product")
+        old_playlist = Playlist.objects.filter(product=id_product).last()
+        old_doc = Playlist_spot_detail.objects.filter(playlist=old_playlist.id).all()
+        old_aux = []
+        for item in old_doc:
+            old_aux.append(item.video.id)
 
+        check = ''
+        # print(old_doc)
         order = Order.objects.filter(product_id=id_product, state=1).all().order_by('-contract__auspice')
         # print(order)
         lista_order_json = []
@@ -220,7 +227,7 @@ def playlist_generator(request):
             # print(item.contract.id)
             videos = Video.objects.all().filter(contract_id=item.contract.id, state=True)
             for video in videos:
-
+                
                 # print(video)
                 objeto_order = {}
                 objeto_order["id"] = item.id
@@ -234,8 +241,12 @@ def playlist_generator(request):
                 objeto_order["video_name"] = video.name
                 objeto_order["video_duration"] = video.duration_all()
                 # Se deberia asignar al dictionary todos los atributos que desee enviar en el json.
+                if video.id in old_aux:
+                    check = 'checked'
+                    print(video.name)
+                objeto_order["if_check"] = check
                 lista_order_json.append(objeto_order)
-
+                check = ''
         # print(lista_order_json)
 
         contexto = {'obj': 'OK', 'order': lista_order_json}
@@ -245,6 +256,7 @@ def playlist_generator(request):
 
     return render(request, template_name, contexto)
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# no esta funcionando
 # ================================================================================================================
 def playlist_generator2(request):
     contexto = {}
@@ -259,10 +271,12 @@ def playlist_generator2(request):
 
         id_product = request.POST.get("id_product")
 
+        # old_playlist = Playlist.objects.filter(product=id_product).last()
+        # print(old_playlist)
         order = Order.objects.filter(product_id=id_product, state=1).all().order_by('-contract__auspice')
         # print(order)
         lista_order_json = []
-        for item in order:
+        for item in order: 
             # print(item.contract.id)
             videos = Video.objects.all().filter(contract_id=item.contract.id, state=True)
             for video in videos:
@@ -468,10 +482,17 @@ def playlist_new(request):
         clientes_g = request.POST.getlist('clientes_g')
         spots_g = request.POST.getlist('spots_g')
         playlist_g = request.POST.getlist('playlist_g')
+        proyection = request.POST.get('proyection')
         print(clientes_g)
 
         print(spots_g)
         print(playlist_g)
+        p = False
+        if proyection == 'on':
+            p = True
+        else:
+            p = False
+
 
         product = Product.objects.get(pk=product_id)
 
@@ -479,6 +500,7 @@ def playlist_new(request):
             create_date=create_date,
             product=product,
             state=True,
+            proyection=p,
             user_created=request.user
         )
         playlist.save()

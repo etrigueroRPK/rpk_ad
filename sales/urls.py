@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import  ContractList, ClientView, ClientNew, ClientEdit, client_delete, \
     ContractList,contract_view,  contract_create, contract_edit, contract_delete, contract_list, contract_disabled, \
-    order_delete, order_new, order_update, \
+    order_delete, order_new, order_update, order_view_id,  \
     url_admin, url_new, url_id, url_delete
 
 urlpatterns = [
@@ -26,6 +26,7 @@ urlpatterns = [
     path('order/new',order_new, name='order_new'),
     path('order/delete/<int:id>',order_delete, name='order_delete'),
     path('order/update/<int:id>',order_update, name='order_update'),
+    path('order/edit/<int:id>',order_view_id, name='order_edit'),
 
     # urls para crear url ubicaciones de google drive en la cuenta de repositorio 
 

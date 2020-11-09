@@ -64,11 +64,8 @@
                             <div class="col-sm-2">Auspicio</div>
                             <div class="col-sm-10">
                                 <div class="form-check">
-                                    <input type="checkbox" name="auspice" class="form-check-input"  id="id_auspice" 
-                                    {% if contract.auspice %}
-                                        checked                                        
-                                    {% endif %}
-                                        disabled >
+                                    <input type="checkbox" name="auspice" class="form-check-input" id="id_auspice"
+                                        {% if contract.auspice %} checked {% endif %} disabled>
                                     <label class="form-check-label" for="id_auspice">
                                         Marcar en caso de Auspicio.
                                     </label>
@@ -133,6 +130,7 @@
 
 
                         <div class="form-row">
+                            <input type="hidden" name="id_order" id="id_order" value="">
                             <div class="form-group col-md-8">
                                 <label for="product_id">Producto</label>
                                 <select id="product_id" name="product_id" class="form-control form-control-sm">
@@ -202,19 +200,21 @@
                                             <td>{{item.description}}</td>
                                             <td>
                                                 {% if item.state == True %}
-                                                <button type="button" class="btn btn-outline-success btn-sm" onclick="update({{item.id}})">
+                                                <button type="button" class="btn btn-outline-success btn-sm"
+                                                    onclick="update({{item.id}})">
                                                     <i class="far fa-check-circle"></i>
                                                 </button>
                                                 {% else %}
-                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="update({{item.id}})">
+                                                <button type="button" class="btn btn-outline-danger btn-sm"
+                                                    onclick="update({{item.id}})">
                                                     <i class="far fa-times-circle"></i>
                                                 </button>
                                                 {% endif %}
                                             </td>
                                             <td><button type="button" class="btn btn-outline-danger btn-sm"
                                                     onclick="eliminar({{item.id}})">X</button>
-                                                <!-- <button type="button" class="btn btn-outline-primary btn-sm"
-                                                    onclick="eliminar(' + cont + ');">Edit</button> -->
+                                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                                    onclick="editar({{item.id}})">Edit</button>
 
                                             </td>
                                         </tr>
@@ -250,7 +250,8 @@
 <div>
     <p class="font-weight-lighter">El tiempo del spot por defecto es considerado de 30 segundos, para el calculo de
         pases y porcentaje. <br />
-        El tiempo de spot se podra especificar en la seccion de "AD contenido".
+        El tiempo de spot se podra especificar en la seccion de "AD contenido". <br/>
+        
     </p>
 </div>
 
@@ -368,12 +369,14 @@
     function guardar(id_contract) {
 
         id_product = $("#product_id").val();
+        id_order = $("#id_order").val();
         pases = $("#pases").val();
         porcentage = $("#porcentaje").val();
         description = $("#description").val();
         var data = {
             id_contract: id_contract,
             id_product: id_product,
+            id_order: id_order,
             pases: pases,
             porcentaje: porcentage,
             description: description
@@ -395,9 +398,9 @@
                     // mensaje("El producto asosiado a la orden de pauta de elimino. ", "orange");
                     $("#tbodyid").empty();
                     for (let index = 0; index < response["order"].length; index++) {
-                        var estado = '<button type="button" class="btn btn-outline-danger btn-sm" onclick="update('+response["order"][index].id+')" ><i class="far fa-times-circle"></i></button>';
+                        var estado = '<button type="button" class="btn btn-outline-danger btn-sm" onclick="update(' + response["order"][index].id + ')" ><i class="far fa-times-circle"></i></button>';
                         if (response["order"][index].estado == true) {
-                            estado = '<button type="button" class="btn btn-outline-success btn-sm" onclick="update('+response["order"][index].id+')" ><i class="far fa-check-circle"></i></button>';
+                            estado = '<button type="button" class="btn btn-outline-success btn-sm" onclick="update(' + response["order"][index].id + ')" ><i class="far fa-check-circle"></i></button>';
                         }
                         var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
                             '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +
@@ -433,7 +436,35 @@
 
     }
 
+    function editar(id) {
+        var id_order = id;
+        var token = '{{csrf_token}}';
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "GET",
+            url: "/sales/order/edit/" + id_order,
 
+            success: function (response) {
+
+                console.log(response.order[0].state)
+                $("#id_order").val(response.order[0].id)
+                $("#pases").val(response.order[0].pass)
+                $("#porcentaje").val(response.order[0].porcentage)
+                $("#description").val(response.order[0].description)
+                // $("#id_pixel_size").val(response.order[0].pixel_size)
+                $("#product_id").val(response.order[0].product_id.toString())
+                $("#product_id").change()
+                $("#enviar_orden").text('Editar')
+                $("#product_id").prop('disabled', 'disabled');
+                
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
 
     function eliminar(id) {
         var data = { id: id };
@@ -453,9 +484,9 @@
                     mensaje("El producto asosiado a la orden de pauta se elimino. ", "orange");
                     $("#tbodyid").empty();
                     for (let index = 0; index < response["order"].length; index++) {
-                        var estado = '<button type="button" class="btn btn-outline-danger btn-sm"><i class="far fa-times-circle" onclick="update('+response["order"][index].id+')" ></i></button>';
+                        var estado = '<button type="button" class="btn btn-outline-danger btn-sm"><i class="far fa-times-circle" onclick="update(' + response["order"][index].id + ')" ></i></button>';
                         if (response["order"][index].estado == true) {
-                            estado = '<button type="button" class="btn btn-outline-success btn-sm"><i class="far fa-check-circle" onclick="update('+response["order"][index].id+')" ></i></button>';
+                            estado = '<button type="button" class="btn btn-outline-success btn-sm"><i class="far fa-check-circle" onclick="update(' + response["order"][index].id + ')" ></i></button>';
                         }
                         var fila = '<tr class="col-md-12" id="fila' + cont + '">' +
                             '<td> ' + response["order"][index].category + ':' + response["order"][index].product + ':' + response["order"][index].location + '</td>' +

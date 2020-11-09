@@ -35,6 +35,7 @@ class Video(ClassModel):
 class Playlist(ClassModel):
     create_date = models.DateField(null=False, blank=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    proyection = models.BooleanField(default=False, null=False, blank=False)
     
     def __str__(self):
         return '{} del {} '.format(self.product, self.create_date)

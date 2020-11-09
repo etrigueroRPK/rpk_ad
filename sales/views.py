@@ -213,7 +213,7 @@ def contract_create(request):
         # print(check)
 
         # TODO: ver la forma de enviar mensaje de contrato creado creado con ventana popup
-        # return redirect("sales:contract_list")
+        # python
 
     return render(request, template_name, contexto)
 
@@ -374,17 +374,28 @@ def order_new(request):
         porcentaje = request.POST.get('porcentaje')
         desc = request.POST.get('description')
 
-        order = Order
-        order = Order(
-            contract_id=id_contract,
-            product_id=id_product,
-            pass_contract=pases,
-            porcentage_contract=porcentaje,
-            description=desc,
-            state=True,
-            user_created=request.user
-        )
-        order.save()
+        if request.POST.get('id_order'):
+            order = Order.objects.get(pk=request.POST.get('id_order'))
+            order.pass_contract = pases
+            order.porcentage_contract = porcentaje
+            order.description = desc
+            order.user_updated = request.user.id
+            order.save()
+
+        else:
+
+
+            order = Order
+            order = Order(
+                contract_id=id_contract,
+                product_id=id_product,
+                pass_contract=pases,
+                porcentage_contract=porcentaje,
+                description=desc,
+                state=True,
+                user_created=request.user
+            )
+            order.save()
 
         order = Order.objects.filter(contract_id=id_contract).all()
 
@@ -407,6 +418,33 @@ def order_new(request):
         return HttpResponse(json.dumps(contexto), content_type=json)
 
     # return render(request, template_name, contexto)
+
+# retorna  un json 
+def order_view_id(request, id):
+    contexto = {}
+    if request.method == 'GET':
+        order = Order.objects.filter(pk=id).first()
+        # print(order.name)
+        order_json = []
+        # for item in order:
+        objeto_order = {}
+        objeto_order["id"] = order.id
+        objeto_order["product_id"] = order.product.id
+        objeto_order["product_name"] = str(order.product)
+
+        print(order.product)
+        objeto_order["pass"] = order.pass_contract
+        objeto_order["porcentage"] = order.porcentage_contract
+        objeto_order["description"] = order.description
+
+        # objeto_order["img"] = order.img
+        objeto_order["state"] = order.state
+        # TODO: ver la forma de enviar el nombre de la inagen
+
+        order_json.append(objeto_order)
+        contexto = {'obj': 'OK', 'order': order_json}
+        return HttpResponse(json.dumps(contexto), content_type=json)
+
 
 
 def order_update(request, id):

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,100&display=swap" rel="stylesheet">
+    <title>email</title>
+    <style type="text/css" >
+        *{
+            font-family: 'Roboto', sans-serif;
+        }
+        body {
+            /* height: 600px; */
+            width: 800px;
+            max-width: 800px;
+            /* max-height: 600px; */
+            margin: 0;
+            padding: 0;
+            color: black;
+
+            
+        }
+        .card {
+            height: 100%;
+            width: 100%;
+            /* background: #c5c5c5; */
+        }
+        .titulo {
+            background: #4D72DE;
+            height: 60px;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            display: block;
+           line-height: 60px;
+
+           
+        }
+        .texto_titulo{
+            
+            vertical-align: middle;
+            border: 0;
+            margin: 0, auto;
+            color: #ffffff;
+            background: #4D72DE ;
+            font-size : 1.4em;
+            font-weight: bold;
+            
+            
+            
+        }
+
+        .texto_cuerpo{
+            margin: 20px;
+            margin-left: 30px;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        .nombre_cliente{
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .fecha{
+            margin-left: 60px;
+            font-weight: bold;
+            color: #595959;
+        }
+        .texto_footer{
+            text-align: center;
+            width: 70%;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0.8em;
+
+        }
+        .locacion {
+            margin-left: 80px;
+            font-weight: bold;
+            color: #595959;
+        }
+        .titulo_2 {
+            font-size: 1em;
+            margin: 10px;
+            margin-left: 80px;
+            
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="titulo" >
+
+            <div class="texto_titulo">
+                Videos finalizados :
+            </div> 
+        </div>
+       
+        {% for item in obj %}
+       
+      
+        <div class="texto_cuerpo">
+            
+            <div class="nombre_cliente">Cliente: {{item.client}}</div> 
+            <div class="nombre_cliente">Video: {{item.video_name}}</div> 
+            <br>
+            <div class="fecha">
+               Fecha inicio:  {% if item.start_date == None or item.start_date|date:'d/m/Y' == '01/01/1'  %} No se cuenta con fecha de ingreso {% else %} {{item.start_date}} {% endif %}
+            </div> 
+            <div class="fecha">
+               Fecha final:  {{item.end_date}}
+
+            </div>
+            <div>
+                <div class="nombre_cliente  titulo_2">Productos encontrados de la busqueda de Listas de reproducción:</div>
+                {% for item2 in item.orders %}
+                <div class="locacion">
+
+                    {{ item2.playlist.product }}
+                </div>    
+                {% endfor %}    
+            </div>
+            
+        </div> 
+        
+    
+        {% endfor %}
+    
+        <footer class="texto_footer">
+            Este mensaje fue generado automaticamente por <strong>Sistema de Administracion publicitaria RPK.SRL.</strong>  <br/>
+            No tratre de responder. para mas informacion: etriguero@rpk.com.bo
+        </footer> 
+    </div>
+</body>
+
+</html>

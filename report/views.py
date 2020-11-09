@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.utils import timezone
 from sales.models import Contract, Order
+from content.models import Video, Playlist_spot_detail
 
 
 
@@ -39,8 +40,8 @@ def report_mail_view(request):
     print(date_now)
     end_date = Contract.objects.filter(end_date=date_now_Ymd)
 
-    if not end_date:
-        return HttpResponse('cliente no existe' + str(id))
+    # if not end_date:
+    #     return HttpResponse('cliente no existe' + str(id))
 
     if request.method == 'GET':
         end_date_list = []
@@ -53,6 +54,50 @@ def report_mail_view(request):
             objeto['start_date'] = item.start_date
             objeto['end_date'] = item.end_date
             objeto['orders'] = order
+            # item['orden'] = order
+            end_date_list.append(objeto)
+        contexto = {'obj': end_date_list}
+
+    # if request.method == 'POST':
+    #     cat.state = False
+    #     cat.save()
+    #     contexto = {'obj': 'OK'}
+    #     return HttpResponse('cliente Inactivo')
+
+    return render(request, template_name, contexto)
+
+
+
+def report_mail_video(request):
+    template_name = 'report/email_end_video.html'
+    contexto = {}
+    date_now = timezone.now()
+    date_now_Ymd = date_now.strftime("%Y-%m-%d")
+    date_now_dmY = date_now.strftime("%d/%m/%Y")
+    print(date_now)
+    end_date = Video.objects.filter(end_date=date_now_Ymd)
+
+    # if not end_date:
+    #     return HttpResponse('cliente no existe' + str(id))
+
+    if request.method == 'GET':
+        end_date_list = []
+        for item in end_date:
+            objeto = {}
+            order = Playlist_spot_detail.objects.filter(video=item.id)
+            new_list = []
+            aux_list = []
+            for i in order:
+                if not i.playlist.product.id in aux_list:
+                    aux_list.append(i.playlist.product.id)
+                    new_list.append(i)
+            # print(type(item))
+            # print(order)
+            objeto['client']= item.contract.client
+            objeto['start_date'] = item.start_date
+            objeto['end_date'] = item.end_date
+            objeto['video_name'] = item.name
+            objeto['orders'] = new_list
             # item['orden'] = order
             end_date_list.append(objeto)
         contexto = {'obj': end_date_list}

@@ -6,3 +6,4 @@ __pycache__
 myvenv
 .DS_Store
 .vscode
+consultas.sql

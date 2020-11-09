@@ -365,7 +365,7 @@ def sub_product_new(request, id):
 
     # return render(request, template_name, contexto)
 
-
+# usadp con ajax: retorna un json con los datos individuales de cada orden
 def sub_product_view_id(request, id):
     contexto = {}
     if request.method == 'GET':
@@ -375,6 +375,7 @@ def sub_product_view_id(request, id):
         # for item in sub_product:
         objeto_order = {}
         objeto_order["id"] = sub_product.id
+        
         objeto_order["name"] = sub_product.name
         objeto_order["place"] = sub_product.place
         objeto_order["measure"] = sub_product.measure

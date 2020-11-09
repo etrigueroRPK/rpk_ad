@@ -182,8 +182,7 @@
                     </strong> </h6>
                 <h6 class="subtitulo">Estado: <strong
                         class="nombre-cliente">{{contract.state|yesno:'Activo,Inactivo'}}</strong>
-                         <strong
-                        class="nombre-cliente">{{contract.auspice|yesno:'Auspicio,_'}}</strong></h6>
+                    <strong class="nombre-cliente">{{contract.auspice|yesno:'Auspicio,_'}}</strong></h6>
 
             </div>
             <div class="linea-divisora"></div>
@@ -204,6 +203,45 @@
                         <td>{{ item.pass_contract }}</td>
                         <td>{{ item.porcentage_contract|floatformat:3 }} %</td>
                         <td>{{ item.description }}</td>
+                        <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- <div class="linea-divisora"></div> -->
+
+            <div class="info-contract">
+                <h6 class="subtitulo">Videos activos.</h6>
+
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Video</th>
+                        <th>Duración</th>
+                        <th>Fecha inicio</th>
+                        <th>Fecha final</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in video %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.duration_all }}</td>
+                        <td> {% if item.start_date|date:"d/m/Y" == '01/01/1' %}
+                            Por definir
+                            {% else %}
+                            {{item.start_date|date:"d/m/Y"}}
+
+                            {% endif %}</td>
+                        <td>{% if item.end_date|date:"d/m/Y" == '01/01/1' %}
+                            Por definir
+                            {% else %}
+                            {{item.end_date|date:"d/m/Y"}}
+
+                            {% endif %}</td>
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
                     </tr>
                     {% endfor %}

@@ -20,7 +20,7 @@ from openpyxl import Workbook
 # from .forms import ClientForm, ContractForm
 
 from sales.models import Contract, Order
-from content.models import Playlist, Playlist_client_detail, Playlist_spot_detail, Playlist_document
+from content.models import Playlist, Playlist_client_detail, Playlist_spot_detail, Playlist_document, Video
 
 
 def report_contract(request, id):
@@ -30,12 +30,13 @@ def report_contract(request, id):
 
     today = datetime.datetime.now()
     order = Order.objects.filter(contract=id)
+    video = Video.objects.filter(contract=id)
     if not contract:
         return HttpResponse('el registro con id: ' + str(id) + ' no existe!!!')
 
     if request.method == 'GET':
 
-        contexto = {'today': today, 'contract': contract, 'order': order}
+        contexto = {'today': today, 'contract': contract, 'order': order, 'video':video}
 
     return render(request, template_name, contexto)
 
