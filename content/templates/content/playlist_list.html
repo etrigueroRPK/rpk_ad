@@ -39,6 +39,7 @@
                         <th>Fecha</th>
                         <th>Producto</th>
                         <th>Estado</th>
+                        <th>Proyección</th>
                         <th>F. Creacion</th>
                         <!-- <th>F. Modificacion</th> -->
                         <th>UC</th>
@@ -53,6 +54,8 @@
                         <td id="{{item.id}}">{{ item.create_date }}</td>
                         <td>{{ item.product}}</td>
                         <td>{{ item.state|yesno:"Activo,Inactivo" }}</td>
+                        <td>{{ item.proyection|yesno:"Activo,Inactivo" }}</td>
+
                         <td>{{ item.created_at}}</td>
                         <!-- <td>{{ item.clients_g}}</td> -->
                         <td>{{ item.user_created}}</td>
@@ -67,13 +70,17 @@
                             <!-- <a href="{% url 'content:playlist_view' item.id %}"
                                 class="btn btn-sm btn-outline-warning btn-circle" role="button" ><i
                                     class="far fa-edit"></i></a> -->
-                            <button class="btn btn-sm btn-outline-danger btn-circle"
-                                onclick="return abrir_modal('{% url 'content:playlist_delete' item.id %}')"><i
-                                    class="far fa-trash-alt"></i></button>
+                            <button class="btn btn-sm btn-outline-info btn-circle"
+                                onclick="edit_proyection('{{ item.id }}')"><i
+                                class="far fa-smile-wink fa-lg"></i></button>
 
                             <button class="btn btn-sm btn-outline-warning btn-circle"
                                 onclick="add_input_date('{{item.id}}')"><i class="far fa-edit"></i></button>
 
+
+                            <button class="btn btn-sm btn-outline-danger btn-circle"
+                                onclick="return abrir_modal('{% url 'content:playlist_delete' item.id %}')"><i
+                                    class="far fa-trash-alt"></i></button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -103,12 +110,12 @@
 
         date_new = $('#date' + id).val()
         // alert(id + ' - ' + date)
-        if(!date_new){
-            mensaje('La fecha no puede estar vacia','red')
+        if (!date_new) {
+            mensaje('La fecha no puede estar vacia', 'red')
             return
-        } 
-        
-        var data = {'id':id, 'date_new':date_new};
+        }
+
+        var data = { 'id': id, 'date_new': date_new };
 
         var token = '{{ csrf_token }}';
 
@@ -119,13 +126,13 @@
             type: "POST",
             url: "/content/playlist/edit_date",
             data: data,
-            
+
             success: function (response) {
                 console.log(response)
                 if (response == 'ok') {
                     window.location.href = "/content/playlist/";
                 }
-                if (response == 'false'){
+                if (response == 'false') {
                     mensaje('hubo un error!!!', 'red')
                 }
             },
@@ -136,6 +143,35 @@
             }
         });
 
+    }
+
+    function edit_proyection(id) {
+        var data = { id: id };
+        data = JSON.stringify(data);
+        var token = '{{csrf_token}}';
+        // alert(token);
+        // alert(id);
+
+        $.ajax({
+            headers: { "X-CSRFToken": token },
+            type: "POST",
+            url: "/content/playlist/proyection/" + id,
+            data: data,
+            success: function (response) {
+                // aux["order"][0].category
+                if (response['obj'] == 'OK') {
+                   location.reload()
+                } 
+
+                aux = response;
+                // console.log(aux);
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
     }
 
 

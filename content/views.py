@@ -562,6 +562,24 @@ def playlist_new(request):
 
     return HttpResponse('ok')
 
+
+def playlist_proyection(request, id):
+    
+    contexto = {}   
+
+    if request.method == 'POST':
+        playlist = Playlist.objects.get(pk=id)
+        if playlist.proyection:
+            playlist.proyection = False
+        else: 
+            playlist.proyection = True
+
+        playlist.save()
+
+
+        contexto = {'obj': 'OK'}
+        return HttpResponse(json.dumps(contexto), content_type=json)
+
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # =============================================================================================
 # funciones que ayudan al ordenamineto de las listas finales

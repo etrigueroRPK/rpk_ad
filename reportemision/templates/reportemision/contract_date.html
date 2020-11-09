@@ -63,7 +63,8 @@
                                 <thead>
                                     <tr>
                                         <!-- <th scope="col-sm-1">#</th> -->
-
+                                        <th></th>
+                                        <th>id</th>
                                         <th>Producto</th>
                                         <th>Fecha de aparición</th>
                                         <th>video</th>
@@ -78,10 +79,10 @@
                                 <tbody>
                                     {% for item in report2 %}
 
-                                    <tr>
+                                    <tr {% if item.proyection %} class="table-warning" {% endif %}>
                                         <!-- <td>1</td> -->
-
-
+                                        <td><input type="checkbox" name="id_report" id="id_report" value="{{item.id}}"> </td>
+                                        <td>{{item.id}}</td>
                                         <td>{{item.location}}</td>
                                         <td>{{item.create_date}}</td>
                                         <td>{{item.video_name}}</td>

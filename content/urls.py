@@ -2,7 +2,7 @@ from django.urls import path
 from .views import VideoView, VideoNew, VideoEdit, VideoForm, video_delete, video_disabled, \
     playlist_list, playlist_generator, playlist_order, playlist_new, playlist_view, playlist_delete, \
     playlist_order_2, \
-    playlist_generator2, playlist_reorder, playlist_edit_date, \
+    playlist_generator2, playlist_reorder, playlist_edit_date, playlist_proyection, \
     DriveView, DriveNew, DriveEdit, drive_delete
 
 urlpatterns = [
@@ -24,6 +24,8 @@ urlpatterns = [
 
     path('playlist/contract_list/', playlist_generator, name='playlist_contract_list'),
     path('playlist/delete/<int:id>', playlist_delete, name='playlist_delete'),
+    path('playlist/proyection/<int:id>', playlist_proyection, name='playlist_proyection'),
+
 
 
     path('playlist/generator/order/', playlist_order, name='playlist_order'),

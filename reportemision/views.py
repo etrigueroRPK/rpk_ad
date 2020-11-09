@@ -81,6 +81,7 @@ def order_report_print(request, id):
         objeto['time_in_pauta'] = item.time_total
         time_in_pauta_total = time_in_pauta_total + int(item.time_total)
         repeat_in_pauta = repeat_in_pauta + int(item.repeat_count)
+        
         videos.append(objeto)
 
     playlist = Playlist_document.objects.filter(
@@ -100,9 +101,9 @@ def order_report_print(request, id):
 #
     # for item in playlist_client:
         # print(item)
-
+    pass_day = int(repeat_in_pauta) * int(document.repeat_pauta_day)
     contexto = {'obj': document, 'videos': videos, 'time': time_in_pauta_total,
-                'time2': repeat_in_pauta, 'playlist': playlist_client}
+                'time2': repeat_in_pauta, 'playlist': playlist_client, 'pass_day':pass_day}
 
     return render(request, template_name, contexto)
 # ============################################################
@@ -134,7 +135,7 @@ def report_client_all(request, id):
                     item = {}
                     item["id"] = str(order_id) + str(k.video.id) + \
                         str(j.playlist.product.id)
-                    item["contract_id"] = contract.id
+                    item["contract_id"] = contract.id 
                     item["order_id"] = order_id
                     item["video_id"] = k.video.id
                     item["client"] = contract.client.name
@@ -152,6 +153,7 @@ def report_client_all(request, id):
                     item["time_bonification"] = j.time_bonification
                     item["color"] = color
                     item["state"] = 1
+                    item["proyection"] = k.playlist.proyection
                     # print(j.playlist.create_date)
                     report.append(item)
                 if color == 1:
@@ -182,6 +184,7 @@ def report_client_all(request, id):
             item["time_contract"] = 0
             item["time_bonification"] = 0
             item["color"] = 3
+            item["proyection"] = False
             report.append(item)
 
         report_2 = report_resume(report)
@@ -208,36 +211,40 @@ def report_client_all(request, id):
             start_date_n, "%Y-%m-%d").date()
         end_date_n = datetime.datetime.strptime(end_date_n, "%Y-%m-%d").date()
 
+        id_report = request.POST.getlist('id_report')
+        print(id_report)
+
         if bandera == '1':
             aux_order = []
             print(bandera)
             for item in report_2:
+                if item['id'] in id_report:
+                    print(item['id'])
+                    if (not item['order_id'] in aux_order):
+                        aux_order.append(item['order_id'])
+                        order_id = Order.objects.get(pk=item['order_id'])
+                        contract_id = Contract.objects.get(pk=item['contract_id'])
 
-                if (not item['order_id'] in aux_order):
-                    aux_order.append(item['order_id'])
-                    order_id = Order.objects.get(pk=item['order_id'])
-                    contract_id = Contract.objects.get(pk=item['contract_id'])
+                        if not item['playlist_id'] == 0:
+                            playlist_id = Playlist.objects.get(
+                                pk=item['playlist_id'])
+                            document = Document(
+                                start_date=start_date_n,
+                                end_date=end_date_n,
+                                contract=contract_id,
+                                order=order_id,
+                                repeat_pauta_day=item['pauta_loop'],
+                                repeat_in_pauta=item['repeticiones'],
 
-                    if not item['playlist_id'] == 0:
-                        playlist_id = Playlist.objects.get(
-                            pk=item['playlist_id'])
-                        document = Document(
-                            start_date=start_date_n,
-                            end_date=end_date_n,
-                            contract=contract_id,
-                            order=order_id,
-                            repeat_pauta_day=item['pauta_loop'],
-                            repeat_in_pauta=item['repeticiones'],
+                                second_total_day=item['second_total'],
+                                time_contract=item['time_contract'],
+                                time_bonification=item['time_bonification'],
+                                playlist=playlist_id,
+                                user_created=request.user
 
-                            second_total_day=item['second_total'],
-                            time_contract=item['time_contract'],
-                            time_bonification=item['time_bonification'],
-                            playlist=playlist_id,
-                            user_created=request.user
-
-                        )
-                        document.save()
-                    contract = Contract.objects.filter(state=True).all()
+                            )
+                            document.save()
+                        contract = Contract.objects.filter(state=True).all()
 
             template_name = 'reportemision/contract_list.html'
 
@@ -638,8 +645,12 @@ def report_resume(report):
     for item in report:
         if (not item["order_id"] in aux_lista):
             aux_lista.append(item["order_id"])
-            max_bonification = hallar_bonificacion_max(
-                report, item["order_id"])
+            # max_bonification = hallar_bonificacion_max(
+            #     report, item["order_id"])
+            if item["proyection"] == True:
+                max_bonification = item
+            else:
+                max_bonification = hallar_bonificacion_max(report, item["order_id"])
             aux = extaer_playlist_id(report, max_bonification["playlist_id"])
             nueva_report = nueva_report + aux
 

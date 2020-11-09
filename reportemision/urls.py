@@ -28,4 +28,7 @@ urlpatterns = [
 
     path('report_client_xls/<int:id>/<slug:month>/<int:order_id>',report_client_xls, name='report_client_xls'),
     path('report_generate_save/',report_generate_save, name='report_generate_save'),
+
+
+    # rutas de proyecciones 
 ]

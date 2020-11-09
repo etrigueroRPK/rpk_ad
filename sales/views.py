@@ -68,10 +68,10 @@ def client_delete(request, id):
         contexto = {'obj': cat}
 
     if request.method == 'POST':
-        cat.state = False
-        cat.save()
+        # cat.state = False
+        cat.delete()
         contexto = {'obj': 'OK'}
-        return HttpResponse('cliente Inactivo')
+        return HttpResponse('cliente borrado')
 
     return render(request, template_name, contexto)
 
