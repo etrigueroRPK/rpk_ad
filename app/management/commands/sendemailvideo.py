@@ -25,7 +25,7 @@ class Command(BaseCommand):
         date_now_Ymd = date_now.strftime("%Y-%m-%d")
         date_now_dmY = date_now.strftime("%d/%m/%Y")
         print(date_now)
-        end_date = Contract.objects.filter(end_date=date_now_Ymd)
+        end_date = Video.objects.filter(end_date=date_now_Ymd)
         end_date_list = []
         for item in end_date:
             objeto = {}
