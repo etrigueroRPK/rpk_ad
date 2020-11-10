@@ -187,7 +187,8 @@ def report_client_all(request, id):
             item["proyection"] = False
             report.append(item)
 
-        report_2 = report_resume(report)
+        # report_2 = report_resume(report)
+        report_2 = report
 
     if request.method == 'GET':
 
@@ -633,6 +634,7 @@ def report_client_xls(request, id, month, order_id):
 
    
 # ======================================================================
+# extrae la bonificacion de las listas 
 def as_text(value):
     if value is None:
         return ""
